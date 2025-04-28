@@ -3,13 +3,25 @@ import Link from "next/link";
 import { Button } from "~/components/ui/button";
 import Header from "./_components/header";
 import { Card, CardContent } from "~/components/ui/card";
+import {
+  Clock,
+  Wallet,
+  ShieldCheck,
+  Video,
+  CalendarCheck,
+  FileText,
+  HeartPulse,
+  Droplet,
+  Brain,
+  Baby,
+} from "lucide-react";
 
 export default async function Home() {
   return (
     <HydrateClient>
       <main className="flex min-h-screen min-w-full flex-col items-center">
         <Header />
-        <section className="container py-12 md:py-24 lg:py-32">
+        <section className="container px-4 py-6 md:py-24 lg:py-16">
           <div className="flex flex-row items-center justify-between">
             <div className="max-w-2/4 space-y-4">
               <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
@@ -41,35 +53,21 @@ export default async function Home() {
           </div>
         </section>
 
-        <section className="flex w-full items-center justify-center bg-slate-50 py-12 md:py-16">
+        <section className="flex w-full items-center justify-center bg-slate-50 py-6 md:py-16">
           <div className="container">
             <div className="mb-12 text-center">
               <h2 className="text-3xl font-bold tracking-tighter md:text-4xl">
-                Why Choose MediConnect?
+                Why Choose Medvera?
               </h2>
               <p className="text-muted-foreground mx-auto mt-4 max-w-2xl md:text-lg">
                 Our telemedicine platform offers numerous advantages over
                 traditional in-person visits
               </p>
             </div>
-            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            <div className="flex flex-row justify-between">
               <div className="flex flex-col items-center p-4 text-center">
                 <div className="mb-4 rounded-full bg-teal-100 p-3">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-6 w-6 text-teal-600"
-                  >
-                    <circle cx="12" cy="12" r="10" />
-                    <polyline points="12 6 12 12 16 14" />
-                  </svg>
+                  <Clock />
                 </div>
                 <h3 className="mb-2 text-xl font-bold">Save Time</h3>
                 <p className="text-muted-foreground">
@@ -79,22 +77,7 @@ export default async function Home() {
               </div>
               <div className="flex flex-col items-center p-4 text-center">
                 <div className="mb-4 rounded-full bg-teal-100 p-3">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-6 w-6 text-teal-600"
-                  >
-                    <path d="M12 2a10 10 0 1 0 10 10H12V2Z" />
-                    <path d="M12 12 2.1 9.1a10 10 0 0 0 9.8 12.9L12 12Z" />
-                    <path d="M12 12 2.1 14.9a10 10 0 0 1 9.8-12.9L12 12Z" />
-                  </svg>
+                  <Wallet />
                 </div>
                 <h3 className="mb-2 text-xl font-bold">Lower Costs</h3>
                 <p className="text-muted-foreground">
@@ -104,21 +87,7 @@ export default async function Home() {
               </div>
               <div className="flex flex-col items-center p-4 text-center">
                 <div className="mb-4 rounded-full bg-teal-100 p-3">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-6 w-6 text-teal-600"
-                  >
-                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
-                    <circle cx="12" cy="12" r="3" />
-                  </svg>
+                  <ShieldCheck />
                 </div>
                 <h3 className="mb-2 text-xl font-bold">Privacy & Security</h3>
                 <p className="text-muted-foreground">
@@ -130,26 +99,12 @@ export default async function Home() {
           </div>
         </section>
 
-        <section id="features" className="container py-12 md:py-24 lg:py-32">
-          <div className="mx-auto grid max-w-5xl items-center gap-6 py-12 lg:grid-cols-3">
+        <section id="features" className="container py-6 md:py-24 lg:py-16">
+          <div className="mx-auto grid max-w-5xl items-center gap-6 py-6 lg:grid-cols-3">
             <div className="grid gap-4 text-center lg:text-left">
               <div className="flex justify-center lg:justify-start">
                 <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-teal-100 text-teal-600">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-6 w-6"
-                  >
-                    <path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4c0-1.1.9-2 2-2h8a2 2 0 0 1 2 2v5Z" />
-                    <path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1" />
-                  </svg>
+                  <Video />
                 </div>
               </div>
               <h3 className="text-xl font-bold">Video Consultations</h3>
@@ -161,24 +116,7 @@ export default async function Home() {
             <div className="grid gap-4 text-center lg:text-left">
               <div className="flex justify-center lg:justify-start">
                 <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-teal-100 text-teal-600">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-6 w-6"
-                  >
-                    <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
-                    <line x1="16" x2="16" y1="2" y2="6" />
-                    <line x1="8" x2="8" y1="2" y2="6" />
-                    <line x1="3" x2="21" y1="10" y2="10" />
-                    <path d="m9 16 2 2 4-4" />
-                  </svg>
+                  <CalendarCheck />
                 </div>
               </div>
               <h3 className="text-xl font-bold">Easy Scheduling</h3>
@@ -190,21 +128,7 @@ export default async function Home() {
             <div className="grid gap-4 text-center lg:text-left">
               <div className="flex justify-center lg:justify-start">
                 <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-teal-100 text-teal-600">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-6 w-6"
-                  >
-                    <path d="M8 21h12a2 2 0 0 0 2-2v-2H10v2a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v3h4" />
-                    <path d="M19 17V5a2 2 0 0 0-2-2H4" />
-                  </svg>
+                  <FileText />
                 </div>
               </div>
               <h3 className="text-xl font-bold">E-Prescriptions</h3>
@@ -217,7 +141,7 @@ export default async function Home() {
 
         <section
           id="how-it-works"
-          className="w-full bg-slate-50 py-12 md:py-24 lg:py-32"
+          className="w-full bg-slate-50 py-6 md:py-24 lg:py-16"
         >
           <div className="mx-auto max-w-5xl text-center">
             <h2 className="text-3xl font-bold tracking-tighter md:text-4xl">
@@ -227,7 +151,7 @@ export default async function Home() {
               Getting the healthcare you need has never been easier
             </p>
           </div>
-          <div className="mx-auto grid max-w-5xl items-start gap-6 py-12 lg:grid-cols-3">
+          <div className="mx-auto grid max-w-5xl items-start gap-6 py-6 lg:grid-cols-3">
             <div className="grid gap-4 text-center">
               <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-teal-100 text-teal-600">
                 <span className="text-2xl font-bold">1</span>
@@ -260,7 +184,7 @@ export default async function Home() {
           </div>
         </section>
 
-        <section id="specialties" className="container py-12 md:py-24 lg:py-32">
+        <section id="specialties" className="container py-6 md:py-24 lg:py-16">
           <div className="mx-auto mb-12 max-w-5xl text-center">
             <h2 className="text-3xl font-bold tracking-tighter md:text-4xl">
               Medical Specialties
@@ -270,24 +194,11 @@ export default async function Home() {
               fields
             </p>
           </div>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="ml-2 flex flex-row gap-4">
             <Card className="text-center">
               <CardContent className="pt-6">
                 <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-teal-100">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-6 w-6 text-teal-600"
-                  >
-                    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-                  </svg>
+                  <HeartPulse />
                 </div>
                 <h3 className="mb-2 text-xl font-bold">Cardiology</h3>
                 <p className="text-muted-foreground">
@@ -298,23 +209,7 @@ export default async function Home() {
             <Card className="text-center">
               <CardContent className="pt-6">
                 <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-teal-100">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-6 w-6 text-teal-600"
-                  >
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="M8 14s1.5 2 4 2 4-2 4-2" />
-                    <line x1="9" x2="9.01" y1="9" y2="9" />
-                    <line x1="15" x2="15.01" y1="9" y2="9" />
-                  </svg>
+                  <Droplet />
                 </div>
                 <h3 className="mb-2 text-xl font-bold">Dermatology</h3>
                 <p className="text-muted-foreground">
@@ -325,22 +220,7 @@ export default async function Home() {
             <Card className="text-center">
               <CardContent className="pt-6">
                 <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-teal-100">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-6 w-6 text-teal-600"
-                  >
-                    <path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3" />
-                    <path d="M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4" />
-                    <circle cx="20" cy="10" r="2" />
-                  </svg>
+                  <Brain />
                 </div>
                 <h3 className="mb-2 text-xl font-bold">Psychiatry</h3>
                 <p className="text-muted-foreground">
@@ -351,23 +231,7 @@ export default async function Home() {
             <Card className="text-center">
               <CardContent className="pt-6">
                 <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-teal-100">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-6 w-6 text-teal-600"
-                  >
-                    <path d="m16 6 4 14" />
-                    <path d="M12 6v14" />
-                    <path d="M8 8v12" />
-                    <path d="M4 4v16" />
-                  </svg>
+                  <Baby />
                 </div>
                 <h3 className="mb-2 text-xl font-bold">Pediatrics</h3>
                 <p className="text-muted-foreground">
@@ -378,7 +242,7 @@ export default async function Home() {
           </div>
           <div className="mt-8 text-center">
             <Link href="/find-doctor">
-              <Button className="bg-teal-600 hover:bg-teal-700">
+              <Button className="rounded-3xl bg-[#2F80ED] text-white hover:bg-[#1366d6]">
                 View All Specialties
               </Button>
             </Link>
