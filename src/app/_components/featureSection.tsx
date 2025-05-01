@@ -20,10 +20,11 @@ export default function HeroSection() {
           </h2>
           <p className="text-muted-foreground mx-auto mt-4 max-w-2xl md:text-lg">
             Our telemedicine platform offers numerous advantages over
-            traditional in-person visits
+            traditional in-person visits, always prioristing the experience of
+            our users.
           </p>
         </div>
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           <div className="flex flex-col items-center p-4 text-center">
             <div className="mb-4 rounded-full bg-teal-100 p-3">
               <Clock />

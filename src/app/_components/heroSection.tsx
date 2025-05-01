@@ -5,15 +5,19 @@ import Image from "next/image";
 export default function HeroSection() {
   return (
     <section className="container w-full px-4 py-6 md:py-24 lg:py-16">
-      <div className="flex flex-row items-center justify-between">
-        <div className="max-w-2/4 space-y-4">
-          <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-            Healthcare at your fingertips
-          </h1>
-          <p className="text-muted-foreground md:text-xl">
-            Connect with licensed healthcare professionals from the comfort of
-            your home. Get the care you need, when you need it.
-          </p>
+      <div className="flex flex-row justify-between">
+        <div className="flex max-w-2/4 flex-col justify-between">
+          <div className="space-y-4">
+            <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+              Healthcare at your fingertips
+            </h1>
+            <p className="text-muted-foreground md:text-xl">
+              Connect with licensed healthcare professionals from the comfort of
+              your home. Get the care you need, when you need it. With access to
+              50+ specialities and proffessionall staff, Medvera offers you the
+              best telemedicine experience!
+            </p>
+          </div>
           <div className="flex flex-col gap-2 min-[400px]:flex-row">
             <Link href="/signup">
               <Button
