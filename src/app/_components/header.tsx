@@ -14,7 +14,7 @@ export default function Header() {
 
   return (
     <nav className="sticky top-0 left-0 z-50 w-full bg-white p-4 shadow-sm">
-      <div className="flex w-full items-center justify-between">
+      <div className="flex flex-row items-center justify-between">
         <div className="flex items-center gap-2">
           <Image src="/favicon.ico" alt="Medvera logo" width={32} height={32} />
           <span className="text-xl font-bold text-black">Medvera</span>
