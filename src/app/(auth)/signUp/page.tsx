@@ -10,6 +10,7 @@ import {
 } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
+import { Checkbox } from "~/components/ui/checkbox";
 import { useState } from "react";
 import Image from "next/image";
 import { Loader2, X } from "lucide-react";
@@ -26,6 +27,7 @@ export default function SignUp() {
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [doctor, setDoctor] = useState(false);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
@@ -147,6 +149,10 @@ export default function SignUp() {
                 </div>
               </div>
             </div>
+            <div className="flex items-center gap-2">
+              <Checkbox onClick={() => setDoctor(!doctor)} id="doctorSet" />
+              <Label htmlFor="doctorSet">Are you a doctor?</Label>
+            </div>
             <Button
               type="submit"
               className="w-full bg-[#2F80ED] text-white hover:bg-[#1366d6]"
@@ -159,12 +165,8 @@ export default function SignUp() {
                   image: image ? await convertImageToBase64(image) : "",
                   callbackURL: "/dashboard",
                   fetchOptions: {
-                    onResponse: () => {
-                      setLoading(false);
-                    },
-                    onRequest: () => {
-                      setLoading(true);
-                    },
+                    onResponse: () => setLoading(false),
+                    onRequest: () => setLoading(true),
                     onError: (ctx) => {
                       toast.error(ctx.error.message);
                     },

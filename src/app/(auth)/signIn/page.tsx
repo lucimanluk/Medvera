@@ -7,7 +7,6 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
-  CardFooter,
 } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
@@ -16,7 +15,6 @@ import { useState } from "react";
 import { Loader2, Key } from "lucide-react";
 import { signIn } from "~/lib/auth-client";
 import Link from "next/link";
-import { cn } from "~/lib/utils";
 import Header from "~/app/_components/header";
 
 export default function SignIn() {
