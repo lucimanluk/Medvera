@@ -16,12 +16,14 @@ import { Loader2, Key } from "lucide-react";
 import { signIn } from "~/lib/auth-client";
 import Link from "next/link";
 import Header from "~/app/_components/header";
+import { useRouter } from "next/navigation";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const router = useRouter();
 
   return (
     <div className="flex h-screen flex-col">
@@ -96,6 +98,9 @@ export default function SignIn() {
                     },
                     onResponse: (ctx) => {
                       setLoading(false);
+                    },
+                    onSuccess: async () => {
+                      router.push(`/dashboard/${email}`);
                     },
                   },
                 );
