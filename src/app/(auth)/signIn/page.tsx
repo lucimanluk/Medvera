@@ -17,6 +17,7 @@ import { signIn } from "~/lib/auth-client";
 import Link from "next/link";
 import Header from "~/app/_components/header";
 import { useRouter } from "next/navigation";
+import { escape } from "querystring";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
@@ -100,7 +101,7 @@ export default function SignIn() {
                       setLoading(false);
                     },
                     onSuccess: async () => {
-                      router.push(`/dashboard/${email}`);
+                      router.push(`${email}/dashboard`);
                     },
                   },
                 );
