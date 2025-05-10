@@ -1,10 +1,9 @@
-import { Button } from "~/components/ui/button";
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
+import { Button } from "~/components/ui/button";
 
 export default function Header() {
-  const hrefs = ["Features", "How it works", "Specialities", "FAQ"];
-
+  const links: string[] = ["Dashboard", "Messages"];
   return (
     <nav className="sticky top-0 left-0 z-50 w-full bg-white p-4 shadow-sm">
       <div className="flex flex-row items-center justify-between">
@@ -20,13 +19,13 @@ export default function Header() {
           </div>
         </Link>
         <ul className="flex items-center gap-6 text-sm font-medium">
-          {hrefs.map((href, index) => (
+          {links.map((link, index) => (
             <li key={index}>
               <Link
-                href={`/#${href.toLowerCase().replace(/\s+/g, "-")}`}
+                href={link}
                 className="text-md text-black transition-colors hover:text-blue-600"
               >
-                {href}
+                {link}
               </Link>
             </li>
           ))}
