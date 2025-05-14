@@ -24,7 +24,6 @@ export default function SignUp() {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [doctor, setDoctor] = useState(false);
@@ -103,17 +102,6 @@ export default function SignUp() {
                 onChange={(e) => setPassword(e.target.value)}
                 autoComplete="new-password"
                 placeholder="Password"
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="password">Confirm Password</Label>
-              <Input
-                id="password_confirmation"
-                type="password"
-                value={passwordConfirmation}
-                onChange={(e) => setPasswordConfirmation(e.target.value)}
-                autoComplete="new-password"
-                placeholder="Confirm Password"
               />
             </div>
             <div className="grid gap-2">

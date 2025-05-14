@@ -1,9 +1,23 @@
+import {
+  Home,
+  Video,
+  UserSearch,
+  Calendar,
+  MessageSquare,
+  FileText,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "~/components/ui/button";
 
 export default function Header() {
-  const links: string[] = ["Dashboard", "Messages"];
+  const links = [
+    { title: "Dashboard", icon: Home },
+    { title: "Video Calls", icon: Video },
+    { title: "Find Doctor", icon: UserSearch },
+    { title: "Appointments", icon: Calendar },
+    { title: "Chat", icon: MessageSquare },
+    { title: "Medical Records", icon: FileText },
+  ];
   return (
     <nav className="sticky top-0 left-0 z-50 w-full bg-white p-4 shadow-sm">
       <div className="flex flex-row items-center justify-between">
@@ -22,26 +36,16 @@ export default function Header() {
           {links.map((link, index) => (
             <li key={index}>
               <Link
-                href={link}
-                className="text-md text-black transition-colors hover:text-blue-600"
+                href={`/lucimanluk4000@gmail.com/${link.title.toLowerCase().replace(/\s+/g, "-")}`}
+                className="text-md flex flex-row items-center gap-1 text-black transition-colors hover:text-blue-600"
               >
-                {link}
+                {<link.icon width={16} height={16} />}
+                {link.title}
               </Link>
             </li>
           ))}
         </ul>
-        <div className="flex items-center gap-4">
-          <Link href="/signIn">
-            <Button variant="outline" className="rounded-3xl">
-              Sign in
-            </Button>
-          </Link>
-          <Link href="/signUp">
-            <Button className="rounded-3xl bg-[#2F80ED] text-white hover:bg-[#1366d6]">
-              Sign Up
-            </Button>
-          </Link>
-        </div>
+        <div className="flex items-center gap-4 rounded-4xl bg-red-600 p-2"></div>
       </div>
     </nav>
   );

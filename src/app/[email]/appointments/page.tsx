@@ -1,0 +1,23 @@
+import Appointment from "../_components/appointment";
+import { Label } from "~/components/ui/label";
+import { Button } from "~/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+
+export default function Appointments() {
+  return (
+    <div className="flex w-full flex-col gap-4 px-56">
+      <div className="flex flex-row justify-between">
+        <Tabs defaultValue="upcoming" className="w-[400px]">
+          <TabsList>
+            <TabsTrigger value="upcoming">Upcoming</TabsTrigger>
+            <TabsTrigger value="past">Past</TabsTrigger>
+          </TabsList>
+        </Tabs>
+        <Button className="bg-[#2F80ED] text-white hover:bg-[#1366d6]">
+          New appointment
+        </Button>
+      </div>
+      <Appointment />
+    </div>
+  );
+}
