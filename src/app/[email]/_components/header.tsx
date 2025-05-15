@@ -1,11 +1,11 @@
 import {
   Home,
-  Video,
   UserSearch,
   Calendar,
   MessageSquare,
   FileText,
   LogOut,
+  User,
 } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import Image from "next/image";
@@ -14,11 +14,11 @@ import Link from "next/link";
 export default function Header() {
   const links = [
     { title: "Dashboard", icon: Home },
-    { title: "Video Calls", icon: Video },
     { title: "Find Doctor", icon: UserSearch },
     { title: "Appointments", icon: Calendar },
     { title: "Chat", icon: MessageSquare },
     { title: "Medical Records", icon: FileText },
+    { title: "Profile", icon: User },
   ];
   return (
     <nav className="sticky top-0 left-0 z-50 flex w-1/4 flex-col justify-between bg-white p-4 shadow-sm">
