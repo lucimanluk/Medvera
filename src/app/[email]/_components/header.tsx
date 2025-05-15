@@ -5,7 +5,9 @@ import {
   Calendar,
   MessageSquare,
   FileText,
+  LogOut,
 } from "lucide-react";
+import { Button } from "~/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -19,8 +21,8 @@ export default function Header() {
     { title: "Medical Records", icon: FileText },
   ];
   return (
-    <nav className="sticky top-0 left-0 z-50 w-full bg-white p-4 shadow-sm">
-      <div className="flex flex-row items-center justify-between">
+    <nav className="sticky top-0 left-0 z-50 flex w-1/4 flex-col justify-between bg-white p-4 shadow-sm">
+      <div className="flex flex-col gap-6">
         <Link href="/">
           <div className="flex items-center gap-2">
             <Image
@@ -32,7 +34,7 @@ export default function Header() {
             <span className="text-xl font-bold text-black">Medvera</span>
           </div>
         </Link>
-        <ul className="flex items-center gap-6 text-sm font-medium">
+        <ul className="flex flex-col gap-6 text-sm font-medium">
           {links.map((link, index) => (
             <li key={index}>
               <Link
@@ -45,8 +47,11 @@ export default function Header() {
             </li>
           ))}
         </ul>
-        <div className="flex items-center gap-4 rounded-4xl bg-red-600 p-2"></div>
       </div>
+      <Button variant="outline" className="flex flex-row justify-start">
+        <LogOut />
+        <span>Sign out</span>
+      </Button>
     </nav>
   );
 }
