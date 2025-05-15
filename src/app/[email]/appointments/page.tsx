@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 export default function Appointments() {
   return (
     <div className="flex w-full flex-col gap-4 py-4 pr-4">
-      <div className="flex flex-row justify-between">
+      <div className="flex flex-row items-center justify-between">
         <Tabs defaultValue="upcoming" className="w-[400px]">
           <TabsList>
             <TabsTrigger value="upcoming">Upcoming</TabsTrigger>

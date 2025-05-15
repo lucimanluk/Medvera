@@ -15,15 +15,19 @@ const data = {
   time: "21:15",
   appointment_type: "virtual",
   location: "",
+  avatar: "",
 };
 
 export default function Appointment() {
   return (
     <Card>
       <CardHeader className="flex flex-row justify-between">
-        <div className="flex flex-col gap-1">
-          <CardTitle>{data.doctor_name}</CardTitle>
-          <CardDescription>{data.doctor_speciality}</CardDescription>
+        <div className="flex flex-row items-center gap-2">
+          <div className="h-10 w-10 rounded-full bg-black" />
+          <div className="flex flex-col gap-1">
+            <CardTitle>{data.doctor_name}</CardTitle>
+            <CardDescription>{data.doctor_speciality}</CardDescription>
+          </div>
         </div>
         <div className="flex flex-row gap-4">
           <Button variant={"outline"}>Reschedule</Button>
