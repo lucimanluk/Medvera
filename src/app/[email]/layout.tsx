@@ -1,4 +1,4 @@
-import Header from "./_components/header";
+import Sidebar from "./_components/sidebar";
 
 export default function PageLayout({
   children,
@@ -7,7 +7,7 @@ export default function PageLayout({
 }) {
   return (
     <main className="flex min-h-screen min-w-full flex-row gap-4">
-      <Header />
+      <Sidebar />
       {children}
     </main>
   );

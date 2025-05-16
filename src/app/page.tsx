@@ -13,7 +13,7 @@ export default async function Home() {
         <HeroSection />
         <FeatureSection />
         <HowItWorksSection />
-        <SpecialitySection /> 
+        <SpecialitySection />
       </main>
     </HydrateClient>
   );

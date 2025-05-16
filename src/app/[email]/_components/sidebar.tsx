@@ -11,7 +11,7 @@ import { Button } from "~/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function Header() {
+export default function Sidebar() {
   const links = [
     { title: "Dashboard", icon: Home },
     { title: "Find Doctor", icon: UserSearch },
@@ -38,7 +38,7 @@ export default function Header() {
           {links.map((link, index) => (
             <li key={index}>
               <Link
-                href={`/lucimanluk4000@gmail.com/${link.title.toLowerCase().replace(/\s+/g, "-")}`}
+                href={`/lucimanluk4000@gmail.com/${link.title.toLowerCase().replace(/\s+/g, "")}`}
                 className="text-md flex flex-row items-center gap-1 text-black transition-colors hover:text-blue-600"
               >
                 {<link.icon width={16} height={16} />}
