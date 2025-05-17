@@ -1,7 +1,6 @@
 import Appointment from "../_components/appointment";
-import { Label } from "~/components/ui/label";
 import { Button } from "~/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 
 export default function Appointments() {
   return (

@@ -21,7 +21,7 @@ export default function Sidebar() {
     { title: "Profile", icon: User },
   ];
   return (
-    <nav className="sticky top-0 left-0 z-50 flex w-1/4 flex-col justify-between bg-white p-4 shadow-sm">
+    <nav className="sticky top-0 left-0 z-50 flex h-screen w-1/4 flex-col justify-between bg-white p-4 shadow-sm">
       <div className="flex flex-col gap-6">
         <Link href="/">
           <div className="flex items-center gap-2">
