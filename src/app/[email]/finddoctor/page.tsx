@@ -2,9 +2,8 @@
 
 import { Input } from "~/components/ui/input";
 import DoctorCard from "./_components/doctorCard";
-
 import * as React from "react";
-import { Check } from "lucide-react";
+import { Check, ChevronDown } from "lucide-react";
 import { cn } from "~/lib/utils";
 import { Button } from "~/components/ui/button";
 import {
@@ -20,8 +19,26 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "~/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
 
-const frameworks = [
+const appointment_types = ["Live and video", "Video", "Live"];
+
+interface Framework {
+  value: string;
+  label: string;
+}
+
+const frameworks: Framework[] = [
+  {
+    value: "All specialisations",
+    label: "All specialisations",
+  },
   {
     value: "next.js",
     label: "Next.js",
@@ -47,8 +64,7 @@ const frameworks = [
 export default function FindDoctor() {
   const [open, setOpen] = React.useState(false);
   const [open1, setOpen1] = React.useState(false);
-  const [open2, setOpen2] = React.useState(false);
-  const [value, setValue] = React.useState("");
+  const [value, setValue] = React.useState("All specialisations");
   const [value1, setValue1] = React.useState("");
   const [value2, setValue2] = React.useState("");
   return (
@@ -72,7 +88,7 @@ export default function FindDoctor() {
               {value
                 ? frameworks.find((framework) => framework.value === value)
                     ?.label
-                : "Select framework..."}
+                : frameworks[0]?.value}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-[200px] p-0">
@@ -131,7 +147,7 @@ export default function FindDoctor() {
                       key={framework.value}
                       value={framework.value}
                       onSelect={(currentValue) => {
-                        setValue(currentValue === value1 ? "" : currentValue);
+                        setValue1(currentValue === value1 ? "" : currentValue);
                         setOpen1(false);
                       }}
                     >
@@ -151,51 +167,23 @@ export default function FindDoctor() {
             </Command>
           </PopoverContent>
         </Popover>
-        <Popover open={open2} onOpenChange={setOpen2}>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              role="combobox"
-              aria-expanded={open}
-              className="w-[200px] justify-between"
-            >
-              {value2
-                ? frameworks.find((framework) => framework.value === value2)
-                    ?.label
-                : "Select framework..."}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-[200px] p-0">
-            <Command>
-              <CommandInput placeholder="Search framework..." />
-              <CommandList>
-                <CommandEmpty>No framework found.</CommandEmpty>
-                <CommandGroup>
-                  {frameworks.map((framework) => (
-                    <CommandItem
-                      key={framework.value}
-                      value={framework.value}
-                      onSelect={(currentValue) => {
-                        setValue(currentValue === value2 ? "" : currentValue);
-                        setOpen2(false);
-                      }}
-                    >
-                      <Check
-                        className={cn(
-                          "mr-2 h-4 w-4",
-                          value2 === framework.value
-                            ? "opacity-100"
-                            : "opacity-0",
-                        )}
-                      />
-                      {framework.label}
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              </CommandList>
-            </Command>
-          </PopoverContent>
-        </Popover>
+        <Select
+          onValueChange={(newVal: string) => {
+            setValue2(newVal);
+          }}
+          defaultValue={appointment_types[0]}
+        >
+          <SelectTrigger className="w-[180px]">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {appointment_types.map((appointment_type, index) => (
+              <SelectItem key={index} value={appointment_type}>
+                {appointment_type}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
       <DoctorCard />
     </div>
