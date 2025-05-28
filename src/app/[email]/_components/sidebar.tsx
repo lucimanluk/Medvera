@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Home,
   UserSearch,
@@ -10,8 +12,11 @@ import {
 import { Button } from "~/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
+import { cn } from "~/lib/utils";
+import { usePathname } from "next/navigation";
 
 export default function Sidebar() {
+  const pathname = usePathname();
   const links = [
     { title: "Dashboard", icon: Home },
     { title: "Find Doctor", icon: UserSearch },
@@ -34,9 +39,19 @@ export default function Sidebar() {
             <span className="text-xl font-bold text-black">Medvera</span>
           </div>
         </Link>
-        <ul className="flex flex-col gap-6 text-sm font-medium">
+        <ul className="flex flex-col gap-4 text-sm font-medium">
           {links.map((link, index) => (
-            <li key={index}>
+            <li
+              key={index}
+              className={cn(
+                "rounded-xl py-2 pl-2",
+                pathname.includes(
+                  link.title.toLowerCase().replace(/\s+/g, ""),
+                ) == true
+                  ? "bg-teal-100"
+                  : null,
+              )}
+            >
               <Link
                 href={`/lucimanluk4000@gmail.com/${link.title.toLowerCase().replace(/\s+/g, "")}`}
                 className="text-md flex flex-row items-center gap-1 text-black transition-colors hover:text-blue-600"

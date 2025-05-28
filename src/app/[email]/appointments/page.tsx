@@ -1,6 +1,7 @@
 import Appointment from "../_components/appointment";
 import { Button } from "~/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import Link from "next/link";
 
 export default function Appointments() {
   return (
@@ -18,10 +19,21 @@ export default function Appointments() {
             <TabsTrigger value="past">Past</TabsTrigger>
           </TabsList>
         </Tabs>
-        <Button className="bg-[#2F80ED] text-white hover:bg-[#1366d6]">
-          New appointment
-        </Button>
+        <Link href="/lucimanluk4000@gmail.com/finddoctor">
+          <Button className="bg-[#2F80ED] text-white hover:bg-[#1366d6]">
+            New appointment
+          </Button>
+        </Link>
       </div>
+      <Appointment />
+      <Appointment />
+      <Appointment />
+      <Appointment />
+      <Appointment />
+      <Appointment />
+      <Appointment />
+      <Appointment />
+      <Appointment />
       <Appointment />
     </div>
   );

@@ -42,6 +42,7 @@ export default function PopoverFilter({
           {value
             ? frameworks.find((framework) => framework.value === value)?.label
             : frameworks[0]?.value}
+          <ChevronDown className="opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">

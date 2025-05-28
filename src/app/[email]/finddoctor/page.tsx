@@ -44,7 +44,7 @@ export default function FindDoctor() {
   const [open, setOpen] = React.useState(false);
   const [open1, setOpen1] = React.useState(false);
   const [value, setValue] = React.useState("All specialisations");
-  const [value1, setValue1] = React.useState("");
+  const [value1, setValue1] = React.useState("All specialisations");
   const [value2, setValue2] = React.useState("");
   return (
     <div className="flex w-full flex-col gap-4 py-4 pr-4">
