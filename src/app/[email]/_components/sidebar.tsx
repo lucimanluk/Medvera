@@ -48,7 +48,7 @@ export default function Sidebar() {
                 pathname.includes(
                   link.title.toLowerCase().replace(/\s+/g, ""),
                 ) == true
-                  ? "bg-teal-100"
+                  ? "bg-gray-200"
                   : null,
               )}
             >
