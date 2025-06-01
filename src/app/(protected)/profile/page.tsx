@@ -18,6 +18,7 @@ export default function Profile() {
   const [meidcalConditionInput, setMedicalConditionInput] =
     useState<string>("");
   const [meidcalCondition, setMedicalCondition] = useState<string[]>([]);
+
   return (
     <div className="flex w-full flex-col gap-4 py-4 pr-4">
       <div className="flex flex-col gap-1">
@@ -38,9 +39,25 @@ export default function Profile() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <InputRow label_name1={"First name"} label_name2={"Last name"} />
-              <InputRow label_name1={"Email"} label_name2={"Phone number"} />
-              <InputRow label_name1={"Date of Birth"} label_name2={"Gender"} />
+              <InputRow
+                label_name1={"First name"}
+                label_name2={"Last name"}
+                type={["input", "input"]}
+              />
+              <InputRow
+                label_name1={"Email"}
+                label_name2={"Phone number"}
+                inputType1={"email"}
+                type={["input", "input"]}
+              />
+              <InputRow
+                label_name1={"Birth date"}
+                label_name2={"Gender"}
+                inputType1="date"
+                inputType2="text"
+                type={["input", "select"]}
+                data2={["Male", "Female"]}
+              />
               <div>
                 <div className="mb-4 flex flex-col">
                   <h1 className="font-semibold">Adress information</h1>
@@ -48,8 +65,16 @@ export default function Profile() {
                     Details about where you live
                   </span>
                 </div>
-                <InputRow label_name1={"Address"} label_name2={"City"} />
-                <InputRow label_name1={"County"} label_name2={"ZIP Code"} />
+                <InputRow
+                  label_name1={"Address"}
+                  label_name2={"City"}
+                  type={["input", "input"]}
+                />
+                <InputRow
+                  label_name1={"County"}
+                  label_name2={"ZIP Code"}
+                  type={["input", "input"]}
+                />
               </div>
               <div>
                 <div className="mb-4 flex flex-col">
@@ -61,10 +86,12 @@ export default function Profile() {
                 <InputRow
                   label_name1={"First Name"}
                   label_name2={"Last Name"}
+                  type={["input", "input"]}
                 />
                 <InputRow
                   label_name1={"Relationship"}
                   label_name2={"Phone Number"}
+                  type={["input", "input"]}
                 />
               </div>
             </CardContent>
@@ -80,9 +107,20 @@ export default function Profile() {
               <InputRow
                 label_name1={"Family doctor"}
                 label_name2={"Family doctor's phone number"}
+                type={["input", "input"]}
               />
-              <InputRow label_name1={"Blood type"} label_name2={"Rh factor"} />
-              <InputRow label_name1={"Weight"} label_name2={"Height"} />
+              <InputRow
+                label_name1={"Blood type"}
+                label_name2={"Rh factor"}
+                type={["select", "select"]}
+                data1={["A", "B", "AB", "O"]}
+                data2={["Negative", "Positive"]}
+              />
+              <InputRow
+                label_name1={"Weight"}
+                label_name2={"Height"}
+                type={["input", "input"]}
+              />
               <div>
                 <div className="mb-4 flex flex-col">
                   <h1 className="font-semibold">Afflictions information</h1>

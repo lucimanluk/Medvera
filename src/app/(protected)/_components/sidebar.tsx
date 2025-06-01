@@ -5,9 +5,9 @@ import {
   UserSearch,
   Calendar,
   MessageSquare,
-  FileText,
   LogOut,
   User,
+  Pill,
 } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import Image from "next/image";
@@ -22,7 +22,7 @@ export default function Sidebar() {
     { title: "Find Doctor", icon: UserSearch },
     { title: "Appointments", icon: Calendar },
     { title: "Chat", icon: MessageSquare },
-    { title: "Medical Records", icon: FileText },
+    { title: "Prescriptions", icon: Pill },
     { title: "Profile", icon: User },
   ];
   return (
@@ -53,7 +53,7 @@ export default function Sidebar() {
               )}
             >
               <Link
-                href={`/lucimanluk4000@gmail.com/${link.title.toLowerCase().replace(/\s+/g, "")}`}
+                href={`/${link.title.toLowerCase().replace(/\s+/g, "")}`}
                 className="text-md flex flex-row items-center gap-1 text-black transition-colors hover:text-blue-600"
               >
                 {<link.icon width={16} height={16} />}

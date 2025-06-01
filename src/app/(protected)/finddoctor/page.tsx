@@ -5,6 +5,15 @@ import DoctorCard from "./_components/doctorCard";
 import * as React from "react";
 import PopoverFilter from "./_components/popoverFilter";
 import SelectorFilter from "./_components/selectorFilter";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "~/components/ui/pagination";
 
 const appointment_types = ["Live and video", "Video", "Live"];
 
@@ -77,6 +86,28 @@ export default function FindDoctor() {
         />
       </div>
       <DoctorCard />
+      <DoctorCard />
+      <DoctorCard />
+      <DoctorCard />
+      <DoctorCard />
+      <DoctorCard />
+      <DoctorCard />
+      <Pagination>
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious href="#" />
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationLink href="#">1</PaginationLink>
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationEllipsis />
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationNext href="#" />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
     </div>
   );
 }

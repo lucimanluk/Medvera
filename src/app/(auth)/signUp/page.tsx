@@ -151,7 +151,7 @@ export default function SignUp() {
                   password,
                   name: `${firstName} ${lastName}`,
                   image: image ? await convertImageToBase64(image) : "",
-                  callbackURL: `${email}/dashboard`,
+                  callbackURL: `/`,
                   fetchOptions: {
                     onResponse: () => setLoading(false),
                     onRequest: () => setLoading(true),
@@ -159,7 +159,7 @@ export default function SignUp() {
                       toast.error(ctx.error.message);
                     },
                     onSuccess: async () => {
-                      router.push(`${email}/dashboard`);
+                      router.push(`/`);
                     },
                   },
                 });
