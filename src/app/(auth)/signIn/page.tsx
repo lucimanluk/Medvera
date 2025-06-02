@@ -101,7 +101,7 @@ export default function SignIn() {
                       setLoading(false);
                     },
                     onSuccess: async () => {
-                      router.push(`${email}/dashboard`);
+                      router.push(`/dashboard`);
                     },
                   },
                 );
