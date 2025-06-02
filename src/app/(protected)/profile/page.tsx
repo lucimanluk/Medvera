@@ -56,7 +56,7 @@ export default function Profile() {
                 inputType1="date"
                 inputType2="text"
                 type={["input", "select"]}
-                data2={["Male", "Female"]}
+                data2={["Male", "Female"]}  
               />
               <div>
                 <div className="mb-4 flex flex-col">
