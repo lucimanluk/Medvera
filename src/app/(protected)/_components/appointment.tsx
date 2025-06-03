@@ -40,7 +40,7 @@ export default function Appointment() {
           </Button>
         </div>
       </CardHeader>
-      <CardContent className="text- flex w-3/4 flex-row justify-between">
+      <CardContent className="flex w-3/4 flex-row justify-between">
         <div className="flex flex-row items-center text-sm">
           <Calendar width={18} height={18} />
           {data.date}
