@@ -62,7 +62,7 @@ export default function Dashboard() {
             <CardDescription>See your future appointments</CardDescription>
           </CardHeader>
           <CardContent>
-            {appointments.length === 0 ? <span>No upcoming appointments.</span> : <ScrollArea className="h-72 w-full rounded-xl border p-2">{appointments.map((appointment, index) => <div key = {index} className="p-2"><Appointment/></div>)}</ScrollArea>}
+            {appointments.length === 0 ? <span>No upcoming appointments.</span> : <ScrollArea className="h-72 w-full">{appointments.map((appointment, index) => <div key = {index} className="p-2"><Appointment/></div>)}</ScrollArea>}
           </CardContent>
         </Card>
         <Card className="w-full">
@@ -71,7 +71,7 @@ export default function Dashboard() {
             <CardDescription>See what messages you have received</CardDescription>
           </CardHeader>
           <CardContent>
-            {appointments.length === 0 ? <span>No upcoming appointments.</span> : <ScrollArea className="h-72 w-full rounded-xl border p-2">{appointments.map((appointment, index) => <div key = {index} className="p-2"><Appointment/></div>)}</ScrollArea>}
+            {appointments.length === 0 ? <span>No upcoming appointments.</span> : <ScrollArea className="h-72 w-full">{appointments.map((appointment, index) => <div key = {index} className="p-2"><Appointment/></div>)}</ScrollArea>}
            </CardContent>
         </Card>
       </div>
@@ -81,7 +81,7 @@ export default function Dashboard() {
             <CardDescription>Prescriptions that you need to take</CardDescription>
           </CardHeader>
           <CardContent>
-            {appointments.length === 0 ? <span>No upcoming appointments.</span> : <ScrollArea className="h-72 w-full rounded-xl border p-2">{appointments.map((appointment, index) => <div key = {index} className="p-2"><Appointment/></div>)}</ScrollArea>}
+            {appointments.length === 0 ? <span>No upcoming appointments.</span> : <ScrollArea className="h-72 w-full">{appointments.map((appointment, index) => <div key = {index} className="p-2"><Appointment/></div>)}</ScrollArea>}
            </CardContent>
         </Card>
     </div>
