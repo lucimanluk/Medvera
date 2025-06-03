@@ -25,7 +25,7 @@ export default function InputTypes({
           }}
         ></Input>
         <Button className="w-1/10 bg-[#2F80ED] text-white hover:bg-[#1366d6]">
-          Add
+          Add information
         </Button>
       </div>
     </div>

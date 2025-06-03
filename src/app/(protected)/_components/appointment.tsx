@@ -1,4 +1,4 @@
-import { Calendar, Clock, Video } from "lucide-react";
+import { Calendar, Clock, Video, PhoneCall, Shuffle } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -30,8 +30,12 @@ export default function Appointment() {
           </div>
         </div>
         <div className="flex flex-row gap-4">
-          <Button variant={"outline"}>Reschedule</Button>
+          <Button variant={"outline"} >
+            <Shuffle/>
+            Reschedule
+            </Button>
           <Button className="bg-[#2F80ED] text-white hover:bg-[#1366d6]">
+            <PhoneCall/>
             Join call
           </Button>
         </div>

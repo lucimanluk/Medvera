@@ -53,11 +53,11 @@ const frameworks: Framework[] = [
 ];
 
 export default function Appointments() {
-    const [open, setOpen] = React.useState(false);
-    const [open1, setOpen1] = React.useState(false);
-    const [value, setValue] = React.useState("All specialisations");
-    const [value1, setValue1] = React.useState("All specialisations");
-    const [value2, setValue2] = React.useState("");
+  const [open, setOpen] = React.useState(false);
+  const [open1, setOpen1] = React.useState(false);
+  const [value, setValue] = React.useState("All specialisations");
+  const [value1, setValue1] = React.useState("All specialisations");
+  const [value2, setValue2] = React.useState("");
   return (
     <div className="flex w-full flex-col gap-4 py-4 pr-4 justify-between">
       <div className="flex flex-col gap-1">
@@ -79,7 +79,7 @@ export default function Appointments() {
           </Button>
         </Link>
       </div>
-       <div className="flex flex-row items-center gap-2">
+      <div className="flex flex-row items-center gap-2">
         <Input placeholder="Search for an appointment..." />
         <PopoverFilter
           open={open}
