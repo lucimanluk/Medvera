@@ -20,16 +20,24 @@ model Post {
 }
 
 model User {
-  id            String    @id
-  name          String
-  email         String
-  emailVerified Boolean
-  image         String?
-  doctor        Boolean?
-  createdAt     DateTime
-  updatedAt     DateTime
-  sessions      Session[]
-  accounts      Account[]
+  id                   String         @id
+  name                 String
+  email                String
+  emailVerified        Boolean
+  image                String?
+  doctor               Boolean?
+  createdAt            DateTime
+  updatedAt            DateTime
+  sessions             Session[]
+  accounts             Account[]
+  patientAppointments  Appointment[]  @relation("PatientAppointments")
+  doctorAppointments   Appointment[]  @relation("DoctorAppointments")
+  patientPrescriptions Prescription[] @relation("PatientPrescriptions")
+  doctorPrescriptions  Prescription[] @relation("DoctorPrescriptions")
+  PatientChats         Chat[]         @relation("PatientChats")
+  DoctorChats          Chat[]         @relation("DoctorChats")
+
+  SentMessages Message[] @relation("SentMessages")
 
   @@unique([email])
   @@map("user")
@@ -78,4 +86,57 @@ model Verification {
   updatedAt  DateTime?
 
   @@map("verification")
+}
+
+model Appointment {
+  id              String   @id
+  createdAt       DateTime @default(now())
+  appointmentDate DateTime
+  patientId       String
+  doctorId        String
+  patient         User     @relation("PatientAppointments", fields: [patientId], references: [id], onDelete: Cascade)
+  doctor          User     @relation("DoctorAppointments", fields: [doctorId], references: [id], onDelete: Cascade)
+}
+
+model Message {
+  id        String    @id @default(uuid())
+  createdAt DateTime  @default(now())
+  content   String
+  isRead    Boolean   @default(false)
+  readAt    DateTime?
+
+  senderId String
+  chatId   String
+
+  sender User @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  chat   Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+}
+
+model Chat {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  patientId String
+  doctorId  String
+
+  patient User @relation("PatientChats", fields: [patientId], references: [id], onDelete: Cascade)
+  doctor  User @relation("DoctorChats", fields: [doctorId], references: [id], onDelete: Cascade)
+
+  messages Message[]
+
+  @@unique([doctorId, patientId])
+}
+
+model Prescription {
+  id           String   @id
+  createdAt    DateTime @default(now())
+  startingDate DateTime
+  endingDate   DateTime
+  title        String
+  pill         String
+  description  String
+  patientId    String
+  doctorId     String
+  patient      User     @relation("PatientPrescriptions", fields: [patientId], references: [id], onDelete: Cascade)
+  doctor       User     @relation("DoctorPrescriptions", fields: [doctorId], references: [id], onDelete: Cascade)
 }

@@ -17,11 +17,13 @@ export default function UserCard() {
   return (
     <Card className="border-0 shadow-none hover:bg-blue-100">
       <CardHeader className="flex flex-row items-center justify-between">
-        <div className="h-10 w-10 rounded-full bg-black" />
-        <div className="flex flex-col">
-          <CardTitle>{user.name}</CardTitle>
-          <CardDescription>{user.speciality}</CardDescription>
-          <span>{user.lastMessage}</span>
+        <div className="flex flex-row items-center gap-2">
+          <div className="h-10 w-10 rounded-full bg-black" />
+          <div className="flex flex-col">
+            <CardTitle>{user.name}</CardTitle>
+            <CardDescription>{user.speciality}</CardDescription>
+            <span>{user.lastMessage}</span>
+          </div>
         </div>
         <span>{user.lastMessageData}</span>
       </CardHeader>
