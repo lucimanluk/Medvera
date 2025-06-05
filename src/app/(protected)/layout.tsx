@@ -15,7 +15,6 @@ export default async function PageLayout({
   if (!session) {
     redirect("/signIn");
   } else {
-    console.log(session);
     return (
       <main className="flex min-h-screen min-w-full flex-row gap-4">
         <Sidebar />

@@ -7,6 +7,7 @@ import {
 } from "~/components/ui/card";
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import Appointment from "../_components/appointment";
+import { api } from "~/trpc/react";
 
 const appointments = [
   {
