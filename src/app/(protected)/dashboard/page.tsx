@@ -7,7 +7,6 @@ import {
 } from "~/components/ui/card";
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import Appointment from "../_components/appointment";
-import { api } from "~/trpc/react";
 
 const appointments = [
   {
@@ -49,6 +48,7 @@ const appointments = [
 ];
 
 export default function Dashboard() {
+
   return (
     <div className="flex w-full flex-col gap-4 py-4 pr-4">
       <div className="flex flex-col gap-1">
