@@ -9,14 +9,28 @@ import {
   User,
   Pill,
 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "~/components/ui/alert-dialog"
 import { Button } from "~/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import { cn } from "~/lib/utils";
 import { usePathname } from "next/navigation";
+import { signOut } from "~/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const links = [
     { title: "Dashboard", icon: Home },
     { title: "Find Doctor", icon: UserSearch },
@@ -63,10 +77,32 @@ export default function Sidebar() {
           ))}
         </ul>
       </div>
-      <Button variant="outline" className="flex flex-row justify-start">
-        <LogOut />
-        <span>Sign out</span>
-      </Button>
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button variant="outline" className="flex flex-row justify-start">
+            <LogOut />
+            <span>Sign out</span>
+          </Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure you want to sign out?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Sign out from the current device.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction className="bg-[#2F80ED]" onClick={async () => await signOut({
+              fetchOptions: {
+                onSuccess: () => {
+                  router.push("/");
+                }
+              }
+            })}>Continue</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </nav>
   );
 }
