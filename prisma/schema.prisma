@@ -89,9 +89,9 @@ model Verification {
 }
 
 model Appointment {
-  id              String   @id
+  id              String   @id @default(uuid())
   createdAt       DateTime @default(now())
-  appointmentDate DateTime
+  appointmentDate DateTime @default(now())
   patientId       String
   doctorId        String
   patient         User     @relation("PatientAppointments", fields: [patientId], references: [id], onDelete: Cascade)
@@ -128,7 +128,7 @@ model Chat {
 }
 
 model Prescription {
-  id           String   @id
+  id           String   @id @default(uuid())
   createdAt    DateTime @default(now())
   startingDate DateTime
   endingDate   DateTime

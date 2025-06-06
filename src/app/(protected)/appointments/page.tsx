@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import Appointment from "../_components/appointment";
 import { Button } from "~/components/ui/button";
@@ -17,6 +17,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "~/components/ui/pagination";
+import { api } from "~/trpc/react";
 
 const appointment_types = ["Live and video", "Video", "Live"];
 
@@ -53,13 +54,15 @@ const frameworks: Framework[] = [
 ];
 
 export default function Appointments() {
+  const data = api.post.getAppointments.useQuery();
+  console.log(data);
   const [open, setOpen] = React.useState(false);
   const [open1, setOpen1] = React.useState(false);
   const [value, setValue] = React.useState("All specialisations");
   const [value1, setValue1] = React.useState("All specialisations");
   const [value2, setValue2] = React.useState("");
   return (
-    <div className="flex w-full flex-col gap-4 py-4 pr-4 justify-between">
+    <div className="flex w-full flex-col justify-between gap-4 py-4 pr-4">
       <div className="flex flex-col gap-1">
         <span className="text-3xl font-bold">Appointments</span>
         <span className="text-base text-gray-400">
