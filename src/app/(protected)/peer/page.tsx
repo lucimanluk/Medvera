@@ -13,76 +13,95 @@ export default function CallPage() {
     null,
   );
 
+  // States for available cameras and the selected device
+  const [cameras, setCameras] = useState<MediaDeviceInfo[]>([]);
+  const [selectedCameraId, setSelectedCameraId] = useState<string>("");
+
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
   const peerRef = useRef<Peer | null>(null);
 
+  // Enumerate video input devices on mount
+  useEffect(() => {
+    navigator.mediaDevices
+      .enumerateDevices()
+      .then((devices) => {
+        const videoDevices = devices.filter((d) => d.kind === "videoinput");
+        setCameras(videoDevices);
+        if (videoDevices[0]) setSelectedCameraId(videoDevices[0].deviceId);
+      })
+      .catch((err) => console.error("Error enumerating devices:", err));
+  }, []);
+
+  // Initialize PeerJS
   useEffect(() => {
     if (!session?.user?.id) return;
 
     const peer = new Peer(session.user.id);
-
     peer.on("open", (id) => setPeerId(id));
     peer.on("call", (call) => setIncomingCall(call));
-    peer.on("error", (err) => {
-      console.error("PeerJS error:", err);
-    });
+    peer.on("error", (err) => console.error("PeerJS error:", err));
 
     peerRef.current = peer;
-
     return () => {
       void peer.destroy();
     };
   }, [session?.user?.id]);
 
+  // Helper to get local media with selected camera
+  const getLocalStream = async () => {
+    return navigator.mediaDevices.getUserMedia({
+      video: selectedCameraId
+        ? { deviceId: { exact: selectedCameraId } }
+        : true,
+      audio: true,
+    });
+  };
+
+  // Accept incoming call
   const acceptCall = async () => {
     if (!incomingCall) return;
-
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: true,
-      });
+      const stream = await getLocalStream();
       if (localVideoRef.current) {
         localVideoRef.current.srcObject = stream;
         void localVideoRef.current.play();
       }
 
-      incomingCall.answer(stream);
+      // Attach remote stream handler before answering
       incomingCall.on("stream", (remoteStream: MediaStream) => {
         if (remoteVideoRef.current) {
           remoteVideoRef.current.srcObject = remoteStream;
           void remoteVideoRef.current.play();
         }
       });
+
+      incomingCall.answer(stream);
     } catch (err) {
       console.error("Error accepting call:", err);
     }
-
     setIncomingCall(null);
   };
 
+  // Reject incoming call
   const rejectCall = () => {
     incomingCall?.close();
     setIncomingCall(null);
   };
 
+  // Start a new call
   const startCall = async () => {
     if (!peerRef.current || peerRef.current.disconnected) {
       console.warn("Peer is not ready yet");
       return;
     }
-
     if (!remoteId) {
       alert("Please enter a Peer ID to call");
       return;
     }
 
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: true,
-      });
+      const stream = await getLocalStream();
       if (localVideoRef.current) {
         localVideoRef.current.srcObject = stream;
         void localVideoRef.current.play();
@@ -90,9 +109,7 @@ export default function CallPage() {
 
       const call = peerRef.current.call(remoteId, stream);
       if (!call) {
-        console.error(
-          "Failed to create call — check your PeerJS connection & remoteId",
-        );
+        console.error("Failed to create call — check connection & remoteId");
         return;
       }
 
@@ -103,11 +120,9 @@ export default function CallPage() {
         }
       });
 
-      call.on("error", (err) => {
-        console.error("Call error:", err);
-      });
+      call.on("error", (err) => console.error("Call error:", err));
     } catch (err) {
-      console.error("Error getting user media or starting call", err);
+      console.error("Error getting user media or starting call:", err);
     }
   };
 
@@ -128,6 +143,19 @@ export default function CallPage() {
         🔗 ID-ul tău Peer: <code>{peerId}</code>
       </p>
 
+      {/* Camera selector */}
+      <select
+        value={selectedCameraId}
+        onChange={(e) => setSelectedCameraId(e.target.value)}
+        className="mt-2 w-full border p-2"
+      >
+        {cameras.map((cam) => (
+          <option key={cam.deviceId} value={cam.deviceId}>
+            {cam.label || cam.deviceId}
+          </option>
+        ))}
+      </select>
+
       <input
         type="text"
         placeholder="ID Peer de apelat"
@@ -140,7 +168,7 @@ export default function CallPage() {
         disabled={!peerId || !remoteId}
         className="mt-2 rounded bg-blue-600 px-4 py-2 text-white disabled:opacity-50"
       >
-        Suna
+        Sună
       </button>
 
       <div className="mt-6 grid grid-cols-2 gap-4">
@@ -169,7 +197,7 @@ export default function CallPage() {
                 Acceptă
               </button>
               <button
-                onClick={() => rejectCall()}
+                onClick={rejectCall}
                 className="rounded bg-red-600 px-4 py-2 text-white"
               >
                 Respinge
