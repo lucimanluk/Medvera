@@ -13,7 +13,6 @@ export default function CallPage() {
     null,
   );
 
-  // States for available cameras and the selected device
   const [cameras, setCameras] = useState<MediaDeviceInfo[]>([]);
   const [selectedCameraId, setSelectedCameraId] = useState<string>("");
 
@@ -21,7 +20,6 @@ export default function CallPage() {
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
   const peerRef = useRef<Peer | null>(null);
 
-  // Enumerate video input devices on mount
   useEffect(() => {
     navigator.mediaDevices
       .enumerateDevices()
@@ -33,7 +31,6 @@ export default function CallPage() {
       .catch((err) => console.error("Error enumerating devices:", err));
   }, []);
 
-  // Initialize PeerJS
   useEffect(() => {
     if (!session?.user?.id) return;
 
@@ -48,7 +45,6 @@ export default function CallPage() {
     };
   }, [session?.user?.id]);
 
-  // Helper to get local media with selected camera
   const getLocalStream = async () => {
     return navigator.mediaDevices.getUserMedia({
       video: selectedCameraId
@@ -58,7 +54,6 @@ export default function CallPage() {
     });
   };
 
-  // Accept incoming call
   const acceptCall = async () => {
     if (!incomingCall) return;
     try {
@@ -68,7 +63,6 @@ export default function CallPage() {
         void localVideoRef.current.play();
       }
 
-      // Attach remote stream handler before answering
       incomingCall.on("stream", (remoteStream: MediaStream) => {
         if (remoteVideoRef.current) {
           remoteVideoRef.current.srcObject = remoteStream;
@@ -83,7 +77,6 @@ export default function CallPage() {
     setIncomingCall(null);
   };
 
-  // Reject incoming call
   const rejectCall = () => {
     incomingCall?.close();
     setIncomingCall(null);
@@ -143,7 +136,6 @@ export default function CallPage() {
         🔗 ID-ul tău Peer: <code>{peerId}</code>
       </p>
 
-      {/* Camera selector */}
       <select
         value={selectedCameraId}
         onChange={(e) => setSelectedCameraId(e.target.value)}

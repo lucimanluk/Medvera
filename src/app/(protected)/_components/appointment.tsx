@@ -18,24 +18,43 @@ const data = {
   avatar: "",
 };
 
-export default function Appointment() {
+interface Appointment {
+  id: string;
+  createdAt: Date;
+  appointmentDate: Date;
+  doctor: User;
+  patient: User;
+}
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  emailVerified: boolean;
+  image: string | null;
+  doctor: boolean | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export default function Appointment({ props }: { props: Appointment }) {
   return (
     <Card>
       <CardHeader className="flex flex-row justify-between">
         <div className="flex flex-row items-center gap-2">
           <div className="h-10 w-10 rounded-full bg-black" />
           <div className="flex flex-col gap-1">
-            <CardTitle>{data.doctor_name}</CardTitle>
+            <CardTitle>{props.doctor.name}</CardTitle>
             <CardDescription>{data.doctor_speciality}</CardDescription>
           </div>
         </div>
         <div className="flex flex-row gap-4">
-          <Button variant={"outline"} >
-            <Shuffle/>
+          <Button variant={"outline"}>
+            <Shuffle />
             Reschedule
-            </Button>
+          </Button>
           <Button className="bg-[#2F80ED] text-white hover:bg-[#1366d6]">
-            <PhoneCall/>
+            <PhoneCall />
             Join call
           </Button>
         </div>
@@ -43,15 +62,15 @@ export default function Appointment() {
       <CardContent className="flex w-3/4 flex-row justify-between">
         <div className="flex flex-row items-center text-sm">
           <Calendar width={18} height={18} />
-          {data.date}
+          {props.appointmentDate.toDateString()}
         </div>
         <div className="g-1 flex flex-row items-center">
           <Clock width={18} height={18} />
-          {data.time}
+          {props.appointmentDate.toTimeString().split("GMT")[0]}
         </div>
         <div className="flex flex-row items-center">
           <Video width={18} height={18} />
-          {data.appointment_type}
+          {props.patient.name}
         </div>
       </CardContent>
     </Card>

@@ -55,7 +55,7 @@ const frameworks: Framework[] = [
 
 export default function Appointments() {
   const data = api.post.getAppointments.useQuery();
-  console.log(data);
+  console.log(data.data);
   const [open, setOpen] = React.useState(false);
   const [open1, setOpen1] = React.useState(false);
   const [value, setValue] = React.useState("All specialisations");
@@ -104,13 +104,16 @@ export default function Appointments() {
           appointments={appointment_types}
         />
       </div>
+      {data.data?.map((item, index) => (
+        <Appointment props={item} key={index} />
+      ))}
+      {/*<Appointment />
       <Appointment />
       <Appointment />
       <Appointment />
       <Appointment />
       <Appointment />
-      <Appointment />
-      <Appointment />
+      <Appointment />*/}
       <Pagination>
         <PaginationContent>
           <PaginationItem>
