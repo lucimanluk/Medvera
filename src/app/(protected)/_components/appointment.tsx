@@ -7,6 +7,7 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
+import type { Appointment } from "~/types/appointment";
 
 const data = {
   doctor_name: "Andrei Denis",
@@ -17,25 +18,6 @@ const data = {
   location: "",
   avatar: "",
 };
-
-interface Appointment {
-  id: string;
-  createdAt: Date;
-  appointmentDate: Date;
-  doctor: User;
-  patient: User;
-}
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  emailVerified: boolean;
-  image: string | null;
-  doctor: boolean | null;
-  createdAt: Date;
-  updatedAt: Date;
-}
 
 export default function Appointment({ props }: { props: Appointment }) {
   return (
