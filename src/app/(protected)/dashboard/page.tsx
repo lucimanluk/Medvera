@@ -48,7 +48,6 @@ const appointments = [
 ];
 
 export default function Dashboard() {
-
   return (
     <div className="flex w-full flex-col gap-4 py-4 pr-4">
       <div className="flex flex-col gap-1">
@@ -64,17 +63,15 @@ export default function Dashboard() {
             <CardDescription>See your future appointments</CardDescription>
           </CardHeader>
           <CardContent>
-            {appointments.length === 4 ? (
-              <span>No upcoming appointments.</span>
-            ) : (
-              <ScrollArea className="h-72 w-full">
-                {appointments.map((appointment, index) => (
-                  <div key={index} className="p-2">
-                    <Appointment />
-                  </div>
-                ))}
-              </ScrollArea>
-            )}
+            <ScrollArea className="h-72 w-full">
+              {appointments.length === 4 ? (
+                <span>No upcoming appoinments.</span>
+              ) : (
+                appointments.map((appointment, index) => (
+                  <div key={index} className="p-2"></div>
+                ))
+              )}
+            </ScrollArea>
           </CardContent>
         </Card>
         <Card className="w-full">
@@ -85,17 +82,15 @@ export default function Dashboard() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {appointments.length === 4 ? (
-              <span>No upcoming appointments.</span>
-            ) : (
-              <ScrollArea className="h-72 w-full">
-                {appointments.map((appointment, index) => (
-                  <div key={index} className="p-2">
-                    <Appointment />
-                  </div>
-                ))}
-              </ScrollArea>
-            )}
+            <ScrollArea className="h-72 w-full">
+              {appointments.length === 4 ? (
+                <span>No upcoming appoinments.</span>
+              ) : (
+                appointments.map((appointment, index) => (
+                  <div key={index} className="p-2"></div>
+                ))
+              )}
+            </ScrollArea>
           </CardContent>
         </Card>
       </div>
@@ -105,19 +100,15 @@ export default function Dashboard() {
           <CardDescription>Prescriptions that you need to take</CardDescription>
         </CardHeader>
         <CardContent>
-          {appointments.length === 4 ? (
-            <div>
-              <span>No upcoming appointments.</span>
-            </div>
-          ) : (
-            <ScrollArea className="h-72 w-full">
-              {appointments.map((appointment, index) => (
-                <div key={index} className="p-2">
-                  <Appointment />
-                </div>
-              ))}
-            </ScrollArea>
-          )}
+          <ScrollArea className="w-full">
+            {appointments.length === 4 ? (
+              <span>No upcoming appoinments.</span>
+            ) : (
+              appointments.map((appointment, index) => (
+                <div key={index} className="p-2"></div>
+              ))
+            )}
+          </ScrollArea>
         </CardContent>
       </Card>
     </div>
