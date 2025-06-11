@@ -104,7 +104,7 @@ export default function Appointments() {
           appointments={appointment_types}
         />
       </div>
-      {data.data?.map((item, index) => (
+      {appts.map((item, index) => (
         <Appointment props={item} key={index} />
       ))}
       {/*<Appointment />
@@ -114,7 +114,7 @@ export default function Appointments() {
       <Appointment />
       <Appointment />
       <Appointment />*/}
-      {appts.length >= 7 ? (
+      {appts.length >= 10 ? (
         <Pagination>
           <PaginationContent>
             <PaginationItem>
