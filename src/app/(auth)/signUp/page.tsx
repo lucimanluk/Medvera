@@ -45,9 +45,6 @@ export default function SignUp() {
     }
   };
 
-  if (session) {
-    redirect("/dashboard");
-  } else {
     return (
       <div className="flex h-screen flex-col items-center">
         <Header />
@@ -157,7 +154,7 @@ export default function SignUp() {
                     password,
                     name: `${firstName} ${lastName}`,
                     image: image ? await convertImageToBase64(image) : "",
-                    callbackURL: `/`,
+                    callbackURL: `/profile`,
                     fetchOptions: {
                       onResponse: () => setLoading(false),
                       onRequest: () => setLoading(true),
@@ -192,4 +189,3 @@ export default function SignUp() {
       reader.readAsDataURL(file);
     });
   }
-}

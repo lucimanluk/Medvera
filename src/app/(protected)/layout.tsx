@@ -11,7 +11,7 @@ export default async function PageLayout({
   const session = await auth.api.getSession({
     headers: await headers(),
   });
-
+  
   if (!session) {
     redirect("/signIn");
   } else {

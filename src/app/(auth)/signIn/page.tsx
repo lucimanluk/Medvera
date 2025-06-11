@@ -27,10 +27,8 @@ export default function SignIn() {
   const [loading, setLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const router = useRouter();
+  console.log(session);
 
-  if (session) {
-    redirect("/dashboard");
-  } else {
     return (
       <div className="flex h-screen flex-col">
         <Header />
@@ -124,4 +122,3 @@ export default function SignIn() {
       </div>
     );
   }
-}
