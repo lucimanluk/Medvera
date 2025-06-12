@@ -8,8 +8,7 @@ import {
 } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import type { Appointment } from "~/types/appointment";
-import { useSession } from "~/lib/auth-client";
-import { cn } from "~/lib/utils";
+import type { User } from "~/types/user";
 
 const data = {
   doctor_name: "Andrei Denis",
@@ -21,8 +20,13 @@ const data = {
   avatar: "",
 };
 
-export default function Appointment({ props }: { props: Appointment }) {
-  const session = useSession();
+export default function Appointment({
+  props,
+  user,
+}: {
+  props: Appointment;
+  user: User;
+}) {
   return (
     <Card>
       <CardHeader className="flex flex-row justify-between">
@@ -30,12 +34,12 @@ export default function Appointment({ props }: { props: Appointment }) {
           <div className="h-10 w-10 rounded-full bg-black" />
           <div className="flex flex-col gap-1">
             <CardTitle>
-              {session.data?.user.id === props.patient.id
+              {props.doctor.id === props.patient.id
                 ? props.doctor.name
                 : props.patient.name}
             </CardTitle>
             <CardDescription>
-              {session.data?.user.id === props.patient.id ? (
+              {props.doctor.id === props.patient.id ? (
                 data.doctor_speciality
               ) : (
                 <span>Varsta + gen</span>

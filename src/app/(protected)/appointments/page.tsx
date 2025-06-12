@@ -17,6 +17,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "~/components/ui/pagination";
+import type { User } from "~/types/user";
 import { api } from "~/trpc/react";
 
 const appointment_types = ["Live and video", "Video", "Live"];
@@ -55,12 +56,14 @@ const frameworks: Framework[] = [
 
 export default function Appointments() {
   const data = api.post.getAppointments.useQuery();
-  const appts = data?.data ?? [];
+  const appts = data.data?.data ?? [];
+  const user = data.data?.user;
   const [open, setOpen] = React.useState(false);
   const [open1, setOpen1] = React.useState(false);
   const [value, setValue] = React.useState("All specialisations");
   const [value1, setValue1] = React.useState("All specialisations");
   const [value2, setValue2] = React.useState("");
+
   return (
     <div className="flex w-full flex-col justify-between gap-4 py-4 pr-4">
       <div className="flex flex-col gap-1">
@@ -105,15 +108,8 @@ export default function Appointments() {
         />
       </div>
       {appts.map((item, index) => (
-        <Appointment props={item} key={index} />
+        <Appointment props={item} user={user as User} key={index} />
       ))}
-      {/*<Appointment />
-      <Appointment />
-      <Appointment />
-      <Appointment />
-      <Appointment />
-      <Appointment />
-      <Appointment />*/}
       {appts.length >= 10 ? (
         <Pagination>
           <PaginationContent>
