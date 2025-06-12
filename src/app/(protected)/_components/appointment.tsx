@@ -8,6 +8,8 @@ import {
 } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import type { Appointment } from "~/types/appointment";
+import { useSession } from "~/lib/auth-client";
+import { cn } from "~/lib/utils";
 
 const data = {
   doctor_name: "Andrei Denis",
@@ -20,14 +22,25 @@ const data = {
 };
 
 export default function Appointment({ props }: { props: Appointment }) {
+  const session = useSession();
   return (
     <Card>
       <CardHeader className="flex flex-row justify-between">
         <div className="flex flex-row items-center gap-2">
           <div className="h-10 w-10 rounded-full bg-black" />
           <div className="flex flex-col gap-1">
-            <CardTitle>{props.doctor.name}</CardTitle>
-            <CardDescription>{data.doctor_speciality}</CardDescription>
+            <CardTitle>
+              {session.data?.user.id === props.patient.id
+                ? props.doctor.name
+                : props.patient.name}
+            </CardTitle>
+            <CardDescription>
+              {session.data?.user.id === props.patient.id ? (
+                data.doctor_speciality
+              ) : (
+                <span>Varsta + gen</span>
+              )}
+            </CardDescription>
           </div>
         </div>
         <div className="flex flex-row gap-4">
@@ -42,15 +55,15 @@ export default function Appointment({ props }: { props: Appointment }) {
         </div>
       </CardHeader>
       <CardContent className="flex w-3/4 flex-row justify-between">
-        <div className="flex flex-row items-center text-sm">
+        <div className="flex flex-row items-center gap-2">
           <Calendar width={18} height={18} />
           {props.appointmentDate.toDateString()}
         </div>
-        <div className="g-1 flex flex-row items-center">
+        <div className="g-1 flex flex-row items-center gap-2">
           <Clock width={18} height={18} />
           {props.appointmentDate.toTimeString().split("GMT")[0]}
         </div>
-        <div className="flex flex-row items-center">
+        <div className="flex flex-row items-center gap-2">
           <Video width={18} height={18} />
           {props.patient.name}
         </div>
