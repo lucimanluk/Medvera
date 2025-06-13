@@ -17,6 +17,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "~/components/ui/pagination";
+import type { User } from "~/types/user";
 import { api } from "~/trpc/react";
 import { usePeerContext } from "~/context/peerContext";
 
@@ -56,7 +57,8 @@ const frameworks: Framework[] = [
 
 export default function Appointments() {
   const data = api.post.getAppointments.useQuery();
-  const appts = data?.data ?? [];
+  const appts = data.data?.data ?? [];
+  const user = data.data?.user;
   const [open, setOpen] = React.useState(false);
   const [open1, setOpen1] = React.useState(false);
   const [value, setValue] = React.useState("All specialisations");
@@ -108,15 +110,8 @@ export default function Appointments() {
         />
       </div>
       {appts.map((item, index) => (
-        <Appointment props={item} key={index} />
+        <Appointment props={item} user={user as User} key={index} />
       ))}
-      {/*<Appointment />
-      <Appointment />
-      <Appointment />
-      <Appointment />
-      <Appointment />
-      <Appointment />
-      <Appointment />*/}
       {appts.length >= 10 ? (
         <Pagination>
           <PaginationContent>

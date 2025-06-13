@@ -23,6 +23,6 @@ getDashboardAppointments: publicProcedure.query(async ({ ctx }) => {
       }
     });
 
-    return data;
+    return {data, user};
   })
 });
