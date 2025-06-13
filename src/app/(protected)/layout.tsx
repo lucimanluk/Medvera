@@ -2,6 +2,7 @@ import Sidebar from "./_components/sidebar";
 import { headers } from "next/headers";
 import { auth } from "~/lib/auth";
 import { redirect } from "next/navigation";
+import {PeerContextProvider} from "~/context/peerContext";
 
 export default async function PageLayout({
   children,
@@ -11,14 +12,16 @@ export default async function PageLayout({
   const session = await auth.api.getSession({
     headers: await headers(),
   });
-  
+
   if (!session) {
     redirect("/signIn");
   } else {
     return (
       <main className="flex min-h-screen min-w-full flex-row gap-4">
-        <Sidebar />
-        {children}
+        <PeerContextProvider id = {session.user.id}>
+          <Sidebar />
+          {children}
+        </PeerContextProvider>
       </main>
     );
   }

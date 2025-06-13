@@ -18,6 +18,7 @@ import {
   PaginationPrevious,
 } from "~/components/ui/pagination";
 import { api } from "~/trpc/react";
+import { usePeerContext } from "~/context/peerContext";
 
 const appointment_types = ["Live and video", "Video", "Live"];
 
@@ -61,6 +62,8 @@ export default function Appointments() {
   const [value, setValue] = React.useState("All specialisations");
   const [value1, setValue1] = React.useState("All specialisations");
   const [value2, setValue2] = React.useState("");
+  const peer = usePeerContext();
+  console.log(peer);
   return (
     <div className="flex w-full flex-col justify-between gap-4 py-4 pr-4">
       <div className="flex flex-col gap-1">
