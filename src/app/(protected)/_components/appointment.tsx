@@ -9,6 +9,8 @@ import {
 import { Button } from "~/components/ui/button";
 import type { Appointment } from "~/types/appointment";
 import type { User } from "~/types/user";
+import Peer from "peerjs";
+import { useRef, useEffect, useState } from "react";
 
 const data = {
   doctor_name: "Andrei Denis",
@@ -23,55 +25,85 @@ const data = {
 export default function Appointment({
   props,
   user,
+  peer,
 }: {
   props: Appointment;
   user: User;
+  peer: Peer;
 }) {
-  return (
-    <Card>
-      <CardHeader className="flex flex-row justify-between">
-        <div className="flex flex-row items-center gap-2">
-          <div className="h-10 w-10 rounded-full bg-black" />
-          <div className="flex flex-col gap-1">
-            <CardTitle>
-              {user.id === props.patient.id
-                ? props.doctor.name
-                : props.patient.name}
-            </CardTitle>
-            <CardDescription>
-              {user.id === props.patient.id ? (
-                data.doctor_speciality
-              ) : (
-                <span>Varsta + gen</span>
-              )}
-            </CardDescription>
+  const remotePeerId = useRef<string | null>(null);
+  useEffect(() => {
+    if (peer.id === props.patient.id) {
+      remotePeerId.current = props.doctor.id;
+    } else {
+      remotePeerId.current = props.patient.id;
+    }
+  }, []);
+  {
+    return (
+      <Card>
+        <CardHeader className="flex flex-row justify-between">
+          <div className="flex flex-row items-center gap-2">
+            <div className="h-10 w-10 rounded-full bg-black" />
+            <div className="flex flex-col gap-1">
+              <CardTitle>
+                {user.id === props.patient.id
+                  ? props.doctor.name
+                  : props.patient.name}
+              </CardTitle>
+              <CardDescription>
+                {user.id === props.patient.id ? (
+                  data.doctor_speciality
+                ) : (
+                  <span>Varsta + gen</span>
+                )}
+              </CardDescription>
+            </div>
           </div>
-        </div>
-        <div className="flex flex-row gap-4">
-          <Button variant={"outline"}>
-            <Shuffle />
-            Reschedule
-          </Button>
-          <Button className="bg-[#2F80ED] text-white hover:bg-[#1366d6]">
-            <PhoneCall />
-            Join call
-          </Button>
-        </div>
-      </CardHeader>
-      <CardContent className="flex w-3/4 flex-row justify-between">
-        <div className="flex flex-row items-center gap-2">
-          <Calendar width={18} height={18} />
-          {props.appointmentDate.toDateString()}
-        </div>
-        <div className="g-1 flex flex-row items-center gap-2">
-          <Clock width={18} height={18} />
-          {props.appointmentDate.toTimeString().split("GMT")[0]}
-        </div>
-        <div className="flex flex-row items-center gap-2">
-          <Video width={18} height={18} />
-          {props.patient.name}
-        </div>
-      </CardContent>
-    </Card>
-  );
+          <div className="flex flex-row gap-4">
+            <Button variant={"outline"}>
+              <Shuffle />
+              Reschedule
+            </Button>
+            <Button
+              className="bg-[#2F80ED] text-white hover:bg-[#1366d6]"
+              onClick={() => {
+                if (remotePeerId.current) {
+                  var conn = peer.connect(remotePeerId.current);
+                  conn.on("open", () => {
+                    conn.send("hi");
+                  });
+                  peer.on("connection", (conn) => {
+                    conn.on("data", (data) => {
+                      console.log(data);
+                    });
+                  });
+                } else {
+                  console.error("peer is not defined");
+                  console.log(remotePeerId);
+                }
+              }}
+            >
+              <PhoneCall />
+              Join call
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent className="flex w-3/4 flex-row justify-between">
+          <div className="flex flex-row items-center gap-2">
+            <Calendar width={18} height={18} />
+            {props.appointmentDate.toDateString()}
+          </div>
+          <div className="g-1 flex flex-row items-center gap-2">
+            <Clock width={18} height={18} />
+            {props.appointmentDate.toTimeString().split("GMT")[0]}
+          </div>
+          <div className="flex flex-row items-center gap-2">
+            <Video width={18} height={18} />
+            {props.patient.name}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 }

@@ -59,13 +59,12 @@ export default function Appointments() {
   const data = api.post.getAppointments.useQuery();
   const appts = data.data?.data ?? [];
   const user = data.data?.user;
+  const peer = usePeerContext();
   const [open, setOpen] = React.useState(false);
   const [open1, setOpen1] = React.useState(false);
   const [value, setValue] = React.useState("All specialisations");
   const [value1, setValue1] = React.useState("All specialisations");
   const [value2, setValue2] = React.useState("");
-  const peer = usePeerContext();
-  console.log(peer);
   return (
     <div className="flex w-full flex-col justify-between gap-4 py-4 pr-4">
       <div className="flex flex-col gap-1">
@@ -110,7 +109,12 @@ export default function Appointments() {
         />
       </div>
       {appts.map((item, index) => (
-        <Appointment props={item} user={user as User} key={index} />
+        <Appointment
+          props={item}
+          user={user as User}
+          key={index}
+          peer={peer!}
+        />
       ))}
       {appts.length >= 10 ? (
         <Pagination>
