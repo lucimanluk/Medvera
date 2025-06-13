@@ -34,12 +34,12 @@ export default function Appointment({
           <div className="h-10 w-10 rounded-full bg-black" />
           <div className="flex flex-col gap-1">
             <CardTitle>
-              {props.doctor.id === props.patient.id
+              {user.id === props.patient.id
                 ? props.doctor.name
                 : props.patient.name}
             </CardTitle>
             <CardDescription>
-              {props.doctor.id === props.patient.id ? (
+              {user.id === props.patient.id ? (
                 data.doctor_speciality
               ) : (
                 <span>Varsta + gen</span>
