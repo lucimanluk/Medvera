@@ -1,3 +1,5 @@
+"use client";
+
 import { Calendar, Clock, Video, PhoneCall, Shuffle } from "lucide-react";
 import {
   Card,
@@ -11,6 +13,15 @@ import type { Appointment as AppointmentType } from "~/types/appointment";
 import type { User } from "~/types/user";
 import Peer from "peerjs";
 import { useEffect, useState, useRef } from "react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+
+type CallRequest = {
+  type: "call-request";
+  from: string;
+  name: string;
+  appointmentId: string;
+};
 
 export default function Appointment({
   props,
@@ -21,6 +32,7 @@ export default function Appointment({
   user: User;
   peer: Peer;
 }) {
+  const router = useRouter();
   const apptDateObj = new Date(props.appointmentDate);
   const now = new Date();
 
@@ -31,9 +43,7 @@ export default function Appointment({
     apptDateObj.getDate(),
   );
 
-  if (apptDateOnly < today) {
-    return null;
-  }
+  if (apptDateOnly < today) return null;
 
   const apptTs = apptDateObj.getTime();
   const appointmentEndTs = apptTs + 60 * 60 * 1000;
@@ -53,7 +63,6 @@ export default function Appointment({
   useEffect(() => {
     const checkTime = () => {
       const nowTs = Date.now();
-
       const joinWindowStart = apptTs - 10 * 60 * 1000;
       setIsCallTime(nowTs >= joinWindowStart && nowTs <= appointmentEndTs);
     };
@@ -62,6 +71,41 @@ export default function Appointment({
     const tid = setInterval(checkTime, 30_000);
     return () => clearInterval(tid);
   }, [props.appointmentDate]);
+
+  useEffect(() => {
+    peer.on("connection", (conn) => {
+      conn.on("data", (data: unknown) => {
+        if (
+          typeof data === "object" &&
+          data !== null &&
+          "type" in data &&
+          (data as any).type === "call-request"
+        ) {
+          const request = data as CallRequest;
+          toast(`${request.name} is calling`, {
+            duration: 45_000,
+            description: `Age: 29, height: 1.90m`,
+            cancel: {
+              label: "Decline",
+              onClick: () => {
+                // logic
+              },
+            },
+            action: {
+              label: "Answer",
+              onClick: () => {
+                conn.send({
+                  type: "call-accept",
+                  name: user.name,
+                });
+                router.push("/dashboard");
+              },
+            },
+          });
+        }
+      });
+    });
+  }, [peer, user.name]);
 
   const handleJoinCall = () => {
     const remoteId = remotePeerIdRef.current;
@@ -74,6 +118,7 @@ export default function Appointment({
         name: user.name,
         appointmentId: props.id,
       });
+      router.push("/dashboard");
     });
   };
 
@@ -115,11 +160,6 @@ export default function Appointment({
           ) : (
             <Button variant="outline" disabled>
               <PhoneCall />
-              Available at{" "}
-              {apptDateObj.toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
             </Button>
           )}
         </div>

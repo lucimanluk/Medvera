@@ -2,7 +2,8 @@ import Sidebar from "./_components/sidebar";
 import { headers } from "next/headers";
 import { auth } from "~/lib/auth";
 import { redirect } from "next/navigation";
-import {PeerContextProvider} from "~/context/peerContext";
+import { PeerContextProvider } from "~/context/peerContext";
+import { ClientToaster } from "./_components/clientToaster";
 
 export default async function PageLayout({
   children,
@@ -18,9 +19,10 @@ export default async function PageLayout({
   } else {
     return (
       <main className="flex min-h-screen min-w-full flex-row gap-4">
-        <PeerContextProvider id = {session.user.id}>
+        <PeerContextProvider id={session.user.id}>
           <Sidebar />
           {children}
+          <ClientToaster />
         </PeerContextProvider>
       </main>
     );
