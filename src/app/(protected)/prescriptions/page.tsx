@@ -3,6 +3,7 @@
 import Appointment from "../_components/appointment";
 import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import PopoverFilter from "../finddoctor/_components/popoverFilter";
+import PopoverFilterModal from "./_components/popoverFilterModal";
 import SelectorFilter from "../finddoctor/_components/selectorFilter";
 import { Input } from "~/components/ui/input";
 import * as React from "react";
@@ -16,6 +17,21 @@ import {
   PaginationPrevious,
 } from "~/components/ui/pagination";
 import { api } from "~/trpc/react";
+import type { User } from "~/types/user";
+import { usePeerContext } from "~/context/peerContext";
+import { Button } from "~/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "~/components/ui/dialog";
+import InputRow from "../profile/_components/InputRow";
+import { Label } from "~/components/ui/label";
 
 const appointment_types = ["Live and video", "Video", "Live"];
 
@@ -53,14 +69,16 @@ const frameworks: Framework[] = [
 
 export default function Prescriptions() {
   const data = api.post.getAppointments.useQuery();
-  const appts = data?.data ?? [];
-  {
-    /*const [open, setOpen] = React.useState(false);
+  const appts = data.data?.data ?? [];
+  const user = data.data?.user;
+  const peer = usePeerContext();
+  const [open, setOpen] = React.useState(false);
+  const [op, setOp] = React.useState(false);
+  const [val, setVal] = React.useState("All specialisations");
   const [open1, setOpen1] = React.useState(false);
   const [value, setValue] = React.useState("All specialisations");
   const [value1, setValue1] = React.useState("All specialisations");
-  const [value2, setValue2] = React.useState("");*/
-  }
+  const [value2, setValue2] = React.useState("");
   return (
     <div className="flex w-full flex-col gap-4 py-4 pr-4">
       <div className="flex flex-col gap-1">
@@ -74,8 +92,58 @@ export default function Prescriptions() {
             <TabsTrigger value="past">Past</TabsTrigger>
           </TabsList>
         </Tabs>
+        {user?.doctor ? (
+          <Dialog>
+            <form>
+              <DialogTrigger asChild>
+                <Button className="bg-[#2F80ED] text-white hover:bg-[#1366d6]">
+                  New prescription
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Create prescription</DialogTitle>
+                  <DialogDescription>
+                    Create prescriptrions for your patients that you're conncted
+                    to.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="flex w-full flex-col justify-between gap-4">
+                  <div className="flex flex-col gap-2">
+                    <Label>Patient name</Label>
+                    <PopoverFilterModal
+                      open={op}
+                      setOpen={setOp}
+                      value={val}
+                      setValue={setVal}
+                      frameworks={frameworks}
+                    />
+                  </div>
+                  <InputRow
+                    label_name1={"Starting date"}
+                    label_name2={"Expiration date"}
+                    inputType1={"date"}
+                    inputType2={"date"}
+                    type={["input", "input"]}
+                  />
+                </div>
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button variant="outline">Cancel</Button>
+                  </DialogClose>
+                  <Button
+                    type="submit"
+                    className="bg-[#2F80ED] text-white hover:bg-[#1366d6]"
+                  >
+                    Save changes
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </form>
+          </Dialog>
+        ) : null}
       </div>
-      {/*<div className="flex flex-row items-center gap-2">
+      <div className="flex flex-row items-center gap-2">
         <Input placeholder="Search for a prescription..." />
         <PopoverFilter
           open={open}
@@ -96,9 +164,14 @@ export default function Prescriptions() {
           setValue={setValue2}
           appointments={appointment_types}
         />
-      </div>*/}
-      {appts.map((appointment, index) => (
-        <Appointment props={appointment} key={index} />
+      </div>
+      {appts.map((item, index) => (
+        <Appointment
+          props={item}
+          user={user as User}
+          key={index}
+          peer={peer!}
+        />
       ))}
       {appts.length >= 10 ? (
         <Pagination>
