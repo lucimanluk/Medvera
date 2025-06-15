@@ -38,6 +38,8 @@ export const PeerContextProvider = ({
     };
   }, [id]);
 
+  
+
   if (!ready) return null;
   return (
     <PeerContext.Provider value={peerRef.current}>

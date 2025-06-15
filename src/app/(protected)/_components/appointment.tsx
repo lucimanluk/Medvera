@@ -14,7 +14,6 @@ import type { User } from "~/types/user";
 import Peer from "peerjs";
 import { useEffect, useState, useRef } from "react";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 
 type CallRequest = {
   type: "call-request";
@@ -32,7 +31,6 @@ export default function Appointment({
   user: User;
   peer: Peer;
 }) {
-  const router = useRouter();
   const apptDateObj = new Date(props.appointmentDate);
   const now = new Date();
 
@@ -73,40 +71,44 @@ export default function Appointment({
   }, [props.appointmentDate]);
 
   useEffect(() => {
-    peer.on("connection", (conn) => {
-      conn.on("data", (data: unknown) => {
-        if (
-          typeof data === "object" &&
-          data !== null &&
-          "type" in data &&
-          (data as any).type === "call-request"
-        ) {
-          const request = data as CallRequest;
-          toast(`${request.name} is calling`, {
-            duration: 45_000,
-            description: `Age: 29, height: 1.90m`,
-            cancel: {
-              label: "Decline",
-              onClick: () => {
-                // logic
-              },
-            },
-            action: {
-              label: "Answer",
-              onClick: () => {
-                conn.send({
-                  type: "call-accept",
-                  name: user.name,
-                });
-                router.push("/dashboard");
-              },
-            },
-          });
-        }
-      });
-    });
-  }, [peer, user.name]);
+  peer.removeAllListeners("connection");
 
+  peer.on("connection", (conn) => {
+    conn.on("data", (data: unknown) => {
+      if (
+        typeof data === "object" &&
+        data !== null &&
+        "type" in data &&
+        (data as any).type === "call-request"
+      ) {
+        const request = data as CallRequest;
+        toast(`${request.name} is calling`, {
+          duration: 45_000,
+          description: `Age: 29, height: 1.90m`,
+          cancel: {
+            label: "Decline",
+            onClick: () => {
+              // logic
+            },
+          },
+          action: {
+            label: "Answer",
+            onClick: () => {
+              conn.send({
+                type: "call-accept",
+                name: user.name,
+              });
+            },
+          },
+        });
+      }
+    });
+  });
+
+  return () => {
+    peer.off("connection", () => {});
+  };
+}, [peer, user.name]);
   const handleJoinCall = () => {
     const remoteId = remotePeerIdRef.current;
     if (!remoteId) return;
@@ -118,7 +120,6 @@ export default function Appointment({
         name: user.name,
         appointmentId: props.id,
       });
-      router.push("/dashboard");
     });
   };
 

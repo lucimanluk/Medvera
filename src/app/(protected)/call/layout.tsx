@@ -3,8 +3,5 @@ export default async function CallLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <main className="w-full">{children}</main>
-
-  );
+  return <main className="w-full">{children}</main>;
 }
