@@ -11,36 +11,29 @@ import {
 import { Button } from "~/components/ui/button";
 import type { Appointment as AppointmentType } from "~/types/appointment";
 import type { User } from "~/types/user";
-import Peer from "peerjs";
 import { useEffect, useState, useRef } from "react";
+import { usePeerContext } from "~/context/peerContext";
 import { toast } from "sonner";
-
-type CallRequest = {
-  type: "call-request";
-  from: string;
-  name: string;
-  appointmentId: string;
-};
 
 export default function Appointment({
   props,
   user,
-  peer,
 }: {
   props: AppointmentType;
   user: User;
-  peer: Peer;
 }) {
+  const peer = usePeerContext()!;
   const apptDateObj = new Date(props.appointmentDate);
-  const now = new Date();
-
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const today = new Date(
+    new Date().getFullYear(),
+    new Date().getMonth(),
+    new Date().getDate(),
+  );
   const apptDateOnly = new Date(
     apptDateObj.getFullYear(),
     apptDateObj.getMonth(),
     apptDateObj.getDate(),
   );
-
   if (apptDateOnly < today) return null;
 
   const apptTs = apptDateObj.getTime();
@@ -48,85 +41,68 @@ export default function Appointment({
   if (
     apptDateOnly.getTime() === today.getTime() &&
     Date.now() > appointmentEndTs
-  ) {
+  )
     return null;
-  }
-
-  const remotePeerIdRef = useRef<string>(
-    peer.id === props.patient.id ? props.doctor.id : props.patient.id,
-  );
 
   const [isCallTime, setIsCallTime] = useState(false);
-
   useEffect(() => {
     const checkTime = () => {
       const nowTs = Date.now();
       const joinWindowStart = apptTs - 10 * 60 * 1000;
       setIsCallTime(nowTs >= joinWindowStart && nowTs <= appointmentEndTs);
     };
-
     checkTime();
     const tid = setInterval(checkTime, 30_000);
     return () => clearInterval(tid);
   }, [props.appointmentDate]);
 
-  useEffect(() => {
-  peer.removeAllListeners("connection");
-
-  peer.on("connection", (conn) => {
-    conn.on("data", (data: unknown) => {
-      if (
-        typeof data === "object" &&
-        data !== null &&
-        "type" in data &&
-        (data as any).type === "call-request"
-      ) {
-        const request = data as CallRequest;
-        toast(`${request.name} is calling`, {
-          duration: 45_000,
-          description: `Age: 29, height: 1.90m`,
-          cancel: {
-            label: "Decline",
-            onClick: () => {
-              // logic
-            },
-          },
-          action: {
-            label: "Answer",
-            onClick: () => {
-              conn.send({
-                type: "call-accept",
-                name: user.name,
-              });
-            },
-          },
-        });
-      }
-    });
-  });
-
-  return () => {
-    peer.off("connection", () => {});
-  };
-}, [peer, user.name]);
-  const handleJoinCall = () => {
-    const remoteId = remotePeerIdRef.current;
-    if (!remoteId) return;
-    const conn = peer.connect(remoteId);
-    conn.on("open", () => {
-      conn.send({
-        type: "call-request",
-        from: user.id,
-        name: user.name,
-        appointmentId: props.id,
+  const remotePeerId =
+    peer.id === props.patient.id ? props.doctor.id : props.patient.id;
+  const handleJoinCall = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
       });
-    });
+
+      peer.once("error", (err: any) => {
+        if (err.type === "peer-unavailable") {
+          toast(`User isn't online`, {
+            description: "Wait for them to come back online",
+            duration: 5_000,
+            cancel: { label: "Close", onClick: () => {} },
+          });
+        }
+      });
+      const conn = peer.connect(remotePeerId);
+      conn.on("open", () => {
+        conn.send({
+          type: "call-request",
+          from: user.id,
+          name: user.name,
+          appointmentId: props.id,
+        });
+      });
+      conn.on("error", () => {
+        toast(`Couldn't connect to user`, {
+          description: "There was an error calling the user.",
+          duration: 5_000,
+          cancel: { label: "Close", onClick: () => {} },
+        });
+      });
+    } catch (err) {
+      toast(`Couldn't get user media.`, {
+        description: "Please connect your microphone or camera",
+        duration: 5_000,
+        cancel: { label: "Close", onClick: () => {} },
+      });
+    }
   };
 
   return (
     <Card>
-      <CardHeader className="flex flex-row justify-between">
-        <div className="flex flex-row items-center gap-2">
+      <CardHeader className="flex justify-between">
+        <div className="flex items-center gap-2">
           <div className="h-10 w-10 rounded-full bg-black" />
           <div className="flex flex-col gap-1">
             <CardTitle>
@@ -135,21 +111,17 @@ export default function Appointment({
                 : props.patient.name}
             </CardTitle>
             <CardDescription>
-              {user.id === props.patient.id ? (
-                <span>{props.doctor.name}</span>
-              ) : (
-                <span>varsta si gender</span>
-              )}
+              {user.id === props.patient.id
+                ? props.doctor.name
+                : "varsta si gender"}
             </CardDescription>
           </div>
         </div>
-
-        <div className="flex flex-row gap-4">
+        <div className="flex gap-4">
           <Button variant="outline">
             <Shuffle />
             Reschedule
           </Button>
-
           {isCallTime ? (
             <Button
               className="bg-[#2F80ED] text-white hover:bg-[#1366d6]"
@@ -161,21 +133,21 @@ export default function Appointment({
           ) : (
             <Button variant="outline" disabled>
               <PhoneCall />
+              Join call
             </Button>
           )}
         </div>
       </CardHeader>
-
-      <CardContent className="flex w-3/4 flex-row justify-between">
-        <div className="flex flex-row items-center gap-2">
+      <CardContent className="flex w-3/4 justify-between">
+        <div className="flex items-center gap-2">
           <Calendar width={18} height={18} />
           {apptDateObj.toDateString()}
         </div>
-        <div className="flex flex-row items-center gap-2">
+        <div className="flex items-center gap-2">
           <Clock width={18} height={18} />
           {apptDateObj.toTimeString().split("GMT")[0]}
         </div>
-        <div className="flex flex-row items-center gap-2">
+        <div className="flex items-center gap-2">
           <Video width={18} height={18} />
           {props.patient.name}
         </div>
