@@ -28,7 +28,7 @@ export default function InputRow({
   data2,
 }: InputRowProps) {
   return (
-    <div className="mb-4 flex flex-row justify-between gap-8">
+    <div className=" flex flex-row justify-between gap-8">
       <form className="flex w-full flex-col gap-2">
         <Label>{label_name1}</Label>
         {type[0] === "input" ? (

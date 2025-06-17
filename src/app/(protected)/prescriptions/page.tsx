@@ -32,6 +32,8 @@ import {
 } from "~/components/ui/dialog";
 import InputRow from "../profile/_components/InputRow";
 import { Label } from "~/components/ui/label";
+import { Textarea } from "~/components/ui/textarea";
+import { Loader2 } from "lucide-react";
 
 const appointment_types = ["Live and video", "Video", "Live"];
 
@@ -76,6 +78,7 @@ export default function Prescriptions() {
   const [op, setOp] = React.useState(false);
   const [val, setVal] = React.useState("All specialisations");
   const [open1, setOpen1] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
   const [value, setValue] = React.useState("All specialisations");
   const [value1, setValue1] = React.useState("All specialisations");
   const [value2, setValue2] = React.useState("");
@@ -119,23 +122,51 @@ export default function Prescriptions() {
                       frameworks={frameworks}
                     />
                   </div>
-                  <InputRow
-                    label_name1={"Starting date"}
-                    label_name2={"Ending date"}
-                    inputType1={"date"}
-                    inputType2={"date"}
-                    type={["input", "input"]}
-                  />
+                  <div className="flex flex-row justify-between gap-2">
+                    <form className="flex flex-col gap-2">
+                      <Label>Dosage</Label>
+                      <Input placeholder="Eg: 10mg" />
+                    </form>
+                    <form className="flex flex-col gap-2">
+                      <Label>Frequency</Label>
+                      <Input placeholder="Eg: thrice a day" />
+                    </form>
+                    <form className="flex flex-col gap-2">
+                      <Label>Quantity</Label>
+                      <Input placeholder="Eg: one tablet" />
+                    </form>
+                  </div>
+                  <div className="flex flex-row gap-2">
+                    <form className="flex w-1/2 flex-col gap-2">
+                      <Label>Starting date</Label>
+                      <Input type="date" />
+                    </form>
+                    <form className="flex w-1/2 flex-col gap-2">
+                      <Label>Ending date</Label>
+                      <Input type="date" />
+                    </form>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Label>Instructions</Label>
+                    <Textarea placeholder="Instructions for the patient..." />
+                  </div>
                 </div>
                 <DialogFooter>
                   <DialogClose asChild>
-                    <Button variant="outline">Cancel</Button>
+                    <Button variant="outline" disabled={loading}>
+                      {loading ? (
+                        <Loader2 size={16} className="animate-spin" />
+                      ) : (
+                        <p>Cancel</p>
+                      )}
+                    </Button>
                   </DialogClose>
                   <Button
                     type="submit"
                     className="bg-[#2F80ED] text-white hover:bg-[#1366d6]"
+                    disabled={loading}
                   >
-                    Save changes
+                    Create prescription
                   </Button>
                 </DialogFooter>
               </DialogContent>
