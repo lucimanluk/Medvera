@@ -38,7 +38,7 @@ export default function Profile() {
                 Basic personal information about yourself
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="gap-4 flex flex-col">
               <InputRow
                 label_name1={"First name"}
                 label_name2={"Last name"}
@@ -58,8 +58,8 @@ export default function Profile() {
                 type={["input", "select"]}
                 data2={["Male", "Female"]}  
               />
-              <div>
-                <div className="mb-4 flex flex-col">
+              <div className="gap-4 flex flex-col">
+                <div className="flex flex-col">
                   <h1 className="font-semibold">Adress information</h1>
                   <span className="text-muted-foreground text-sm">
                     Details about where you live
@@ -76,8 +76,8 @@ export default function Profile() {
                   type={["input", "input"]}
                 />
               </div>
-              <div>
-                <div className="mb-4 flex flex-col">
+              <div className="gap-4 flex flex-col">
+                <div className=" flex flex-col">
                   <h1 className="font-semibold">Emergency contact</h1>
                   <span className="text-muted-foreground text-sm">
                     Person to contact in case of emergency
@@ -103,7 +103,7 @@ export default function Profile() {
               <CardTitle>Medical information</CardTitle>
               <CardDescription>Medical information about you</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="gap-4 flex flex-col">
               <InputRow
                 label_name1={"Family doctor"}
                 label_name2={"Family doctor's phone number"}
@@ -121,8 +121,8 @@ export default function Profile() {
                 label_name2={"Height"}
                 type={["input", "input"]}
               />
-              <div>
-                <div className="mb-4 flex flex-col">
+              <div className="gap-4 flex flex-col">
+                <div className="flex flex-col">
                   <h1 className="font-semibold">Afflictions information</h1>
                   <span className="text-muted-foreground text-sm">
                     Details about allergies and medical conditions

@@ -12,7 +12,7 @@ export default function InputTypes({
   setValue: React.Dispatch<React.SetStateAction<string>>;
 }) {
   return (
-    <div className="mb-4 flex flex-col gap-2">
+    <div className="flex flex-col gap-2">
       <Label>{label_name}</Label>
       <div className="flex w-full flex-row gap-2">
         <Input

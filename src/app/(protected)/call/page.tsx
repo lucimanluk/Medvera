@@ -10,41 +10,101 @@ import {
   Minimize2,
 } from "lucide-react";
 import { Button } from "~/components/ui/button";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { cn } from "~/lib/utils";
 
 export default function Call() {
-  const [isminimized, setIsMinimized] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
+  const [isMic, setIsMic] = useState(true);
+  const [isVideo, setVideo] = useState(true);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
 
-  // this callback runs once when the <video> mounts
-  const setVideoElement = (el: HTMLVideoElement | null) => {
-    if (!el) return;
-
-    videoRef.current = el;
-    navigator.mediaDevices
-      .getUserMedia({ video: true, audio: false })
-      .then((stream) => {
-        el.srcObject = stream;
-      })
-      .catch((err) => {
-        console.error("Camera error:", err);
+  useEffect(() => {
+    const initStream = async () => {
+      streamRef.current?.getTracks().forEach((t) => {
+        t.stop();
       });
-  };
+
+      await navigator.mediaDevices
+        .getUserMedia({ video: true, audio: true })
+        .then((stream) => {
+          streamRef.current = stream;
+          if (videoRef.current) {
+            videoRef.current.srcObject = stream;
+          }
+        })
+        .catch((err) => {
+          console.error("Error getting tracks");
+        });
+    };
+
+    initStream();
+
+    navigator.mediaDevices.addEventListener("devicechange", initStream);
+    return () => {
+      navigator.mediaDevices.removeEventListener("devicechange", initStream);
+      streamRef.current?.getTracks().forEach((t) => t.stop());
+    };
+  }, []);
+
+  useEffect(() => {
+    const videoTracks = streamRef.current;
+    if (!videoTracks) return;
+    videoTracks.getVideoTracks().forEach((track) => {
+      track.enabled = isVideo;
+    });
+  }, [isVideo]);
+
+  useEffect(() => {
+    const micTracks = streamRef.current;
+    if (!micTracks) return;
+    micTracks?.getAudioTracks().forEach((track) => {
+      track.enabled = isMic;
+    });
+  }, [isMic]);
 
   return (
-    <div className="relative h-full w-full bg-blue-400">
+    <div className="relative bg-blue-400">
+      <Button
+        variant="ghost"
+        className="absolute z-50"
+        onClick={() => {
+          setIsMinimized(!isMinimized);
+        }}
+      >
+        {isMinimized ? <Minimize /> : <Minimize2 />}
+      </Button>
       <video
-        ref={setVideoElement}
-        className="h-screen w-full border-[3px] bg-red-400"
+        ref={videoRef}
+        className="h-screen w-screen border-[3px] bg-red-400"
         autoPlay
         playsInline
       />
       <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 transform flex-row items-center gap-4">
-        <Button variant={"outline"} className="h-14 w-14 rounded-full border-0">
-          <Mic />
+        <Button
+          variant={"outline"}
+          className={cn(
+            "h-14 w-14 rounded-full border-0",
+            isMic === false ? "bg-red-600 hover:bg-red-500" : null,
+          )}
+          onClick={() => {
+            setIsMic(!isMic);
+          }}
+        >
+          {isMic ? <Mic /> : <MicOff />}
         </Button>
-        <Button variant={"outline"} className="h-14 w-14 rounded-full border-0">
-          <Video />
+        <Button
+          variant={"outline"}
+          className={cn(
+            "h-14 w-14 rounded-full border-0",
+            isVideo === false ? "bg-red-600 hover:bg-red-500" : null,
+          )}
+          onClick={() => {
+            setVideo(!isVideo);
+          }}
+        >
+          {isVideo ? <Video /> : <VideoOff className="text-white" />}
         </Button>
         <Button
           variant={"outline"}

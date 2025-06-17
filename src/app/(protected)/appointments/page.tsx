@@ -80,11 +80,13 @@ export default function Appointments() {
             <TabsTrigger value="past">Past</TabsTrigger>
           </TabsList>
         </Tabs>
-        <Link href="/finddoctor">
-          <Button className="bg-[#2F80ED] text-white hover:bg-[#1366d6]">
-            New appointment
-          </Button>
-        </Link>
+        {user?.doctor === false ? (
+          <Link href="/finddoctor">
+            <Button className="bg-[#2F80ED] text-white hover:bg-[#1366d6]">
+              New appointment
+            </Button>
+          </Link>
+        ) : null}
       </div>
       <div className="flex flex-row items-center gap-2">
         <Input placeholder="Search for an appointment..." />

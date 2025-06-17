@@ -17,8 +17,6 @@ import {
   PaginationPrevious,
 } from "~/components/ui/pagination";
 import { api } from "~/trpc/react";
-import type { User } from "~/types/user";
-import { usePeerContext } from "~/context/peerContext";
 import { Button } from "~/components/ui/button";
 import {
   Dialog,
@@ -30,7 +28,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog";
-import InputRow from "../profile/_components/InputRow";
 import { Label } from "~/components/ui/label";
 import { Textarea } from "~/components/ui/textarea";
 import { Loader2 } from "lucide-react";
@@ -70,10 +67,9 @@ const frameworks: Framework[] = [
 ];
 
 export default function Prescriptions() {
-  const data = api.post.getAppointments.useQuery();
-  const appts = data.data?.data ?? [];
+  const data = api.prescription.getDashboardPrescriptions.useQuery();
+  const prescriptions = data.data?.data ?? [];
   const user = data.data?.user;
-  const peer = usePeerContext();
   const [open, setOpen] = React.useState(false);
   const [op, setOp] = React.useState(false);
   const [val, setVal] = React.useState("All specialisations");
@@ -196,15 +192,8 @@ export default function Prescriptions() {
           appointments={appointment_types}
         />
       </div>
-      {appts.map((item, index) => (
-        <Appointment
-          props={item}
-          user={user as User}
-          key={index}
-          peer={peer!}
-        />
-      ))}
-      {appts.length >= 10 ? (
+
+      {prescriptions.length >= 10 ? (
         <Pagination>
           <PaginationContent>
             <PaginationItem>
