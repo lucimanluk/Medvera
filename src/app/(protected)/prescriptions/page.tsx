@@ -121,7 +121,7 @@ export default function Prescriptions() {
                   </div>
                   <InputRow
                     label_name1={"Starting date"}
-                    label_name2={"Expiration date"}
+                    label_name2={"Ending date"}
                     inputType1={"date"}
                     inputType2={"date"}
                     type={["input", "input"]}

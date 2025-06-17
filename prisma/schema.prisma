@@ -130,15 +130,17 @@ model Chat {
 }
 
 model Prescription {
-  id           String   @id @default(uuid())
-  createdAt    DateTime @default(now())
-  startingDate DateTime
-  endingDate   DateTime
-  title        String
-  pill         String
-  description  String
-  patientId    String
-  doctorId     String
-  patient      User     @relation("PatientPrescriptions", fields: [patientId], references: [id], onDelete: Cascade)
-  doctor       User     @relation("DoctorPrescriptions", fields: [doctorId], references: [id], onDelete: Cascade)
+  id             String   @id @default(uuid())
+  createdAt      DateTime @default(now())
+  startingDate   DateTime
+  endingDate     DateTime
+  medicationName String
+  dosage         String
+  frequency      String
+  quantity       Int
+  instructions   String
+  patientId      String
+  doctorId       String
+  patient        User     @relation("PatientPrescriptions", fields: [patientId], references: [id], onDelete: Cascade)
+  doctor         User     @relation("DoctorPrescriptions", fields: [doctorId], references: [id], onDelete: Cascade)
 }
