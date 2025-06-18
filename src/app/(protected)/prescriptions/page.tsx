@@ -30,7 +30,8 @@ import {
 } from "~/components/ui/dialog";
 import { Label } from "~/components/ui/label";
 import { Textarea } from "~/components/ui/textarea";
-import { Loader2 } from "lucide-react";
+import { Loader2, FilePlus } from "lucide-react";
+import PrescriptionCard from "./_components/prescriptionCard";
 
 const appointment_types = ["Live and video", "Video", "Live"];
 
@@ -69,6 +70,7 @@ const frameworks: Framework[] = [
 export default function Prescriptions() {
   const data = api.prescription.getDashboardPrescriptions.useQuery();
   const prescriptions = data.data?.data ?? [];
+  console.log(prescriptions);
   const user = data.data?.user;
   const [open, setOpen] = React.useState(false);
   const [op, setOp] = React.useState(false);
@@ -96,6 +98,7 @@ export default function Prescriptions() {
             <form>
               <DialogTrigger asChild>
                 <Button className="bg-[#2F80ED] text-white hover:bg-[#1366d6]">
+                  <FilePlus />
                   New prescription
                 </Button>
               </DialogTrigger>
@@ -103,8 +106,7 @@ export default function Prescriptions() {
                 <DialogHeader>
                   <DialogTitle>Create prescription</DialogTitle>
                   <DialogDescription>
-                    Create prescriptrions for your patients that you're conncted
-                    to.
+                    Create prescriptrions for patients that you're conncted to.
                   </DialogDescription>
                 </DialogHeader>
                 <div className="flex w-full flex-col justify-between gap-4">
@@ -118,6 +120,10 @@ export default function Prescriptions() {
                       frameworks={frameworks}
                     />
                   </div>
+                  <form className="flex flex-col gap-2">
+                    <Label>Medication</Label>
+                    <Input placeholder="Eg: paracetamol" />
+                  </form>
                   <div className="flex flex-row justify-between gap-2">
                     <form className="flex flex-col gap-2">
                       <Label>Dosage</Label>
@@ -192,7 +198,9 @@ export default function Prescriptions() {
           appointments={appointment_types}
         />
       </div>
-
+      {prescriptions.map((prescription, index) => (
+        <PrescriptionCard props={prescription} key={index} user={user} />
+      ))}
       {prescriptions.length >= 10 ? (
         <Pagination>
           <PaginationContent>

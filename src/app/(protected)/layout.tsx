@@ -4,6 +4,7 @@ import { auth } from "~/lib/auth";
 import { redirect } from "next/navigation";
 import { PeerContextProvider } from "~/context/peerContext";
 import { ClientToaster } from "./_components/clientToaster";
+import CallOverlay from "./_components/callOverlay";
 
 export default async function PageLayout({
   children,
@@ -18,13 +19,14 @@ export default async function PageLayout({
     redirect("/signIn");
   } else {
     return (
-      <main className="flex min-h-screen min-w-full flex-row gap-4">
-        <PeerContextProvider id={session.user.id}>
+      <PeerContextProvider id={session.user.id}>
+        <main className="flex min-h-screen min-w-full flex-row gap-4">
           <Sidebar />
           {children}
-          <ClientToaster />
-        </PeerContextProvider>
-      </main>
+        </main>
+        {/*<CallOverlay />*/}
+        <ClientToaster />
+      </PeerContextProvider>
     );
   }
 }

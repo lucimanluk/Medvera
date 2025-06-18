@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -23,31 +20,29 @@ model Post {
 model User {
   id                   String         @id
   name                 String
-  email                String
+  email                String         @unique
   emailVerified        Boolean
   image                String?
   doctor               Boolean?
   createdAt            DateTime
   updatedAt            DateTime
-  sessions             Session[]
-  accounts             Account[]
-  patientAppointments  Appointment[]  @relation("PatientAppointments")
   doctorAppointments   Appointment[]  @relation("DoctorAppointments")
-  patientPrescriptions Prescription[] @relation("PatientPrescriptions")
-  doctorPrescriptions  Prescription[] @relation("DoctorPrescriptions")
-  PatientChats         Chat[]         @relation("PatientChats")
+  patientAppointments  Appointment[]  @relation("PatientAppointments")
   DoctorChats          Chat[]         @relation("DoctorChats")
+  PatientChats         Chat[]         @relation("PatientChats")
+  SentMessages         Message[]      @relation("SentMessages")
+  doctorPrescriptions  Prescription[] @relation("DoctorPrescriptions")
+  patientPrescriptions Prescription[] @relation("PatientPrescriptions")
+  accounts             Account[]
+  sessions             Session[]
 
-  SentMessages Message[] @relation("SentMessages")
-
-  @@unique([email])
   @@map("user")
 }
 
 model Session {
   id        String   @id
   expiresAt DateTime
-  token     String
+  token     String   @unique
   createdAt DateTime
   updatedAt DateTime
   ipAddress String?
@@ -55,7 +50,6 @@ model Session {
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([token])
   @@map("session")
 }
 
@@ -64,7 +58,6 @@ model Account {
   accountId             String
   providerId            String
   userId                String
-  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   accessToken           String?
   refreshToken          String?
   idToken               String?
@@ -74,6 +67,7 @@ model Account {
   password              String?
   createdAt             DateTime
   updatedAt             DateTime
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("account")
 }
@@ -90,14 +84,13 @@ model Verification {
 }
 
 model Appointment {
-  id               String   @id @default(uuid())
-  createdAt        DateTime @default(now())
-  appointmentDate  DateTime @default(now())
-  appointment_type String
-  patientId        String
-  doctorId         String
-  patient          User     @relation("PatientAppointments", fields: [patientId], references: [id], onDelete: Cascade)
-  doctor           User     @relation("DoctorAppointments", fields: [doctorId], references: [id], onDelete: Cascade)
+  id              String   @id @default(uuid())
+  createdAt       DateTime @default(now())
+  appointmentDate DateTime @default(now())
+  patientId       String
+  doctorId        String
+  doctor          User     @relation("DoctorAppointments", fields: [doctorId], references: [id], onDelete: Cascade)
+  patient         User     @relation("PatientAppointments", fields: [patientId], references: [id], onDelete: Cascade)
 }
 
 model Message {
@@ -106,25 +99,20 @@ model Message {
   content   String
   isRead    Boolean   @default(false)
   readAt    DateTime?
-
-  senderId String
-  chatId   String
-
-  sender User @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
-  chat   Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  senderId  String
+  chatId    String
+  chat      Chat      @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  sender    User      @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
 }
 
 model Chat {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-
+  id        String    @id @default(uuid())
+  createdAt DateTime  @default(now())
   patientId String
   doctorId  String
-
-  patient User @relation("PatientChats", fields: [patientId], references: [id], onDelete: Cascade)
-  doctor  User @relation("DoctorChats", fields: [doctorId], references: [id], onDelete: Cascade)
-
-  messages Message[]
+  doctor    User      @relation("DoctorChats", fields: [doctorId], references: [id], onDelete: Cascade)
+  patient   User      @relation("PatientChats", fields: [patientId], references: [id], onDelete: Cascade)
+  messages  Message[]
 
   @@unique([doctorId, patientId])
 }
@@ -137,10 +125,10 @@ model Prescription {
   medicationName String
   dosage         String
   frequency      String
-  quantity       Int
+  quantity       String
   instructions   String
   patientId      String
   doctorId       String
-  patient        User     @relation("PatientPrescriptions", fields: [patientId], references: [id], onDelete: Cascade)
   doctor         User     @relation("DoctorPrescriptions", fields: [doctorId], references: [id], onDelete: Cascade)
+  patient        User     @relation("PatientPrescriptions", fields: [patientId], references: [id], onDelete: Cascade)
 }
