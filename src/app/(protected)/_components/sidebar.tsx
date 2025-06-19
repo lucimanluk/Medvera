@@ -27,15 +27,16 @@ import { cn } from "~/lib/utils";
 import { usePathname } from "next/navigation";
 import { signOut } from "~/lib/auth-client";
 import { useRouter } from "next/navigation";
+import { api } from "~/trpc/react";
 
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const user = api.user.get2.useQuery();
   const links = [
     { title: "Dashboard", icon: Home },
     { title: "Find Doctor", icon: UserSearch },
     { title: "Appointments", icon: Calendar },
-    { title: "Chat", icon: MessageSquare },
     { title: "Prescriptions", icon: Pill },
     { title: "Profile", icon: User },
   ];
@@ -56,6 +57,7 @@ export default function Sidebar() {
         </Link>
         <ul className="flex flex-col gap-4 text-sm font-medium">
           {links.map((link, index) => (
+            user.data?.doctor === true && link.title === 'Find Doctor' ? null :
             <li
               key={index}
               className={cn(

@@ -24,7 +24,7 @@ export default async function PageLayout({
           <Sidebar />
           {children}
         </main>
-        {/*<CallOverlay />*/}
+        <CallOverlay />
         <ClientToaster />
       </PeerContextProvider>
     );

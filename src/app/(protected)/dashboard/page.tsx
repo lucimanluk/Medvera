@@ -5,8 +5,9 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
-import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
-import Appointment from "../_components/appointment";
+import { ScrollArea } from "~/components/ui/scroll-area";
+import { headers } from "next/headers";
+import { auth } from "~/lib/auth";
 
 const appointments = [
   {
@@ -47,7 +48,10 @@ const appointments = [
   },
 ];
 
-export default function Dashboard() {
+export default async function Dashboard() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
   return (
     <div className="flex w-full flex-col gap-4 py-4 pr-4">
       <div className="flex flex-col gap-1">
@@ -76,9 +80,13 @@ export default function Dashboard() {
         </Card>
         <Card className="w-full">
           <CardHeader>
-            <CardTitle>Messages</CardTitle>
+            <CardTitle>Prescriptions</CardTitle>
             <CardDescription>
-              See what messages you have received
+              {session?.user.doctor ? (
+                <span>Prescriptions that you have assigned</span>
+              ) : (
+                <span>Prescriptions that you need to take</span>
+              )}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -94,23 +102,6 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       </div>
-      <Card className="w-full">
-        <CardHeader>
-          <CardTitle>Prescriptions</CardTitle>
-          <CardDescription>Prescriptions that you need to take</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <ScrollArea className="w-full">
-            {appointments.length === 4 ? (
-              <span>No upcoming appoinments.</span>
-            ) : (
-              appointments.map((appointment, index) => (
-                <div key={index} className="p-2"></div>
-              ))
-            )}
-          </ScrollArea>
-        </CardContent>
-      </Card>
     </div>
   );
 }

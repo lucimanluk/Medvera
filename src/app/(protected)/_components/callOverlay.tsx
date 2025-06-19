@@ -79,9 +79,9 @@ export default function CallOverlay() {
         }}
       >
         {isMinimized ? (
-          <Minimize className="text-blue-600" />
+          <Minimize className="text-yellow-500" />
         ) : (
-          <Minimize2 className="text-blue-600" />
+          <Minimize2 className="text-yellow-500" />
         )}
       </Button>
       <video
@@ -102,7 +102,7 @@ export default function CallOverlay() {
               setIsMic(!isMic);
             }}
           >
-            {isMic ? <Mic /> : <MicOff />}
+            {isMic ? <Mic /> : <MicOff className="text-white"/>}
           </Button>
           <Button
             variant={"outline"}

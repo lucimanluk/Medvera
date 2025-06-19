@@ -122,13 +122,13 @@ model Prescription {
   createdAt      DateTime @default(now())
   startingDate   DateTime
   endingDate     DateTime
-  medicationName String
-  dosage         String
-  frequency      String
-  quantity       String
-  instructions   String
   patientId      String
   doctorId       String
+  dosage         String
+  frequency      String
+  instructions   String
+  medicationName String
+  quantity       String
   doctor         User     @relation("DoctorPrescriptions", fields: [doctorId], references: [id], onDelete: Cascade)
   patient        User     @relation("PatientPrescriptions", fields: [patientId], references: [id], onDelete: Cascade)
 }

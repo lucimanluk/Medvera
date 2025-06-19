@@ -10,4 +10,9 @@ export const userRouter = createTRPCRouter({
         where: { email: input.email },
       });
     }),
+  get2: publicProcedure.query(async ({ ctx }) => {
+    return await ctx.db.user.findUnique({
+      where: { email: ctx.session?.user.email },
+    });
+  }),
 });
