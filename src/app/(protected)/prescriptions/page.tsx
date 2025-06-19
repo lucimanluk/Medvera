@@ -94,7 +94,12 @@ export default function Prescriptions() {
           </TabsList>
         </Tabs>
         {user?.doctor ? (
-          <Dialog>
+          <Dialog
+            onOpenChange={() => {
+              setOp(false);
+              setVal("All specialisations");
+            }}
+          >
             <form>
               <DialogTrigger asChild>
                 <Button className="bg-[#2F80ED] text-white hover:bg-[#1366d6]">
