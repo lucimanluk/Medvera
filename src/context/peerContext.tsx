@@ -4,13 +4,30 @@ import { createContext, useContext, useEffect, useRef, useState } from "react";
 import Peer, { DataConnection } from "peerjs";
 import { toast } from "sonner";
 
-export const PeerContext = createContext<Peer | null>(null);
+export const PeerContext = createContext<PeerContext>({
+  peer: null,
+  inCall: false,
+  setInCall: () => {},
+});
 
 type CallRequest = {
   type: "call-request";
   from: string;
   name: string;
   appointmentId: string;
+};
+
+type PeerContext = {
+  peer: Peer | null;
+  inCall: boolean;
+  setInCall: (value: boolean) => void;
+};
+
+type CallAccept = {
+  type: "call-accept";
+  from: string;
+  name: string;
+  appointmendId: string;
 };
 
 export const PeerContextProvider = ({
@@ -22,6 +39,7 @@ export const PeerContextProvider = ({
 }) => {
   const peerRef = useRef<Peer | null>(null);
   const [ready, setReady] = useState(false);
+  const [inCall, setInCall] = useState(false);
 
   useEffect(() => {
     if (!id || peerRef.current) return;
@@ -58,7 +76,13 @@ export const PeerContextProvider = ({
             action: {
               label: "Answer",
               onClick: () => {
-                conn.send({ type: "call-accept", name });
+                conn.send({
+                  type: "call-accept",
+                  from: id,
+                  name: id,
+                  appointmentId: id,
+                });
+                setInCall(true);
               },
             },
           });
@@ -75,7 +99,7 @@ export const PeerContextProvider = ({
   if (!ready) return null;
 
   return (
-    <PeerContext.Provider value={peerRef.current}>
+    <PeerContext.Provider value={{ peer: peerRef.current, inCall, setInCall }}>
       {children}
     </PeerContext.Provider>
   );

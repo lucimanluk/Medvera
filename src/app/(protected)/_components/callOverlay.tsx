@@ -12,8 +12,10 @@ import {
 import { Button } from "~/components/ui/button";
 import { useState, useRef, useEffect } from "react";
 import { cn } from "~/lib/utils";
+import { usePeerContext } from "~/context/peerContext";
 
 export default function CallOverlay() {
+  const isCall = usePeerContext();
   const [isMinimized, setIsMinimized] = useState(false);
   const [isMic, setIsMic] = useState(true);
   const [isVideo, setVideo] = useState(true);
@@ -102,7 +104,7 @@ export default function CallOverlay() {
               setIsMic(!isMic);
             }}
           >
-            {isMic ? <Mic /> : <MicOff className="text-white"/>}
+            {isMic ? <Mic /> : <MicOff className="text-white" />}
           </Button>
           <Button
             variant={"outline"}
@@ -119,6 +121,11 @@ export default function CallOverlay() {
           <Button
             variant={"outline"}
             className="h-14 w-14 rounded-full border-0 bg-red-600 hover:bg-red-700"
+            onClick={() => {
+              isCall.setInCall(false);
+              streamRef.current = null;
+              videoRef.current = null;
+            }}
           >
             <Phone className="text-white" />
           </Button>

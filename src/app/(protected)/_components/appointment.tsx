@@ -57,46 +57,36 @@ export default function Appointment({
   }, [props.appointmentDate]);
 
   const remotePeerId =
-    peer.id === props.patient.id ? props.doctor.id : props.patient.id;
-  const handleJoinCall = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: true,
-      });
-
-      peer.once("error", (err: any) => {
-        if (err.type === "peer-unavailable") {
-          toast(`User isn't online`, {
-            description: "Wait for them to come back online",
-            duration: 5_000,
-            cancel: { label: "Close", onClick: () => {} },
-          });
-        }
-      });
-      const conn = peer.connect(remotePeerId);
-      conn.on("open", () => {
-        conn.send({
-          type: "call-request",
-          from: user.id,
-          name: user.name,
-          appointmentId: props.id,
-        });
-      });
-      conn.on("error", () => {
-        toast(`Couldn't connect to user`, {
-          description: "There was an error calling the user.",
+    peer.peer?.id === props.patient.id ? props.doctor.id : props.patient.id;
+  const handleJoinCall = () => {
+    peer.peer?.once("error", (err: any) => {
+      if (err.type === "peer-unavailable") {
+        toast(`User isn't online`, {
+          description: "Wait for them to come back online",
           duration: 5_000,
           cancel: { label: "Close", onClick: () => {} },
         });
+      }
+    });
+    const conn = peer.peer?.connect(remotePeerId);
+    conn?.on("open", () => {
+      conn.send({
+        type: "call-request",
+        from: user.id,
+        name: user.name,
+        appointmentId: props.id,
       });
-    } catch (err) {
-      toast(`Couldn't get user media.`, {
-        description: "Please connect your microphone or camera",
+    });
+    conn?.on("data", (data: unknown) => {
+      peer.setInCall(true);
+    });
+    conn?.on("error", () => {
+      toast(`Couldn't connect to user`, {
+        description: "There was an error calling the user.",
         duration: 5_000,
         cancel: { label: "Close", onClick: () => {} },
       });
-    }
+    });
   };
 
   return (
@@ -122,7 +112,7 @@ export default function Appointment({
             <Shuffle />
             Reschedule
           </Button>
-          {isCallTime ? (
+          {isCallTime && peer.inCall === false ? (
             <Button
               className="bg-[#2F80ED] text-white hover:bg-[#1366d6]"
               onClick={handleJoinCall}
@@ -130,12 +120,17 @@ export default function Appointment({
               <PhoneCall />
               Join call
             </Button>
-          ) : (
+          ) : isCallTime && peer.inCall === true ? (
             <Button variant="outline" disabled>
               <PhoneCall />
-              Join call
+              In call
             </Button>
-          )}
+          ) : isCallTime === false && peer.inCall === false ? (
+            <Button variant="outline" disabled>
+              <PhoneCall />
+              Call at {props.appointmentDate.toTimeString().split("GMT")[0]}
+            </Button>
+          ) : null}
         </div>
       </CardHeader>
       <CardContent className="flex w-3/4 justify-between">
