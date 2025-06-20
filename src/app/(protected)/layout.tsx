@@ -1,4 +1,5 @@
 import Sidebar from "./_components/sidebar";
+import { Suspense } from "react";
 import { headers } from "next/headers";
 import { auth } from "~/lib/auth";
 import { redirect } from "next/navigation";
@@ -20,11 +21,13 @@ export default async function PageLayout({
   } else {
     return (
       <PeerContextProvider id={session.user.id}>
-        <main className="flex min-h-screen min-w-full flex-row gap-4">
-          <Sidebar />
-          {children}
-        </main>
-        <CallOverlay />
+        <Suspense fallback={<div className="w-1/4 p-4">Loading…</div>}>
+          <main className="flex min-h-screen min-w-full flex-row gap-4">
+            <Sidebar user={session.user} />
+            {children}
+          </main>
+        </Suspense>
+        {/*<CallOverlay />*/}
         <ClientToaster />
       </PeerContextProvider>
     );

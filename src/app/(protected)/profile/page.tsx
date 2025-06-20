@@ -18,6 +18,7 @@ export default function Profile() {
   const [meidcalConditionInput, setMedicalConditionInput] =
     useState<string>("");
   const [meidcalCondition, setMedicalCondition] = useState<string[]>([]);
+  const [isEditing, setIsEditing] = useState(false);
 
   return (
     <div className="flex w-full flex-col gap-4 py-4 pr-4">
@@ -38,7 +39,7 @@ export default function Profile() {
                 Basic personal information about yourself
               </CardDescription>
             </CardHeader>
-            <CardContent className="gap-4 flex flex-col">
+            <CardContent className="flex flex-col gap-4">
               <InputRow
                 label_name1={"First name"}
                 label_name2={"Last name"}
@@ -51,14 +52,19 @@ export default function Profile() {
                 type={["input", "input"]}
               />
               <InputRow
+                label_name1={"Series"}
+                label_name2={"CNP"}
+                type={["input", "input"]}
+              />
+              <InputRow
                 label_name1={"Birth date"}
                 label_name2={"Gender"}
                 inputType1="date"
                 inputType2="text"
                 type={["input", "select"]}
-                data2={["Male", "Female"]}  
+                data2={["Male", "Female"]}
               />
-              <div className="gap-4 flex flex-col">
+              <div className="flex flex-col gap-4">
                 <div className="flex flex-col">
                   <h1 className="font-semibold">Adress information</h1>
                   <span className="text-muted-foreground text-sm">
@@ -76,8 +82,8 @@ export default function Profile() {
                   type={["input", "input"]}
                 />
               </div>
-              <div className="gap-4 flex flex-col">
-                <div className=" flex flex-col">
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-col">
                   <h1 className="font-semibold">Emergency contact</h1>
                   <span className="text-muted-foreground text-sm">
                     Person to contact in case of emergency
@@ -103,7 +109,7 @@ export default function Profile() {
               <CardTitle>Medical information</CardTitle>
               <CardDescription>Medical information about you</CardDescription>
             </CardHeader>
-            <CardContent className="gap-4 flex flex-col">
+            <CardContent className="flex flex-col gap-4">
               <InputRow
                 label_name1={"Family doctor"}
                 label_name2={"Family doctor's phone number"}
@@ -121,7 +127,7 @@ export default function Profile() {
                 label_name2={"Height"}
                 type={["input", "input"]}
               />
-              <div className="gap-4 flex flex-col">
+              <div className="flex flex-col gap-4">
                 <div className="flex flex-col">
                   <h1 className="font-semibold">Afflictions information</h1>
                   <span className="text-muted-foreground text-sm">

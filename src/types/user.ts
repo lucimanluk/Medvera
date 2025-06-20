@@ -3,8 +3,8 @@ export interface User {
   name: string;
   email: string;
   emailVerified: boolean;
-  image: string | null;
-  doctor: boolean | null;
+  image?: string | null;
+  doctor?: boolean | null;
   createdAt: Date;
   updatedAt: Date;
 }
