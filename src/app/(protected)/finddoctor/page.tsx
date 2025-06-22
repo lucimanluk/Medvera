@@ -15,7 +15,6 @@ import {
   PaginationPrevious,
 } from "~/components/ui/pagination";
 import { frameworks } from "~/types/framework";
-
 const appointment_types = ["Live and video", "Video", "Live"];
 
 export default function FindDoctor() {
