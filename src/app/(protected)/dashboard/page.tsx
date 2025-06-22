@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Card,
   CardContent,
@@ -6,52 +8,33 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { ScrollArea } from "~/components/ui/scroll-area";
-import { headers } from "next/headers";
-import { auth } from "~/lib/auth";
+import { api } from "~/trpc/react";
+import Appointment from "../_components/appointment";
+import PrescriptionCard from "../prescriptions/_components/prescriptionCard";
+import { Loader2 } from "lucide-react";
 
-const appointments = [
-  {
-    doctor_name: "Andrei Denis",
-    doctor_speciality: "Cardiology",
-    date: "10/06/2025",
-    time: "21:15",
-    appointment_type: "virtual",
-    location: "",
-    avatar: "",
-  },
-  {
-    doctor_name: "Andrei Denis",
-    doctor_speciality: "Cardiology",
-    date: "10/06/2025",
-    time: "21:15",
-    appointment_type: "virtual",
-    location: "",
-    avatar: "",
-  },
-  {
-    doctor_name: "Andrei Denis",
-    doctor_speciality: "Cardiology",
-    date: "10/06/2025",
-    time: "21:15",
-    appointment_type: "virtual",
-    location: "",
-    avatar: "",
-  },
-  {
-    doctor_name: "Andrei Denis",
-    doctor_speciality: "Cardiology",
-    date: "10/06/2025",
-    time: "21:15",
-    appointment_type: "virtual",
-    location: "",
-    avatar: "",
-  },
-];
-
-export default async function Dashboard() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+export default function Dashboard() {
+  const {
+    data: appointments,
+    isLoading: loadingAppointments,
+    error: appointmentsError,
+  } = api.appointment.getDashboardAppointments.useQuery();
+  const {
+    data: prescriptions,
+    isLoading: loadingPrescriptions,
+    error: prescriptionsError,
+  } = api.prescription.getDashboardPrescriptions.useQuery();
+  if (loadingAppointments || loadingPrescriptions) {
+    return (
+      <div className="flex h-screen w-full flex-row items-center justify-center">
+        <Loader2 size={16} className="animate-spin" />
+      </div>
+    );
+  }
+  if (appointmentsError || prescriptionsError) {
+    return <div>Error</div>;
+  }
+  console.log(appointments?.user?.name);
   return (
     <div className="flex w-full flex-col gap-4 py-4 pr-4">
       <div className="flex flex-col gap-1">
@@ -60,19 +43,25 @@ export default async function Dashboard() {
           Quick view into your prescriptions, appointments and messages
         </span>
       </div>
-      <div className="flex w-full flex-row justify-between gap-4">
+      <div className="flex w-full flex-col gap-4">
         <Card className="w-full">
           <CardHeader>
             <CardTitle>Appointments</CardTitle>
             <CardDescription>See your future appointments</CardDescription>
           </CardHeader>
           <CardContent>
-            <ScrollArea className="h-72 w-full">
-              {appointments.length === 4 ? (
+            <ScrollArea className="h-68 w-full">
+              {appointments?.data.length === 0 ? (
                 <span>No upcoming appoinments.</span>
               ) : (
-                appointments.map((appointment, index) => (
-                  <div key={index} className="p-2"></div>
+                appointments?.data.map((appointment, index) => (
+                  <div key={index} className="mb-2">
+                    <Appointment
+                      props={appointment}
+                      user={appointments.user!}
+                      key={index}
+                    />
+                  </div>
                 ))
               )}
             </ScrollArea>
@@ -82,7 +71,7 @@ export default async function Dashboard() {
           <CardHeader>
             <CardTitle>Prescriptions</CardTitle>
             <CardDescription>
-              {session?.user.doctor ? (
+              {appointments?.user?.doctor ? (
                 <span>Prescriptions that you have assigned</span>
               ) : (
                 <span>Prescriptions that you need to take</span>
@@ -90,12 +79,18 @@ export default async function Dashboard() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <ScrollArea className="h-72 w-full">
-              {appointments.length === 4 ? (
-                <span>No upcoming appoinments.</span>
+            <ScrollArea className="h-68 w-full">
+              {prescriptions?.data.length === 0 ? (
+                <span>No prescriptions ongoing.</span>
               ) : (
-                appointments.map((appointment, index) => (
-                  <div key={index} className="p-2"></div>
+                prescriptions?.data.map((prescription, index) => (
+                  <div key={index} className="mb-2">
+                    <PrescriptionCard
+                      props={prescription}
+                      user={prescriptions.user!}
+                      key={index}
+                    />
+                  </div>
                 ))
               )}
             </ScrollArea>

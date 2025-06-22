@@ -17,6 +17,9 @@ export const doctorsRouter = createTRPCRouter({
     const data = await ctx.db.user.findUnique({
       where: {
         id: clause,
+      },
+      include: {
+        doctorAppointments: true,
       }
     })
      return data;

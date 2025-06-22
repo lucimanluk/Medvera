@@ -1,4 +1,3 @@
-// app/(authenticated)/_components/PeerClientWrapper.tsx
 "use client";
 
 import React, { Suspense } from "react";
@@ -7,6 +6,7 @@ import { PeerContextProvider, usePeerContext } from "~/context/peerContext";
 import CallOverlay from "./callOverlay";
 import { ClientToaster } from "./clientToaster";
 import type { User as UserType } from "~/types/user";
+import { Loader2 } from "lucide-react";
 
 export default function PeerClientWrapper({
   userId,
@@ -35,7 +35,13 @@ function InnerLayout({
 
   return (
     <>
-      <Suspense fallback={<div className="w-1/4 p-4">Loading…</div>}>
+      <Suspense
+        fallback={
+          <div className="flex min-h-screen w-full flex-row items-center justify-center">
+            <Loader2 className="animate-spin" />
+          </div>
+        }
+      >
         <main className="flex min-h-screen min-w-full flex-row gap-4">
           <Sidebar user={user} />
           {children}

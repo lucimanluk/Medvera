@@ -18,7 +18,6 @@ import Link from "next/link";
 import Header from "~/app/_components/header";
 import { useRouter } from "next/navigation";
 import { useSession } from "~/lib/auth-client";
-import { redirect } from "next/navigation";
 
 export default function SignIn() {
   const session = useSession();
@@ -29,96 +28,96 @@ export default function SignIn() {
   const router = useRouter();
   console.log(session);
 
-    return (
-      <div className="flex h-screen flex-col">
-        <Header />
-        <Card className="m-auto w-md max-w-md">
-          <CardHeader>
-            <CardTitle className="text-lg md:text-xl">Sign In</CardTitle>
-            <CardDescription className="text-xs md:text-sm">
-              Enter your email below to login to your account
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-4">
-              <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  required
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                  }}
-                  value={email}
-                />
-              </div>
-
-              <div className="grid gap-2">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                  <Link
-                    href="#"
-                    className="ml-auto inline-block text-sm underline"
-                  >
-                    Forgot your password?
-                  </Link>
-                </div>
-
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="password"
-                  autoComplete="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
-
-              <div className="flex items-center gap-2">
-                <Checkbox
-                  id="remember"
-                  onClick={() => {
-                    setRememberMe(!rememberMe);
-                  }}
-                />
-                <Label htmlFor="remember">Remember me</Label>
-              </div>
-
-              <Button
-                type="submit"
-                className="w-full bg-[#2F80ED] text-white hover:bg-[#1366d6]"
-                disabled={loading}
-                onClick={async () => {
-                  await signIn.email(
-                    {
-                      email,
-                      password,
-                    },
-                    {
-                      onRequest: (ctx) => {
-                        setLoading(true);
-                      },
-                      onResponse: (ctx) => {
-                        setLoading(false);
-                      },
-                      onSuccess: async () => {
-                        router.push(`/dashboard`);
-                      },
-                    },
-                  );
+  return (
+    <div className="flex h-screen flex-col">
+      <Header />
+      <Card className="m-auto w-md max-w-md">
+        <CardHeader>
+          <CardTitle className="text-lg md:text-xl">Sign In</CardTitle>
+          <CardDescription className="text-xs md:text-sm">
+            Enter your email below to login to your account
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="m@example.com"
+                required
+                onChange={(e) => {
+                  setEmail(e.target.value);
                 }}
-              >
-                {loading ? (
-                  <Loader2 size={16} className="animate-spin" />
-                ) : (
-                  <p> Login </p>
-                )}
-              </Button>
+                value={email}
+              />
             </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+
+            <div className="grid gap-2">
+              <div className="flex items-center">
+                <Label htmlFor="password">Password</Label>
+                <Link
+                  href="#"
+                  className="ml-auto inline-block text-sm underline"
+                >
+                  Forgot your password?
+                </Link>
+              </div>
+
+              <Input
+                id="password"
+                type="password"
+                placeholder="password"
+                autoComplete="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Checkbox
+                id="remember"
+                onClick={() => {
+                  setRememberMe(!rememberMe);
+                }}
+              />
+              <Label htmlFor="remember">Remember me</Label>
+            </div>
+
+            <Button
+              type="submit"
+              className="w-full bg-[#2F80ED] text-white hover:bg-[#1366d6]"
+              disabled={loading}
+              onClick={async () => {
+                await signIn.email(
+                  {
+                    email,
+                    password,
+                  },
+                  {
+                    onRequest: (ctx) => {
+                      setLoading(true);
+                    },
+                    onResponse: (ctx) => {
+                      setLoading(false);
+                    },
+                    onSuccess: async () => {
+                      router.push(`/dashboard`);
+                    },
+                  },
+                );
+              }}
+            >
+              {loading ? (
+                <Loader2 size={16} className="animate-spin" />
+              ) : (
+                <p> Login </p>
+              )}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

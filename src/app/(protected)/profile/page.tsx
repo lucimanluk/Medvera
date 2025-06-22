@@ -13,6 +13,7 @@ import InputRow from "./_components/InputRow";
 import InputTypes from "./_components/InputTypes";
 import { useState } from "react";
 import { api } from "~/trpc/react";
+import { Loader2 } from "lucide-react";
 
 export default function Profile() {
   const { data, isLoading, error } = api.user.get2.useQuery();
@@ -24,7 +25,11 @@ export default function Profile() {
   const [meidcalCondition, setMedicalCondition] = useState<string[]>([]);
   const [isEditing, setIsEditing] = useState(false);
   if (isLoading) {
-    return <div className="m-auto">Loading...</div>;
+    return (
+      <div className="flex h-screen w-full flex-row items-center justify-center">
+        <Loader2 size={16} className="animate-spin" />
+      </div>
+    );
   }
   if (error) {
     return <div className="m-auto">Error...</div>;

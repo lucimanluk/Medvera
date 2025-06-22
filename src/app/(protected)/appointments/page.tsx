@@ -20,6 +20,7 @@ import {
 import type { User } from "~/types/user";
 import { api } from "~/trpc/react";
 import { usePeerContext } from "~/context/peerContext";
+import { Loader2 } from "lucide-react";
 
 const appointment_types = ["Live and video", "Video", "Live"];
 
@@ -56,15 +57,29 @@ const frameworks: Framework[] = [
 ];
 
 export default function Appointments() {
-  const data = api.post.getAppointments.useQuery();
-  const appts = data.data?.data ?? [];
-  const user = data.data?.user;
+  const { data, isLoading, error } =
+    api.appointment.getDashboardAppointments.useQuery();
+  const appts = data?.data ?? [];
+  const user = data?.user;
   const peer = usePeerContext();
   const [open, setOpen] = React.useState(false);
   const [open1, setOpen1] = React.useState(false);
   const [value, setValue] = React.useState("All specialisations");
   const [value1, setValue1] = React.useState("All specialisations");
   const [value2, setValue2] = React.useState("");
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen w-full flex-row items-center justify-center">
+        <Loader2 size={16} className="animate-spin" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return;
+  }
+
   return (
     <div className="flex w-full flex-col justify-between gap-4 py-4 pr-4">
       <div className="flex flex-col gap-1">

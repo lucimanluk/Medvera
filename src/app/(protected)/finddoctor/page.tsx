@@ -1,5 +1,6 @@
 "use client";
 
+import { Loader2 } from "lucide-react";
 import { Input } from "~/components/ui/input";
 import DoctorCard from "./_components/doctorCard";
 import * as React from "react";
@@ -20,7 +21,6 @@ const appointment_types = ["Live and video", "Video", "Live"];
 
 export default function FindDoctor() {
   const { data, isLoading, error } = api.doctor.get2.useQuery();
-  console.log(data);
   const [open, setOpen] = React.useState(false);
   const [open1, setOpen1] = React.useState(false);
   const [value, setValue] = React.useState("All specialisations");
@@ -28,7 +28,11 @@ export default function FindDoctor() {
   const [value2, setValue2] = React.useState("");
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex h-screen w-full flex-row items-center justify-center">
+        <Loader2 size={16} className="animate-spin" />
+      </div>
+    );
   }
   if (error) {
     return <div>Error</div>;

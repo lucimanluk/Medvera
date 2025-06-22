@@ -19,23 +19,6 @@ export const postRouter = createTRPCRouter({
         },
       });
     }),
-  getAppointments: publicProcedure.query(async ({ ctx }) => {
-    const user = ctx.session?.user;
-
-    const whereClause = user?.doctor
-      ? { doctorId: user?.id }
-      : { patientId: user?.id };
-
-    const data = await ctx.db.appointment.findMany({
-      where: whereClause,
-      include: {
-        patient: true,
-        doctor: true,
-      },
-    });
-
-    return {data, user};
-  }),
   getLatest: publicProcedure.query(async ({ ctx }) => {
     const post = await ctx.db.post.findFirst({
       orderBy: { createdAt: "desc" },
