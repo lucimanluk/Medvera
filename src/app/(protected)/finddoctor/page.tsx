@@ -15,14 +15,24 @@ import {
   PaginationPrevious,
 } from "~/components/ui/pagination";
 import { frameworks } from "~/types/framework";
+import { api } from "~/trpc/react";
 const appointment_types = ["Live and video", "Video", "Live"];
 
 export default function FindDoctor() {
+  const { data, isLoading, error } = api.doctor.get2.useQuery();
+  console.log(data);
   const [open, setOpen] = React.useState(false);
   const [open1, setOpen1] = React.useState(false);
   const [value, setValue] = React.useState("All specialisations");
   const [value1, setValue1] = React.useState("All specialisations");
   const [value2, setValue2] = React.useState("");
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  if (error) {
+    return <div>Error</div>;
+  }
   return (
     <div className="flex w-full flex-col gap-4 py-4 pr-4">
       <div className="flex flex-col gap-1">
@@ -53,29 +63,25 @@ export default function FindDoctor() {
           appointments={appointment_types}
         />
       </div>
-      <DoctorCard />
-      <DoctorCard />
-      <DoctorCard />
-      <DoctorCard />
-      <DoctorCard />
-      <DoctorCard />
-      <DoctorCard />
-      <Pagination>
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious href="#" />
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink href="#">1</PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationEllipsis />
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationNext href="#" />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+      {data?.map((doctor, index) => <DoctorCard doctor={doctor} key={index} />)}
+      {data && data.length >= 7 ? (
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious href="#" />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink href="#">1</PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationEllipsis />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationNext href="#" />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      ) : null}
     </div>
   );
 }
