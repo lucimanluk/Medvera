@@ -5,7 +5,7 @@ export default function TimeSlot({
   selected,
   onClick,
 }: {
-  hour: string;
+  hour?: string;
   selected: boolean;
   onClick: () => void;
 }) {

@@ -41,6 +41,7 @@ getDashboardAppointments: publicProcedure.query(async ({ ctx }) => {
     }),
   createAppointment: publicProcedure.input(z.object({
     id: z.string(),
+    appointmentDate: z.date(),
 })).mutation(async ({ctx, input}) => {
    const user = ctx.session?.user;
    
@@ -49,7 +50,7 @@ getDashboardAppointments: publicProcedure.query(async ({ ctx }) => {
     data: {
       patientId: user?.id,
       doctorId: input.id,
-      appointmentDate: new Date(),
+      appointmentDate: input.appointmentDate,
     },
    })}
 })

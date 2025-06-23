@@ -16,6 +16,7 @@ import TimeSlot from "../../_components/timeSlot";
 import { api } from "~/trpc/react";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { date } from "zod";
 
 const slots = [
   "09:00",
@@ -29,14 +30,21 @@ const slots = [
   "17:00",
 ];
 
+const times = slots.map((slot) => {
+  const [h = 0, m = 0] = slot.split(":").map(Number);
+  const d = new Date();
+  d.setHours(h, m, 0, 0);
+  return d;
+});
+
 export default function Doctor() {
   const params = useParams();
   const [loading, setLoading] = useState(false);
   const [date, setDate] = useState<Date | undefined>();
-  const [time, setTime] = useState<string>("");
+  const [time, setTime] = useState<Date | undefined>();
 
   useEffect(() => {
-    setTime("");
+    setTime(undefined);
   }, [date]);
 
   const rawId = params.doctor;
@@ -104,12 +112,20 @@ export default function Doctor() {
             </div>
             <div className="flex flex-col p-2">
               <span>Date: {date?.toDateString()}</span>
-              <span>Time: {time}</span>
+              <span>Time: {time?.toTimeString().split("GMT")[0]}</span>
               <Button
                 className="bg-[#2F80ED] text-white hover:bg-[#1366d6]"
                 disabled={!date || !time || loading === true}
                 onClick={() => {
-                  mutation.mutate({ id });
+                  if (!date || !time) return;
+                  const appointmentDate = new Date(
+                    date.getFullYear(),
+                    date.getMonth(),
+                    date.getDate(),
+                    time.getHours(),
+                    time.getMinutes(),
+                  );
+                  mutation.mutate({ id, appointmentDate });
                 }}
               >
                 {loading === true ? (
@@ -139,9 +155,9 @@ export default function Doctor() {
                 <div className="flex flex-col items-center gap-1">
                   <h3 className="text-lg font-medium">Choose the time</h3>
                   <div className="flex h-72 w-32 flex-col gap-1 overflow-y-auto">
-                    {slots.map((timp, index) => (
+                    {times.map((timp, index) => (
                       <TimeSlot
-                        hour={timp}
+                        hour={timp.toTimeString().split("GMT")[0]}
                         key={index}
                         selected={time === timp}
                         onClick={() => {

@@ -23,7 +23,20 @@ export default function Appointment({
   user: User;
 }) {
   const peer = usePeerContext()!;
+  const [isCallTime, setIsCallTime] = useState(false);
   const apptDateObj = new Date(props.appointmentDate);
+  const apptTs = apptDateObj.getTime();
+  const appointmentEndTs = apptTs + 60 * 60 * 1000;
+  useEffect(() => {
+    const checkTime = () => {
+      const nowTs = Date.now();
+      const joinWindowStart = apptTs - 10 * 60 * 1000;
+      setIsCallTime(nowTs >= joinWindowStart && nowTs <= appointmentEndTs);
+    };
+    checkTime();
+    const tid = setInterval(checkTime, 30_000);
+    return () => clearInterval(tid);
+  }, [props.appointmentDate]);
   const today = new Date(
     new Date().getFullYear(),
     new Date().getMonth(),
@@ -35,26 +48,11 @@ export default function Appointment({
     apptDateObj.getDate(),
   );
   if (apptDateOnly < today) return null;
-
-  const apptTs = apptDateObj.getTime();
-  const appointmentEndTs = apptTs + 60 * 60 * 1000;
   if (
     apptDateOnly.getTime() === today.getTime() &&
     Date.now() > appointmentEndTs
   )
     return null;
-
-  const [isCallTime, setIsCallTime] = useState(false);
-  useEffect(() => {
-    const checkTime = () => {
-      const nowTs = Date.now();
-      const joinWindowStart = apptTs - 10 * 60 * 1000;
-      setIsCallTime(nowTs >= joinWindowStart && nowTs <= appointmentEndTs);
-    };
-    checkTime();
-    const tid = setInterval(checkTime, 30_000);
-    return () => clearInterval(tid);
-  }, [props.appointmentDate]);
 
   const remotePeerId =
     peer.peer?.id === props.patient.id ? props.doctor.id : props.patient.id;

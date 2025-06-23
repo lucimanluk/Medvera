@@ -57,16 +57,15 @@ const frameworks: Framework[] = [
 ];
 
 export default function Appointments() {
-  const { data, isLoading, error } =
-    api.appointment.getDashboardAppointments.useQuery();
-  const appts = data?.data ?? [];
-  const user = data?.user;
   const peer = usePeerContext();
   const [open, setOpen] = React.useState(false);
   const [open1, setOpen1] = React.useState(false);
   const [value, setValue] = React.useState("All specialisations");
   const [value1, setValue1] = React.useState("All specialisations");
   const [value2, setValue2] = React.useState("");
+  const { data, isLoading, error } = api.appointment.getAppointments.useQuery();
+  const appts = data?.data ?? [];
+  const user = data?.user;
 
   if (isLoading) {
     return (
@@ -133,7 +132,7 @@ export default function Appointments() {
           peer={peer!}
         />
       ))}
-      {appts.length >= 10 ? (
+      {appts.length >= 100 ? (
         <Pagination>
           <PaginationContent>
             <PaginationItem>

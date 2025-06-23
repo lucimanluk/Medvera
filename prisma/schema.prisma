@@ -8,43 +8,98 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-model Post {
-  id        Int      @id @default(autoincrement())
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([name])
-}
-
 model User {
-  id                   String         @id
-  name                 String
-  email                String         @unique
-  emailVerified        Boolean
-  image                String?
-  doctor               Boolean?
-  createdAt            DateTime
-  updatedAt            DateTime
+  id            String   @id @default(uuid())
+  name          String
+  email         String   @unique
+  emailVerified Boolean  @default(false)
+  image         String?
+  doctor        Boolean?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  patientProfile PatientProfile? @relation("PatientProfileToUser")
+  doctorProfile  DoctorProfile?  @relation("DoctorProfileToUser")
+
   doctorAppointments   Appointment[]  @relation("DoctorAppointments")
   patientAppointments  Appointment[]  @relation("PatientAppointments")
-  DoctorChats          Chat[]         @relation("DoctorChats")
-  PatientChats         Chat[]         @relation("PatientChats")
-  SentMessages         Message[]      @relation("SentMessages")
   doctorPrescriptions  Prescription[] @relation("DoctorPrescriptions")
   patientPrescriptions Prescription[] @relation("PatientPrescriptions")
-  accounts             Account[]
-  sessions             Session[]
+
+  accounts Account[]
+  sessions Session[]
 
   @@map("user")
 }
 
+model PatientProfile {
+  id     String @id @default(uuid())
+  userId String @unique
+  user   User   @relation("PatientProfileToUser", fields: [userId], references: [id], onDelete: Cascade)
+
+  firstName         String
+  lastName          String
+  phoneNumber       String
+  series            String
+  cnp               String
+  birthDate         DateTime
+  gender            String
+  address           String
+  city              String
+  county            String
+  zipCode           String
+  emergencyFirst    String
+  emergencyLast     String
+  emergencyRelation String
+  emergencyPhone    String
+
+  familyDoctor      String?
+  familyDoctorPhone String?
+  bloodType         String?
+  rhFactor          String?
+  weight            Float?
+  height            Float?
+  allergies         String[] @default([])
+  medicalConditions String[] @default([])
+}
+
+model DoctorProfile {
+  id                      String   @id @default(uuid())
+  userId                  String   @unique
+  user                    User     @relation("DoctorProfileToUser", fields: [userId], references: [id], onDelete: Cascade)
+  firstName               String
+  lastName                String
+  phoneNumber             String
+  series                  String
+  cnp                     String
+  birthDate               DateTime
+  gender                  String
+  specialization          String
+  specializationIssueDate DateTime
+  cabinetName             String
+  cabinetPhone            String
+  cabinetAddress          String
+  cabinetCity             String
+  cabinetCounty           String
+  cabinetZipCode          String
+
+  cmrSeries         String
+  cmrNumber         String
+  cmrIssueDate      DateTime
+  cmrExpirationDate DateTime
+
+  digiSigSeries         String
+  digiSigNumber         String
+  digiSigIssueDate      DateTime
+  digiSigExpirationDate DateTime
+}
+
 model Session {
-  id        String   @id
+  id        String   @id @default(uuid())
   expiresAt DateTime
   token     String   @unique
-  createdAt DateTime
-  updatedAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   ipAddress String?
   userAgent String?
   userId    String
@@ -54,7 +109,7 @@ model Session {
 }
 
 model Account {
-  id                    String    @id
+  id                    String    @id @default(uuid())
   accountId             String
   providerId            String
   userId                String
@@ -65,15 +120,15 @@ model Account {
   refreshTokenExpiresAt DateTime?
   scope                 String?
   password              String?
-  createdAt             DateTime
-  updatedAt             DateTime
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
   user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("account")
 }
 
 model Verification {
-  id         String    @id
+  id         String    @id @default(uuid())
   identifier String
   value      String
   expiresAt  DateTime
@@ -86,35 +141,12 @@ model Verification {
 model Appointment {
   id              String   @id @default(uuid())
   createdAt       DateTime @default(now())
-  appointmentDate DateTime @default(now())
-  patientId       String
-  doctorId        String
-  doctor          User     @relation("DoctorAppointments", fields: [doctorId], references: [id], onDelete: Cascade)
-  patient         User     @relation("PatientAppointments", fields: [patientId], references: [id], onDelete: Cascade)
-}
+  appointmentDate DateTime
 
-model Message {
-  id        String    @id @default(uuid())
-  createdAt DateTime  @default(now())
-  content   String
-  isRead    Boolean   @default(false)
-  readAt    DateTime?
-  senderId  String
-  chatId    String
-  chat      Chat      @relation(fields: [chatId], references: [id], onDelete: Cascade)
-  sender    User      @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
-}
-
-model Chat {
-  id        String    @id @default(uuid())
-  createdAt DateTime  @default(now())
   patientId String
   doctorId  String
-  doctor    User      @relation("DoctorChats", fields: [doctorId], references: [id], onDelete: Cascade)
-  patient   User      @relation("PatientChats", fields: [patientId], references: [id], onDelete: Cascade)
-  messages  Message[]
-
-  @@unique([doctorId, patientId])
+  doctor    User   @relation("DoctorAppointments", fields: [doctorId], references: [id], onDelete: Cascade)
+  patient   User   @relation("PatientAppointments", fields: [patientId], references: [id], onDelete: Cascade)
 }
 
 model Prescription {
@@ -129,6 +161,7 @@ model Prescription {
   instructions   String
   medicationName String
   quantity       String
-  doctor         User     @relation("DoctorPrescriptions", fields: [doctorId], references: [id], onDelete: Cascade)
-  patient        User     @relation("PatientPrescriptions", fields: [patientId], references: [id], onDelete: Cascade)
+
+  doctor  User @relation("DoctorPrescriptions", fields: [doctorId], references: [id], onDelete: Cascade)
+  patient User @relation("PatientPrescriptions", fields: [patientId], references: [id], onDelete: Cascade)
 }

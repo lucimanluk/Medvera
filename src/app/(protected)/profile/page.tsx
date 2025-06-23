@@ -15,6 +15,7 @@ import { useState } from "react";
 import { api } from "~/trpc/react";
 import { Loader2, Edit, Save, X } from "lucide-react";
 import { Button } from "~/components/ui/button";
+import { specializations } from "~/data/specializations";
 
 export default function Profile() {
   const { data, isLoading, error } = api.user.get2.useQuery();
@@ -316,9 +317,11 @@ export default function Profile() {
               <CardContent className="flex flex-col gap-4">
                 <InputRow
                   label_name1={"Specialization"}
-                  label_name2={"Subspecialization"}
-                  type={["select", "select"]}
+                  label_name2={"Date of issue "}
+                  inputType2="date"
+                  type={["select", "input"]}
                   editing={editing}
+                  data1={specializations}
                 />
                 <div className="flex flex-col gap-4">
                   <div className="flex flex-col">
