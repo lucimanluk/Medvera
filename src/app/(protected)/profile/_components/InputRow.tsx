@@ -16,6 +16,7 @@ interface InputRowProps {
   type: string[];
   data1?: string[];
   data2?: string[];
+  editing: boolean;
 }
 
 export default function InputRow({
@@ -26,15 +27,16 @@ export default function InputRow({
   type,
   data1,
   data2,
+  editing,
 }: InputRowProps) {
   return (
-    <div className=" flex flex-row justify-between gap-8">
-      <form className="flex w-full flex-col gap-2">
+    <div className="flex flex-row justify-between gap-8">
+      <div className="flex w-full flex-col gap-2">
         <Label>{label_name1}</Label>
         {type[0] === "input" ? (
-          <Input type={inputType1}></Input>
+          <Input type={inputType1} disabled={!editing}></Input>
         ) : (
-          <Select>
+          <Select disabled={!editing}>
             <SelectTrigger className="w-full">
               <SelectValue />
             </SelectTrigger>
@@ -47,13 +49,13 @@ export default function InputRow({
             </SelectContent>
           </Select>
         )}
-      </form>
-      <form className="flex w-full flex-col gap-2">
+      </div>
+      <div className="flex w-full flex-col gap-2">
         <Label>{label_name2}</Label>
         {type[1] === "input" ? (
-          <Input type={inputType2}></Input>
+          <Input type={inputType2} disabled={!editing}></Input>
         ) : (
-          <Select>
+          <Select disabled={!editing}>
             <SelectTrigger className="w-full">
               <SelectValue />
             </SelectTrigger>
@@ -66,7 +68,7 @@ export default function InputRow({
             </SelectContent>
           </Select>
         )}
-      </form>
+      </div>
     </div>
   );
 }

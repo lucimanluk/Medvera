@@ -6,10 +6,12 @@ export default function InputTypes({
   label_name,
   value,
   setValue,
+  editing,
 }: {
   label_name: string;
   value: string;
   setValue: React.Dispatch<React.SetStateAction<string>>;
+  editing: boolean;
 }) {
   return (
     <div className="flex flex-col gap-2">
@@ -21,10 +23,13 @@ export default function InputTypes({
           value={value}
           onChange={(e) => {
             setValue(e.target.value);
-            console.log(`${value}  ${e.target.value}`);
           }}
+          disabled={!editing}
         ></Input>
-        <Button className="w-1/10 bg-[#2F80ED] text-white hover:bg-[#1366d6]">
+        <Button
+          className="w-1/10 bg-[#2F80ED] text-white hover:bg-[#1366d6]"
+          disabled={!editing}
+        >
           Add information
         </Button>
       </div>
