@@ -204,7 +204,7 @@ export default function Prescriptions() {
         />
       </div>
       {prescriptions.map((prescription, index) => (
-        <PrescriptionCard props={prescription} key={index} user={user} />
+        <PrescriptionCard props={prescription} key={index} user={user!} />
       ))}
       {prescriptions.length >= 10 ? (
         <Pagination>

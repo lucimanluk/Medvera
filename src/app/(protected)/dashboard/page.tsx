@@ -57,7 +57,7 @@ export default function Dashboard() {
                 appointments?.data.map((appointment, index) => (
                   <div key={index} className="mb-2">
                     <Appointment
-                      props={appointment}
+                      appointment={appointment}
                       user={appointments.user!}
                       key={index}
                     />

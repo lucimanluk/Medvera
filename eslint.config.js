@@ -18,6 +18,9 @@ const nextConfigs = Array.isArray(rawNextConfigs)
 
 export default [
   ...nextConfigs,
+  tsPlugin.configs.recommended,
+  tsPlugin.configs.recommendedTypeChecked,
+  tsPlugin.configs.stylisticTypeChecked,
   {
     files: ["**/*.ts", "**/*.tsx"],
     languageOptions: {
@@ -30,12 +33,6 @@ export default [
     plugins: {
       "@typescript-eslint": tsPlugin,
     },
-    extends: [
-      // @ts-ignore
-      ...tsPlugin.configs.recommended,
-      ...tsPlugin.configs.recommendedTypeChecked,
-      ...tsPlugin.configs.stylisticTypeChecked,
-    ],
     rules: {
       "@typescript-eslint/array-type": "off",
       "@typescript-eslint/consistent-type-definitions": "off",
