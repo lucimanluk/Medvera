@@ -79,6 +79,10 @@
     "tailwindcss": "^4.0.15",
     "typescript": "^5.8.2"
   },
+    "optionalDependencies": {
+    "lightningcss-linux-x64-gnu": "^1.29.1",
+    "@tailwindcss/oxide-linux-x64-gnu": "^4.0.14"
+  },
   "ct3aMetadata": {
     "initVersion": "7.39.3"
   }
