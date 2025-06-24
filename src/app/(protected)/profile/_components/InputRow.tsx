@@ -34,9 +34,12 @@ export default function InputRow({
       <div className="flex w-full flex-col gap-2">
         <Label>{label_name1}</Label>
         {type[0] === "input" ? (
-          <Input type={inputType1} disabled={!editing}></Input>
+          <Input
+            type={inputType1}
+            disabled={inputType1 === "email" ? true : !editing}
+          ></Input>
         ) : (
-          <Select disabled={!editing}>
+          <Select disabled={inputType2 === "email" ? true : !editing}>
             <SelectTrigger className="w-full">
               <SelectValue />
             </SelectTrigger>

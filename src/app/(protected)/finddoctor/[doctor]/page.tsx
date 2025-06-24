@@ -16,7 +16,6 @@ import TimeSlot from "../../_components/timeSlot";
 import { api } from "~/trpc/react";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { date } from "zod";
 
 const slots = [
   "09:00",
@@ -63,6 +62,7 @@ export default function Doctor() {
       });
       utils.appointment.getAppointments.invalidate();
       utils.appointment.getDashboardAppointments.invalidate();
+      utils.doctor.getPage.invalidate({ doctor: id });
     },
     onError: () => toast("Error"),
     onMutate(variables) {
@@ -88,7 +88,7 @@ export default function Doctor() {
   if (error) {
     return <div>Error</div>;
   }
-
+  console.log(data?.doctorAppointments);
   if (data === null) {
     return (
       <div className="flex h-screen w-full flex-col items-center justify-center gap-2">
@@ -155,16 +155,29 @@ export default function Doctor() {
                 <div className="flex flex-col items-center gap-1">
                   <h3 className="text-lg font-medium">Choose the time</h3>
                   <div className="flex h-72 w-32 flex-col gap-1 overflow-y-auto">
-                    {times.map((timp, index) => (
-                      <TimeSlot
-                        hour={timp.toTimeString().split("GMT")[0]}
-                        key={index}
-                        selected={time === timp}
-                        onClick={() => {
-                          setTime(timp);
-                        }}
-                      />
-                    ))}
+                    {times.map((timp, index) => {
+                      const isBooked =
+                        data?.doctorAppointments?.some((appt) => {
+                          const apptDate = new Date(appt.appointmentDate);
+                          const sameDay =
+                            apptDate.toDateString() === date.toDateString();
+                          const sameTime =
+                            apptDate.getHours() === timp?.getHours() &&
+                            apptDate.getMinutes() === timp.getMinutes();
+                          return sameDay && sameTime;
+                        }) ?? false;
+                      if (isBooked === false)
+                        return (
+                          <TimeSlot
+                            hour={timp.toTimeString().split("GMT")[0]}
+                            key={index}
+                            selected={time === timp}
+                            onClick={() => {
+                              setTime(timp);
+                            }}
+                          />
+                        );
+                    })}
                   </div>
                 </div>
               ) : null}

@@ -18,9 +18,40 @@ import { Button } from "~/components/ui/button";
 import { specializations } from "~/data/specializations";
 
 export default function Profile() {
-  const { data, isLoading, error } = api.user.get2.useQuery();
-  const [editing, setEditing] = useState(false);
-  const [date, setDate] = useState<Date | undefined>();
+  const { data, isLoading, error } = api.user.get3.useQuery();
+  const [editing, setEditing] = useState<boolean>(false);
+  const [firstName, setFirstName] = useState<string>("");
+  const [lastName, setLastName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
+  const [series, setSeries] = useState<string>("");
+  const [cnp, setCnp] = useState<string>("");
+  const [birthDate, setBirthDate] = useState<Date | undefined>();
+  const [specialization, setSpecialization] = useState<string>("");
+  const [spcializationDateOfIssue, setSpecializationDateOfIssue] = useState<
+    Date | undefined
+  >();
+  const [cabinetName, setCabinetName] = useState<string>("");
+  const [cabinetPhoneNumber, setCabinetPhoneNumber] = useState<string>("");
+  const [cabinetAddress, setCabinetAddress] = useState<string>("");
+  const [cabinetCity, setCabinetCity] = useState<string>("");
+  const [cabinetCounty, setCabinetCounty] = useState<string>("");
+  const [cabinetZip, setCabinetZip] = useState<string>("");
+  const [cmrSeries, setCmrSeries] = useState<string>("");
+  const [cmrNumber, setCmrNumber] = useState<string>("");
+  const [cmrDateOfIssue, setCmrDateOfIssue] = useState<string>("");
+  const [cmrExpirationDate, setCmrExpirationDate] = useState<string>("");
+  const [digSigSeries, setDigSigSeries] = useState<string>("");
+  const [digSigNumber, setDigSigNumber] = useState<string>("");
+  const [digSigDateOfIssue, setDigSigDateOfIssue] = useState<string>("");
+  const [digSigExpirationDate, setDigSigExpirationDate] = useState<string>("");
+  const [date, setDate] = useState<Date[] | undefined>();
+  const [familyDoctor, setFamilyDoctor] = useState<string>("");
+  const [familyDoctorPhone, setFamilyDoctorPhone] = useState<string>("");
+  const [bloodType, setBloodType] = useState<string>("");
+  const [rhFactor, setRhFactor] = useState<string>("");
+  const [weight, setWeight] = useState<string>("");
+  const [height, setHeight] = useState<string>("");
   const [allergies, setAllergies] = useState<string[]>([]);
   const [allergyInput, setAllergyInput] = useState<string>("");
   const [meidcalConditionInput, setMedicalConditionInput] =
@@ -396,6 +427,17 @@ export default function Profile() {
                     editing={editing}
                   />
                 </div>
+                {/*<div className="flex w-full flex-col items-center">
+                  <h1 className="font-semibold">Pick your free days</h1>
+                  <Calendar
+                    mode="multiple"
+                    selected={date}
+                    onSelect={setDate}
+                    className="rounded-md border shadow-sm"
+                    startMonth={new Date()}
+                    disabled={editing ? { before: new Date() } : (date) => true}
+                  />
+                </div>*/}
               </CardContent>
             </Card>
           </TabsContent>

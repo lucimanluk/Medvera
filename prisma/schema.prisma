@@ -33,25 +33,25 @@ model User {
 }
 
 model PatientProfile {
-  id     String @id @default(uuid())
-  userId String @unique
-  user   User   @relation("PatientProfileToUser", fields: [userId], references: [id], onDelete: Cascade)
+  id        String @id @default(uuid())
+  userEmail String @unique
+  user      User   @relation("PatientProfileToUser", fields: [userEmail], references: [email], onDelete: Cascade)
 
   firstName         String
   lastName          String
-  phoneNumber       String
-  series            String
-  cnp               String
-  birthDate         DateTime
-  gender            String
-  address           String
-  city              String
-  county            String
-  zipCode           String
-  emergencyFirst    String
-  emergencyLast     String
-  emergencyRelation String
-  emergencyPhone    String
+  phoneNumber       String?
+  series            String?
+  cnp               String?
+  birthDate         DateTime?
+  gender            String?
+  address           String?
+  city              String?
+  county            String?
+  zipCode           String?
+  emergencyFirst    String?
+  emergencyLast     String?
+  emergencyRelation String?
+  emergencyPhone    String?
 
   familyDoctor      String?
   familyDoctorPhone String?
@@ -64,34 +64,36 @@ model PatientProfile {
 }
 
 model DoctorProfile {
-  id                      String   @id @default(uuid())
-  userId                  String   @unique
-  user                    User     @relation("DoctorProfileToUser", fields: [userId], references: [id], onDelete: Cascade)
+  id                      String    @id @default(uuid())
+  userEmail               String    @unique
+  user                    User      @relation("DoctorProfileToUser", fields: [userEmail], references: [email], onDelete: Cascade)
   firstName               String
   lastName                String
-  phoneNumber             String
-  series                  String
-  cnp                     String
-  birthDate               DateTime
-  gender                  String
-  specialization          String
-  specializationIssueDate DateTime
-  cabinetName             String
-  cabinetPhone            String
-  cabinetAddress          String
-  cabinetCity             String
-  cabinetCounty           String
-  cabinetZipCode          String
+  phoneNumber             String?
+  series                  String?
+  cnp                     String?
+  birthDate               DateTime?
+  gender                  String?
+  specialization          String?
+  specializationIssueDate DateTime?
+  cabinetName             String?
+  cabinetPhone            String?
+  cabinetAddress          String?
+  cabinetCity             String?
+  cabinetCounty           String?
+  cabinetZipCode          String?
 
-  cmrSeries         String
-  cmrNumber         String
-  cmrIssueDate      DateTime
-  cmrExpirationDate DateTime
+  cmrSeries         String?
+  cmrNumber         String?
+  cmrIssueDate      DateTime?
+  cmrExpirationDate DateTime?
 
-  digiSigSeries         String
-  digiSigNumber         String
-  digiSigIssueDate      DateTime
-  digiSigExpirationDate DateTime
+  digiSigSeries         String?
+  digiSigNumber         String?
+  digiSigIssueDate      DateTime?
+  digiSigExpirationDate DateTime?
+
+  freeDays DateTime[]
 }
 
 model Session {

@@ -125,12 +125,7 @@ export default function Appointments() {
         />
       </div>
       {appts.map((item, index) => (
-        <Appointment
-          props={item}
-          user={user as User}
-          key={index}
-          peer={peer!}
-        />
+        <Appointment appointment={item} user={user as User} key={index} />
       ))}
       {appts.length >= 100 ? (
         <Pagination>

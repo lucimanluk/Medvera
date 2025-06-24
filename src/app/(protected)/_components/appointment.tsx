@@ -1,3 +1,4 @@
+// Appointment.tsx
 "use client";
 
 import { Calendar, Clock, Video, PhoneCall, Shuffle } from "lucide-react";
@@ -11,79 +12,56 @@ import {
 import { Button } from "~/components/ui/button";
 import type { Appointment as AppointmentType } from "~/types/appointment";
 import type { User } from "~/types/user";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { usePeerContext } from "~/context/peerContext";
 import { toast } from "sonner";
 
 export default function Appointment({
-  props,
+  appointment,
   user,
 }: {
-  props: AppointmentType;
+  appointment: AppointmentType;
   user: User;
 }) {
-  const peer = usePeerContext()!;
+  const { peer, startCall, endCall, inCall, localStream, remoteStream } =
+    usePeerContext()!;
   const [isCallTime, setIsCallTime] = useState(false);
-  const apptDateObj = new Date(props.appointmentDate);
+  const apptDateObj = new Date(appointment.appointmentDate);
   const apptTs = apptDateObj.getTime();
   const appointmentEndTs = apptTs + 60 * 60 * 1000;
+
   useEffect(() => {
-    const checkTime = () => {
-      const nowTs = Date.now();
-      const joinWindowStart = apptTs - 10 * 60 * 1000;
-      setIsCallTime(nowTs >= joinWindowStart && nowTs <= appointmentEndTs);
+    const check = () => {
+      const now = Date.now();
+      setIsCallTime(now >= apptTs - 600000 && now <= appointmentEndTs);
     };
-    checkTime();
-    const tid = setInterval(checkTime, 30_000);
+    check();
+    const tid = setInterval(check, 30000);
     return () => clearInterval(tid);
-  }, [props.appointmentDate]);
-  const today = new Date(
-    new Date().getFullYear(),
-    new Date().getMonth(),
-    new Date().getDate(),
-  );
-  const apptDateOnly = new Date(
-    apptDateObj.getFullYear(),
-    apptDateObj.getMonth(),
-    apptDateObj.getDate(),
-  );
-  if (apptDateOnly < today) return null;
-  if (
-    apptDateOnly.getTime() === today.getTime() &&
-    Date.now() > appointmentEndTs
-  )
-    return null;
+  }, [appointment.appointmentDate]);
 
   const remotePeerId =
-    peer.peer?.id === props.patient.id ? props.doctor.id : props.patient.id;
+    user.id === appointment.patient.id
+      ? appointment.doctor.id
+      : appointment.patient.id;
+
   const handleJoinCall = () => {
-    peer.peer?.once("error", (err: any) => {
-      if (err.type === "peer-unavailable") {
-        toast(`User isn't online`, {
-          description: "Wait for them to come back online",
-          duration: 5_000,
-          cancel: { label: "Close", onClick: () => {} },
-        });
-      }
-    });
-    const conn = peer.peer?.connect(remotePeerId);
+    const conn = peer?.connect(remotePeerId);
     conn?.on("open", () => {
       conn.send({
         type: "call-request",
         from: user.id,
         name: user.name,
-        appointmentId: props.id,
+        appointmentId: appointment.id,
       });
     });
     conn?.on("data", (data: unknown) => {
-      peer.setInCall(true);
+      if (typeof data === "object" && (data as any).type === "call-accept") {
+        startCall(remotePeerId);
+      }
     });
     conn?.on("error", () => {
-      toast(`Couldn't connect to user`, {
-        description: "There was an error calling the user.",
-        duration: 5_000,
-        cancel: { label: "Close", onClick: () => {} },
-      });
+      toast.error("Couldn't connect to user", { duration: 5000 });
     });
   };
 
@@ -94,41 +72,39 @@ export default function Appointment({
           <div className="h-10 w-10 rounded-full bg-black" />
           <div className="flex flex-col gap-1">
             <CardTitle>
-              {user.id === props.patient.id
-                ? props.doctor.name
-                : props.patient.name}
+              {user.id === appointment.patient.id
+                ? appointment.doctor.name
+                : appointment.patient.name}
             </CardTitle>
             <CardDescription>
-              {user.id === props.patient.id
-                ? props.doctor.name
+              {user.id === appointment.patient.id
+                ? "specialitate"
                 : "varsta si gender"}
             </CardDescription>
           </div>
         </div>
         <div className="flex gap-4">
           <Button variant="outline">
-            <Shuffle />
-            Reschedule
+            <Shuffle /> Reschedule
           </Button>
-          {isCallTime && peer.inCall === false ? (
+          {isCallTime && !inCall && (
             <Button
-              className="bg-[#2F80ED] text-white hover:bg-[#1366d6]"
               onClick={handleJoinCall}
+              className="bg-[#2F80ED] text-white hover:bg-[#1366d6]"
             >
-              <PhoneCall />
-              Join call
+              <PhoneCall /> Join call
             </Button>
-          ) : isCallTime && peer.inCall === true ? (
+          )}
+          {inCall && (
+            <Button variant="outline" onClick={endCall}>
+              <PhoneCall /> End call
+            </Button>
+          )}
+          {!isCallTime && !inCall && (
             <Button variant="outline" disabled>
-              <PhoneCall />
-              In call
+              <PhoneCall /> Call at {apptDateObj.toTimeString().split("GMT")[0]}
             </Button>
-          ) : isCallTime === false && peer.inCall === false ? (
-            <Button variant="outline" disabled>
-              <PhoneCall />
-              Call at {props.appointmentDate.toTimeString().split("GMT")[0]}
-            </Button>
-          ) : null}
+          )}
         </div>
       </CardHeader>
       <CardContent className="flex w-3/4 justify-between">
@@ -142,7 +118,7 @@ export default function Appointment({
         </div>
         <div className="flex items-center gap-2">
           <Video width={18} height={18} />
-          {props.patient.name}
+          Video call
         </div>
       </CardContent>
     </Card>
