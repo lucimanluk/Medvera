@@ -26,8 +26,10 @@ model User {
   doctorPrescriptions  Prescription[] @relation("DoctorPrescriptions")
   patientPrescriptions Prescription[] @relation("PatientPrescriptions")
 
-  accounts Account[]
-  sessions Session[]
+  accounts           Account[]
+  sessions           Session[]
+  doctorConnections  Connection[] @relation("DoctorToPatient")
+  patientConnections Connection[] @relation("PatientToDoctor")
 
   @@map("user")
 }
@@ -138,6 +140,17 @@ model Verification {
   updatedAt  DateTime?
 
   @@map("verification")
+}
+
+model Connection {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  patientId String
+  doctorId  String
+  doctor    User     @relation("DoctorToPatient", fields: [doctorId], references: [id], onDelete: Cascade)
+  patient   User     @relation("PatientToDoctor", fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@unique([patientId, doctorId])
 }
 
 model Appointment {

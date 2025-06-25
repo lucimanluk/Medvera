@@ -17,23 +17,17 @@ export const userRouter = createTRPCRouter({
   }),
   get3: publicProcedure.query(async ({ctx}) => {
 
-    const doctorCheck = ctx.session?.user.doctor;
+    const id = ctx.session?.user.id;
 
-    if(doctorCheck) {
     return await ctx.db.user.findUnique({
-      where: {id: ctx.session?.user.id},
+      where: {
+        id: id,
+      },
       include: {
         doctorProfile: true,
-      }
-    })
-  } else {
-    return await ctx.db.user.findUnique({
-      where: {id: ctx.session?.user.id},
-      include: {
         patientProfile: true,
       }
-    })
-  }
+    }) 
   }),
   setDoctor: publicProcedure.input(z.object({
     email: z.string(),

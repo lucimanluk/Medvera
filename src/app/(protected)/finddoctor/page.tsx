@@ -6,15 +6,6 @@ import DoctorCard from "./_components/doctorCard";
 import * as React from "react";
 import PopoverFilter from "./_components/popoverFilter";
 import SelectorFilter from "./_components/selectorFilter";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "~/components/ui/pagination";
 import { frameworks } from "~/types/framework";
 import { api } from "~/trpc/react";
 const appointment_types = ["Live and video", "Video", "Live"];
@@ -68,24 +59,6 @@ export default function FindDoctor() {
         />
       </div>
       {data?.map((doctor, index) => <DoctorCard doctor={doctor} key={index} />)}
-      {data && data.length >= 7 ? (
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious href="#" />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationLink href="#">1</PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationNext href="#" />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      ) : null}
     </div>
   );
 }

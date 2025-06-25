@@ -17,6 +17,10 @@ interface InputRowProps {
   data1?: string[];
   data2?: string[];
   editing: boolean;
+  value1: any;
+  setValue1: (value1: any) => void;
+  value2: any;
+  setValue2: (value2: any) => void;
 }
 
 export default function InputRow({
@@ -28,6 +32,10 @@ export default function InputRow({
   data1,
   data2,
   editing,
+  value1,
+  setValue1,
+  value2,
+  setValue2,
 }: InputRowProps) {
   return (
     <div className="flex flex-row justify-between gap-8">
@@ -37,9 +45,11 @@ export default function InputRow({
           <Input
             type={inputType1}
             disabled={inputType1 === "email" ? true : !editing}
+            value={value1}
+            onChange={(e) => setValue1(e.target.value)}
           ></Input>
         ) : (
-          <Select disabled={inputType2 === "email" ? true : !editing}>
+          <Select disabled={!editing} value={value1} onValueChange={setValue1}>
             <SelectTrigger className="w-full">
               <SelectValue />
             </SelectTrigger>
@@ -56,9 +66,14 @@ export default function InputRow({
       <div className="flex w-full flex-col gap-2">
         <Label>{label_name2}</Label>
         {type[1] === "input" ? (
-          <Input type={inputType2} disabled={!editing}></Input>
+          <Input
+            type={inputType2}
+            disabled={!editing}
+            value={value2}
+            onChange={(e) => setValue2(e.target.value)}
+          ></Input>
         ) : (
-          <Select disabled={!editing}>
+          <Select disabled={!editing} value={value2} onValueChange={setValue2}>
             <SelectTrigger className="w-full">
               <SelectValue />
             </SelectTrigger>

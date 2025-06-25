@@ -22,7 +22,6 @@ export default function CallOverlay() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const videoRefRemote = useRef<HTMLVideoElement | null>(null);
 
-  // Attach streams to video elements
   useEffect(() => {
     if (localStream && videoRef.current) {
       videoRef.current.srcObject = localStream;
@@ -32,14 +31,12 @@ export default function CallOverlay() {
     }
   }, [localStream, remoteStream]);
 
-  // Toggle camera
   useEffect(() => {
     if (localStream) {
       localStream.getVideoTracks().forEach((t) => (t.enabled = isVideo));
     }
   }, [isVideo, localStream]);
 
-  // Toggle microphone
   useEffect(() => {
     if (localStream) {
       localStream.getAudioTracks().forEach((t) => (t.enabled = isMic));

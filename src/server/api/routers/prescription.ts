@@ -21,4 +21,39 @@
 
         return {data, user};
       }),
+      getPrescriptions: publicProcedure.query(async ({ctx}) => {
+        const user = ctx.session?.user;
+        const data = await ctx.db.prescription.findMany({ include: {
+            patient: true,
+            doctor: true,
+          },});
+        return {data, user};
+      }),
+      createPrescription: publicProcedure.input(z.object({
+        patientId: z.string(),
+        startingDate: z.date(),
+        endingDate: z.date(),
+        dosage: z.string(),
+        frequency: z.string(),
+        instructions: z.string(),
+        medicationName: z.string(),
+        quantity: z.string(),
+      })).mutation(async ({ctx, input}) => {
+        const user = ctx.session?.user;
+
+      if (user)
+          return await ctx.db.prescription.create({
+          data: {
+            patientId: input.patientId,
+            startingDate: input.startingDate,
+            endingDate: input.endingDate,
+            doctorId: user?.id,
+            dosage: input.dosage,
+            frequency: input.frequency,
+            instructions: input.instructions,
+            medicationName: input.medicationName,
+            quantity: input.quantity,
+          },
+        })
+      })
     });

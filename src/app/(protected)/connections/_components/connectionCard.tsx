@@ -45,7 +45,6 @@ export default function ConnectionCard({ type }: { type: string }) {
       </CardHeader>
       <CardContent className="flex w-3/4 justify-between">
         <span>mail</span>
-        <span></span>
       </CardContent>
     </Card>
   );

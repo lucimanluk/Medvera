@@ -22,7 +22,6 @@ import { useSession } from "~/lib/auth-client";
 import { api } from "~/trpc/react";
 
 export default function SignUp() {
-  const session = useSession();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -48,7 +47,6 @@ export default function SignUp() {
       reader.readAsDataURL(file);
     }
   };
-
   return (
     <div className="flex h-screen flex-col items-center">
       <Header />
@@ -184,7 +182,6 @@ export default function SignUp() {
                           lastName,
                         });
                       }
-
                       toast.success("Account created!");
                       router.push(`/profile`);
                     },

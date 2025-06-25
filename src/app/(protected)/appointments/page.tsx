@@ -8,15 +8,6 @@ import SelectorFilter from "../finddoctor/_components/selectorFilter";
 import { Input } from "~/components/ui/input";
 import Link from "next/link";
 import * as React from "react";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "~/components/ui/pagination";
 import type { User } from "~/types/user";
 import { api } from "~/trpc/react";
 import { usePeerContext } from "~/context/peerContext";
@@ -127,24 +118,6 @@ export default function Appointments() {
       {appts.map((item, index) => (
         <Appointment appointment={item} user={user as User} key={index} />
       ))}
-      {appts.length >= 100 ? (
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious href="#" />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationLink href="#">1</PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationNext href="#" />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      ) : null}
     </div>
   );
 }
