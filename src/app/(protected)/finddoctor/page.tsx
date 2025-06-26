@@ -3,7 +3,7 @@
 import { Loader2 } from "lucide-react";
 import { Input } from "~/components/ui/input";
 import DoctorCard from "./_components/doctorCard";
-import * as React from "react";
+import { useState, useMemo } from "react";
 import PopoverFilter from "./_components/popoverFilter";
 import SelectorFilter from "./_components/selectorFilter";
 import { frameworks } from "~/types/framework";
@@ -11,21 +11,32 @@ import { api } from "~/trpc/react";
 const appointment_types = ["Live and video", "Video", "Live"];
 
 export default function FindDoctor() {
-  const { data, isLoading, error } = api.doctor.get2.useQuery();
-  const [open, setOpen] = React.useState(false);
-  const [open1, setOpen1] = React.useState(false);
-  const [value, setValue] = React.useState("All specialisations");
-  const [value1, setValue1] = React.useState("All specialisations");
-  const [value2, setValue2] = React.useState("");
+  const {
+    data: doctorsResponse,
+    isLoading: doctorLoading,
+    error: doctorsError,
+  } = api.doctor.getDoctors.useQuery();
+  const [search, setSearch] = useState("");
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState("All specialisations");
 
-  if (isLoading) {
+  const doctors = doctorsResponse?.data ?? [];
+  const user = doctorsResponse?.user;
+
+  const filteredSearch = useMemo(() => {
+    const term = search.toLowerCase().trim();
+    if (!term) return doctors;
+    return doctors.filter((doctor) => doctor.name.toLowerCase().includes(term));
+  }, [doctors, search]);
+
+  if (doctorLoading) {
     return (
       <div className="flex h-screen w-full flex-row items-center justify-center">
         <Loader2 size={16} className="animate-spin" />
       </div>
     );
   }
-  if (error) {
+  if (doctorsError) {
     return <div>Error</div>;
   }
   return (
@@ -37,7 +48,13 @@ export default function FindDoctor() {
         </span>
       </div>
       <div className="flex flex-row items-center gap-2">
-        <Input placeholder="Search for a doctor..." />
+        <Input
+          placeholder="Search for a doctor..."
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value);
+          }}
+        />
         <PopoverFilter
           open={open}
           setOpen={setOpen}
@@ -45,20 +62,15 @@ export default function FindDoctor() {
           setValue={setValue}
           frameworks={frameworks}
         />
-        <PopoverFilter
-          open={open1}
-          setOpen={setOpen1}
-          value={value1}
-          setValue={setValue1}
-          frameworks={frameworks}
-        />
-        <SelectorFilter
-          value={value2}
-          setValue={setValue2}
-          appointments={appointment_types}
-        />
       </div>
-      {data?.map((doctor, index) => <DoctorCard doctor={doctor} key={index} />)}
+      {filteredSearch.map((doctor, index) => (
+        <DoctorCard
+          doctor={doctor}
+          key={index}
+          user={user!}
+          doctorConnection={doctor.doctorConnections}
+        />
+      ))}
     </div>
   );
 }

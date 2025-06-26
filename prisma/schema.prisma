@@ -145,6 +145,7 @@ model Verification {
 model Connection {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
+  accepted  Boolean
   patientId String
   doctorId  String
   doctor    User     @relation("DoctorToPatient", fields: [doctorId], references: [id], onDelete: Cascade)

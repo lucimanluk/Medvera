@@ -1,7 +1,6 @@
-// Appointment.tsx
 "use client";
 
-import { Calendar, Clock, Video, PhoneCall, Shuffle } from "lucide-react";
+import { Calendar, Clock, Video, PhoneCall } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -19,12 +18,13 @@ import { toast } from "sonner";
 export default function Appointment({
   appointment,
   user,
+  type,
 }: {
   appointment: AppointmentType;
   user: User;
+  type: string;
 }) {
-  const { peer, startCall, endCall, inCall, localStream, remoteStream } =
-    usePeerContext()!;
+  const { peer, startCall, inCall } = usePeerContext()!;
   const [isCallTime, setIsCallTime] = useState(false);
   const apptDateObj = new Date(appointment.appointmentDate);
   const apptTs = apptDateObj.getTime();
@@ -77,16 +77,11 @@ export default function Appointment({
                 : appointment.patient.name}
             </CardTitle>
             <CardDescription>
-              {user.id === appointment.patient.id
-                ? "specialitate"
-                : "varsta si gender"}
+              {user.id === appointment.patient.id ? "specialitate" : "patient"}
             </CardDescription>
           </div>
         </div>
         <div className="flex gap-4">
-          <Button variant="outline">
-            <Shuffle /> Reschedule
-          </Button>
           {isCallTime && !inCall && (
             <Button
               onClick={handleJoinCall}
@@ -96,8 +91,8 @@ export default function Appointment({
             </Button>
           )}
           {inCall && (
-            <Button variant="outline" onClick={endCall}>
-              <PhoneCall /> End call
+            <Button variant="outline" disabled={true}>
+              <PhoneCall /> In call
             </Button>
           )}
           {!isCallTime && !inCall && (

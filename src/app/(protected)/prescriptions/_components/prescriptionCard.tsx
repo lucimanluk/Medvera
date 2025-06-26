@@ -16,17 +16,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "~/components/ui/alert-dialog";
 import { Label } from "~/components/ui/label";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import type { Prescription as PrescriptionType } from "~/types/prescription";
@@ -36,9 +25,11 @@ import { Eye, Trash, Edit } from "lucide-react";
 export default function PrescriptionCard({
   props,
   user,
+  type,
 }: {
   props: PrescriptionType;
   user: User;
+  type: string;
 }) {
   return (
     <Card>
@@ -139,55 +130,6 @@ export default function PrescriptionCard({
               </DialogFooter>
             </DialogContent>
           </Dialog>
-          {user.doctor ? (
-            <>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button variant="outline">
-                    <Edit />
-                    Edit details
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Edit prescription</DialogTitle>
-                    <DialogDescription>
-                      Edit data about this prescription
-                    </DialogDescription>
-                  </DialogHeader>
-                </DialogContent>
-              </Dialog>
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button className="justify-start bg-red-500 text-white hover:bg-red-600 hover:text-white">
-                    <Trash />
-                    Delete item
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>
-                      Are you sure you want to delete this prescription?
-                    </AlertDialogTitle>
-                    <AlertDialogDescription>
-                      Upon clicking "Yes", this prescription will be deleted.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction
-                      className="justify-start bg-red-500 text-white hover:bg-red-600 hover:text-white"
-                      onClick={() => {
-                        console.log("inchizitia spaniola");
-                      }}
-                    >
-                      Delete
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            </>
-          ) : null}
         </div>
       </CardHeader>
       <CardContent className="flex flex-row justify-between">

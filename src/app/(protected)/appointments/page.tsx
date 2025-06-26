@@ -8,7 +8,6 @@ import SelectorFilter from "../finddoctor/_components/selectorFilter";
 import { Input } from "~/components/ui/input";
 import Link from "next/link";
 import * as React from "react";
-import type { User } from "~/types/user";
 import { api } from "~/trpc/react";
 import { usePeerContext } from "~/context/peerContext";
 import { Loader2 } from "lucide-react";
@@ -94,7 +93,7 @@ export default function Appointments() {
         ) : null}
       </div>
       <div className="flex flex-row items-center gap-2">
-        <Input placeholder="Search for an appointment..." />
+        <Input placeholder="Search for an appointment based on doctor's name..." />
         <PopoverFilter
           open={open}
           setOpen={setOpen}
@@ -109,15 +108,7 @@ export default function Appointments() {
           setValue={setValue1}
           frameworks={frameworks}
         />
-        <SelectorFilter
-          value={value2}
-          setValue={setValue2}
-          appointments={appointment_types}
-        />
       </div>
-      {appts.map((item, index) => (
-        <Appointment appointment={item} user={user as User} key={index} />
-      ))}
     </div>
   );
 }

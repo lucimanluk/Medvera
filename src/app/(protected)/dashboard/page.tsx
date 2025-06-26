@@ -24,6 +24,9 @@ export default function Dashboard() {
     isLoading: loadingPrescriptions,
     error: prescriptionsError,
   } = api.prescription.getDashboardPrescriptions.useQuery();
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+  const todayTime = todayStart.getTime();
   if (loadingAppointments || loadingPrescriptions) {
     return (
       <div className="flex h-screen w-full flex-row items-center justify-center">
@@ -51,18 +54,23 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             <ScrollArea className="h-68 w-full">
-              {appointments?.data.length === 0 ? (
-                <span>No upcoming appoinments.</span>
+              {!appointments?.data || appointments.data.length === 0 ? (
+                <span>No appointments ongoing.</span>
               ) : (
-                appointments?.data.map((appointment, index) => (
-                  <div key={index} className="mb-2">
-                    <Appointment
-                      appointment={appointment}
-                      user={appointments.user!}
-                      key={index}
-                    />
-                  </div>
-                ))
+                appointments.data
+                  .filter(
+                    (appointment) =>
+                      appointment.appointmentDate.getTime() >= Date.now(),
+                  )
+                  .map((appointment, idx) => (
+                    <div className="mb-2" key={idx}>
+                      <Appointment
+                        appointment={appointment}
+                        user={appointments.user!}
+                        type="ongoing"
+                      />
+                    </div>
+                  ))
               )}
             </ScrollArea>
           </CardContent>
@@ -83,15 +91,20 @@ export default function Dashboard() {
               {prescriptions?.data.length === 0 ? (
                 <span>No prescriptions ongoing.</span>
               ) : (
-                prescriptions?.data.map((prescription, index) => (
-                  <div key={index} className="mb-2">
-                    <PrescriptionCard
-                      props={prescription}
-                      user={prescriptions.user!}
-                      key={index}
-                    />
-                  </div>
-                ))
+                prescriptions?.data
+                  .filter(
+                    (prescription) =>
+                      prescription.endingDate.getTime() >= todayTime,
+                  )
+                  .map((prescription, idx) => (
+                    <div className="mb-2" key={idx}>
+                      <PrescriptionCard
+                        props={prescription}
+                        user={prescriptions.user!}
+                        type="ongoing"
+                      />
+                    </div>
+                  ))
               )}
             </ScrollArea>
           </CardContent>

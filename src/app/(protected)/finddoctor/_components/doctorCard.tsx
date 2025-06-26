@@ -1,4 +1,6 @@
-import { Calendar, Clock, Video } from "lucide-react";
+"use client";
+
+import { Calendar, Clock, Video, UserPlus2 } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -9,8 +11,37 @@ import {
 import { Button } from "~/components/ui/button";
 import type { User as UserType } from "~/types/user";
 import Link from "next/link";
+import type { DoctorConnection } from "~/types/connection";
+import { api } from "~/trpc/react";
+import { useState, useEffect } from "react";
+import { toast } from "sonner";
 
-export default function DoctorCard({ doctor }: { doctor: UserType }) {
+export default function DoctorCard({
+  doctor,
+  user,
+  doctorConnection,
+}: {
+  doctor: UserType;
+  user: UserType;
+  doctorConnection: DoctorConnection[];
+}) {
+  const [conn, setConn] = useState(false);
+  useEffect(() => {
+    setConn(doctorConnection.some((c) => c.patientId === user.id));
+  }, [doctorConnection, user.id]);
+
+  const createConnection = api.connection.createConnection.useMutation({
+    onSuccess: () => {
+      toast("Successfully sent connection!", {
+        action: {
+          label: "Close",
+          onClick: () => {
+            return;
+          },
+        },
+      });
+    },
+  });
   return (
     <Card>
       <CardHeader className="flex flex-row justify-between">
@@ -22,6 +53,26 @@ export default function DoctorCard({ doctor }: { doctor: UserType }) {
           </div>
         </div>
         <div className="flex flex-row gap-4">
+          {conn === false ? (
+            <Button
+              variant="outline"
+              onClick={() => {
+                createConnection.mutate({
+                  doctorId: doctor.id,
+                  patientId: user.id,
+                });
+              }}
+            >
+              <UserPlus2 />
+              Send connection request
+            </Button>
+          ) : (
+            <Button variant="outline" className="bg-gray-100">
+              <UserPlus2 />
+              Connection request sent
+            </Button>
+          )}
+
           <Link href={`finddoctor/${doctor.id}`}>
             <Button className="bg-[#2F80ED] text-white hover:bg-[#1366d6]">
               Make appointment
