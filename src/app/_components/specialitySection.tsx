@@ -5,7 +5,7 @@ import { HeartPulse, Droplet, Brain, Baby } from "lucide-react";
 
 export default function SpecialitySection() {
   return (
-    <section id="specialties" className="container py-6 md:py-24 lg:py-16">
+    <section id="specialities" className="container py-6 md:py-24 lg:py-16">
       <div className="mx-auto mb-12 max-w-5xl text-center">
         <h2 className="text-3xl font-bold tracking-tighter md:text-4xl">
           Medical Specialties

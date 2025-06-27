@@ -24,8 +24,16 @@
       getPrescriptions: publicProcedure.query(async ({ctx}) => {
         const user = ctx.session?.user;
         const data = await ctx.db.prescription.findMany({ include: {
-            patient: true,
-            doctor: true,
+            patient: {
+              include: {
+                patientProfile:true,
+              }
+            },
+            doctor: {
+              include: {
+                doctorProfile: true,
+              }
+            }
           },});
         return {data, user};
       }),

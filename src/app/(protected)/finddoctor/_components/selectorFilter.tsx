@@ -9,26 +9,26 @@ import {
 export default function SelectorFilter({
   value,
   setValue,
-  appointments,
+  order,
 }: {
   value: string;
   setValue: (newValue: string) => void;
-  appointments: string[];
+  order: string[];
 }) {
   return (
     <Select
       onValueChange={(newVal: string) => {
         setValue(newVal);
       }}
-      defaultValue={appointments[0]}
+      defaultValue={order[0]}
     >
       <SelectTrigger className="w-[180px]">
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
-        {appointments.map((appointment, index) => (
-          <SelectItem key={index} value={appointment}>
-            {appointment}
+        {order.map((order, index) => (
+          <SelectItem key={index} value={order}>
+            {order}
           </SelectItem>
         ))}
       </SelectContent>

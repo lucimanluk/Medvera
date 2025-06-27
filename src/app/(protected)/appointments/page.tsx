@@ -12,8 +12,6 @@ import { api } from "~/trpc/react";
 import { usePeerContext } from "~/context/peerContext";
 import { Loader2 } from "lucide-react";
 
-const appointment_types = ["Live and video", "Video", "Live"];
-
 interface Framework {
   value: string;
   label: string;
@@ -49,10 +47,7 @@ const frameworks: Framework[] = [
 export default function Appointments() {
   const peer = usePeerContext();
   const [open, setOpen] = React.useState(false);
-  const [open1, setOpen1] = React.useState(false);
   const [value, setValue] = React.useState("All specialisations");
-  const [value1, setValue1] = React.useState("All specialisations");
-  const [value2, setValue2] = React.useState("");
   const { data, isLoading, error } = api.appointment.getAppointments.useQuery();
   const appts = data?.data ?? [];
   const user = data?.user;
@@ -94,20 +89,15 @@ export default function Appointments() {
       </div>
       <div className="flex flex-row items-center gap-2">
         <Input placeholder="Search for an appointment based on doctor's name..." />
-        <PopoverFilter
-          open={open}
-          setOpen={setOpen}
-          value={value}
-          setValue={setValue}
-          frameworks={frameworks}
-        />
-        <PopoverFilter
-          open={open1}
-          setOpen={setOpen1}
-          value={value1}
-          setValue={setValue1}
-          frameworks={frameworks}
-        />
+        {user?.doctor === false ? (
+          <PopoverFilter
+            open={open}
+            setOpen={setOpen}
+            value={value}
+            setValue={setValue}
+            frameworks={frameworks}
+          />
+        ) : null}
       </div>
     </div>
   );

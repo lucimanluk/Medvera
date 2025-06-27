@@ -82,11 +82,24 @@ export default function Prescriptions() {
   const filteredSearch = useMemo(() => {
     const term = search.toLowerCase().trim();
     if (!term) return prescriptions;
-    return prescriptions.filter(
-      (prescription) =>
+    return prescriptions.filter((prescription) => {
+      const nameToCheck =
+        user?.doctor === false
+          ? prescription.doctor.name
+          : prescription.patient.name;
+      const nameMatch = nameToCheck.toLowerCase().includes(term);
+      return (
         prescription.medicationName.toLowerCase().includes(term) ||
-        prescription.dosage.toLowerCase().includes(term),
-    );
+        prescription.dosage.toLowerCase().includes(term) ||
+        prescription.dosage
+          .toLowerCase()
+          .concat(` ${prescription.medicationName}`)
+          .includes(term) ||
+        nameMatch ||
+        prescription.endingDate.toDateString().toLowerCase().includes(term) ||
+        prescription.startingDate.toDateString().toLowerCase().includes(term)
+      );
+    });
   }, [prescriptions, search]);
 
   if (isPrescriptionsLoading || isConnectionLoading) {

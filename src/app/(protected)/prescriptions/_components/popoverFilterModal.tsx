@@ -51,7 +51,7 @@ export default function PopoverFilterModal({
         >
           {value
             ? data.find((d) => d.patient.name === value)?.patient.name
-            : data[0]?.patient.name}
+            : "Select a connection..."}
           <ChevronDown className="opacity-50" />
         </Button>
       </PopoverTrigger>

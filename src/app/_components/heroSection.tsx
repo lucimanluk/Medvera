@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export default function HeroSection() {
   return (
-    <section className="container w-full px-4 py-6 md:py-24 lg:py-16">
+    <section id="hero" className="container w-full px-4 py-6 md:py-24 lg:py-16">
       <div className="flex flex-row justify-between">
         <div className="flex max-w-2/4 flex-col justify-between">
           <div className="space-y-4">
@@ -19,7 +19,7 @@ export default function HeroSection() {
             </p>
           </div>
           <div className="flex flex-col gap-2 min-[400px]:flex-row">
-            <Link href="/signup">
+            <Link href="/signUp">
               <Button
                 size="lg"
                 className="rounded-3xl bg-[#2F80ED] text-white hover:bg-[#1366d6]"

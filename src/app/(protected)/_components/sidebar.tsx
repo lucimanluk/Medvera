@@ -29,7 +29,7 @@ import { signOut } from "~/lib/auth-client";
 import { useRouter } from "next/navigation";
 import type { User as UserType } from "~/types/user";
 
-export default function Sidebar({user} : {user: UserType}) {
+export default function Sidebar({ user }: { user: UserType }) {
   const pathname = usePathname();
   const router = useRouter();
   const links = [
@@ -44,21 +44,13 @@ export default function Sidebar({user} : {user: UserType}) {
   return (
     <nav className="sticky top-0 left-0 z-50 flex h-screen w-1/4 flex-col justify-between bg-white p-4 shadow-sm">
       <div className="flex flex-col gap-6">
-        <Link href="/">
-          <div className="flex items-center gap-2">
-            <Image
-              src="/favicon.ico"
-              alt="Medvera logo"
-              width={32}
-              height={32}
-            />
-            <span className="text-xl font-bold text-black">Medvera</span>
-          </div>
-        </Link>
+        <div className="flex items-center gap-2">
+          <Image src="/logo.png" alt="Medvera logo" width={50} height={50} />
+          <span className="text-xl font-bold text-black">Medvera</span>
+        </div>
         <ul className="flex flex-col gap-4 text-sm font-medium">
           {links.map((link, index) =>
-            user.doctor === true &&
-            link.title === "Find Doctor" ? null : (
+            user.doctor === true && link.title === "Find Doctor" ? null : (
               <li
                 key={index}
                 className={cn(

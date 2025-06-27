@@ -3,19 +3,14 @@ import Link from "next/link";
 import Image from "next/image";
 
 export default function Header() {
-  const hrefs = ["Features", "How it works", "Specialities", "FAQ"];
+  const hrefs = ["Features", "How it works", "Specialities"];
 
   return (
     <nav className="sticky top-0 left-0 z-50 w-full bg-white p-4 shadow-sm">
       <div className="flex flex-row items-center justify-between">
         <Link href="/">
           <div className="flex items-center gap-2">
-            <Image
-              src="/favicon.ico"
-              alt="Medvera logo"
-              width={32}
-              height={32}
-            />
+            <Image src="/logo.png" alt="Medvera logo" width={50} height={50} />
             <span className="text-xl font-bold text-black">Medvera</span>
           </div>
         </Link>
@@ -23,7 +18,7 @@ export default function Header() {
           {hrefs.map((href, index) => (
             <li key={index}>
               <Link
-                href={`/#${href.toLowerCase().replace(/\s+/g, "-")}`}
+                href={`#${href.toLowerCase().replace(/\s+/g, "-")}`}
                 className="text-md text-black transition-colors hover:text-blue-600"
               >
                 {href}

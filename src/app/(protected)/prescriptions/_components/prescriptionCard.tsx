@@ -20,7 +20,8 @@ import { Label } from "~/components/ui/label";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import type { Prescription as PrescriptionType } from "~/types/prescription";
 import type { User } from "~/types/user";
-import { Eye, Trash, Edit } from "lucide-react";
+import { Eye } from "lucide-react";
+import { doctorsRouter } from "~/server/api/routers/doctors";
 
 export default function PrescriptionCard({
   props,
@@ -35,7 +36,14 @@ export default function PrescriptionCard({
     <Card>
       <CardHeader className="flex justify-between">
         <div className="flex items-center gap-2">
-          <div className="h-10 w-10 rounded-full bg-black" />
+          <img
+            src={
+              user.doctor === false
+                ? props.doctor.image || "/default_pfp.jpg"
+                : props.patient.image || "/default_pfp.jpg"
+            }
+            className="h-10 w-10 rounded-full"
+          />
           <div className="flex flex-col gap-1">
             <CardTitle>
               {props.dosage} {props.medicationName}
@@ -64,15 +72,22 @@ export default function PrescriptionCard({
                   See prescription details here
                 </DialogDescription>
               </DialogHeader>
-              <div className="flex flex-row items-center">
-                {/*<div className="h-10 w-10 rounded-full bg-black" />*/}
+              <div className="flex flex-row items-center gap-2">
+                <img
+                  src={
+                    user.doctor === false
+                      ? props.doctor.image || "/default_pfp.jpg"
+                      : props.patient.image || "/default_pfp.jpg"
+                  }
+                  className="h-10 w-10 rounded-full"
+                />
                 <div className="flex flex-col">
                   {user.doctor ? (
                     <span>Assigned to {props.patient.name}</span>
                   ) : (
                     <span>Assigned by {props.doctor.name}</span>
                   )}
-                  <span>Varsta si gen sau ce fel de doctor e </span>
+                  <span>{props.doctor.doctorProfile?.specialization}</span>
                 </div>
               </div>
               <div className="flex flex-row justify-between gap-2">
@@ -96,11 +111,11 @@ export default function PrescriptionCard({
               <div className="flex w-full flex-row justify-between">
                 <div className="flex flex-col gap-2">
                   <Label>Starting date</Label>
-                  <span>{props.startingDate.toDateString()}</span>
+                  <span>{props.startingDate.toISOString().slice(0, 10)}</span>
                 </div>
                 <div className="flex flex-col gap-2">
                   <Label>Ending date</Label>
-                  <span>{props.endingDate.toDateString()}</span>
+                  <span>{props.endingDate.toISOString().slice(0, 10)}</span>
                 </div>
               </div>
               <div className="flex flex-col gap-2">
@@ -138,9 +153,9 @@ export default function PrescriptionCard({
         <span>Frequency: {props.frequency}</span>
         <span>Quantity: {props.quantity}</span>
         <span>
-          From: {props.startingDate.toDateString()} <span>to </span>
-          {props.endingDate.toDateString()}
+          Starting date: {props.startingDate.toISOString().slice(0, 10)}{" "}
         </span>
+        <span>Ending date: {props.endingDate.toISOString().slice(0, 10)}</span>
       </CardContent>
     </Card>
   );
