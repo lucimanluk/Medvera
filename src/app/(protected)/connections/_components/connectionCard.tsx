@@ -54,10 +54,23 @@ export default function ConnectionCard({
     <Card>
       <CardHeader className="flex justify-between">
         <div className="flex items-center gap-2">
-          <div className="h-10 w-10 rounded-full bg-black" />
+          <img
+            src={
+              user.doctor === false
+                ? connection.doctor.image || "/default_pfp.jpg"
+                : connection.patient.image || "/default_pfp.jpg"
+            }
+            className="h-10 w-10 rounded-full"
+          />
           <div className="flex flex-col gap-1">
-            <CardTitle>{}</CardTitle>
-            <CardDescription>Pipi</CardDescription>
+            <CardTitle>
+              {user.doctor === false
+                ? connection.doctor.name
+                : connection.patient.name}
+            </CardTitle>
+            <CardDescription>
+              {user.doctor === false ? <p>Doctor</p> : <p>patient</p>}
+            </CardDescription>
           </div>
         </div>
         {type === "request" && user.doctor ? (
@@ -95,7 +108,51 @@ export default function ConnectionCard({
           </Button>
         ) : null}
       </CardHeader>
-      <CardContent className="flex w-3/4 justify-between"></CardContent>
+      <CardContent className="flex w-3/4 justify-between">
+        <span>
+          Email:
+          {user.doctor ? connection.patient.email : connection.doctor.email}
+        </span>
+        <span>
+          {user.doctor ? (
+            <>
+              <span>Phone number: </span>
+              {connection.patient.patientProfile?.phoneNumber}
+            </>
+          ) : (
+            <>
+              <span>Cabinet phone number: </span>
+              {connection.doctor.doctorProfile?.cabinetPhone}
+            </>
+          )}
+        </span>
+        <span>
+          {user.doctor ? (
+            <>
+              <span>Emergency contact: </span>
+              {connection.patient.patientProfile?.emergencyPhone}
+            </>
+          ) : (
+            <>
+              <span>Cabinet address: </span>
+              {connection.doctor.doctorProfile?.cabinetAddress}
+            </>
+          )}
+        </span>
+        <span>
+          {user.doctor ? (
+            <>
+              <span>Family doctor: </span>
+              {connection.patient.patientProfile?.familyDoctor}
+            </>
+          ) : (
+            <>
+              <span>Cabinet address: </span>
+              {connection.doctor.doctorProfile?.cabinetAddress}
+            </>
+          )}
+        </span>
+      </CardContent>
     </Card>
   );
 }

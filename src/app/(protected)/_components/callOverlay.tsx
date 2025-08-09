@@ -63,7 +63,7 @@ export default function CallOverlay() {
       </Button>
 
       <video
-        ref={videoRef}
+        ref={videoRefRemote}
         className="min-h-full min-w-full border-[3px]"
         autoPlay
         playsInline
@@ -109,7 +109,7 @@ export default function CallOverlay() {
 
       {!isMinimized && (
         <video
-          ref={videoRefRemote}
+          ref={videoRef}
           autoPlay
           playsInline
           className="absolute right-4 bottom-4 h-32 w-32 rounded border-[3px]"
