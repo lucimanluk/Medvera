@@ -101,7 +101,7 @@ export default function Doctor() {
   } else {
     return (
       <div className="flex h-screen w-full flex-col items-center gap-4 bg-teal-50 py-4 pr-4">
-        <Card className="flex h-full w-3/4 flex-col border-none p-4 shadow-none">
+        <Card className="flex h-full w-3/4 flex-col border-none px-16 py-4 shadow-none">
           <CardHeader className="flex flex-row items-center justify-between p-0">
             <div className="flex flex-row items-center gap-2">
               <div className="h-20 w-20 rounded-full bg-black" />
@@ -111,8 +111,8 @@ export default function Doctor() {
               </div>
             </div>
             <div className="flex flex-col p-2">
-              <span>Date: {date?.toDateString()}</span>
-              <span>Time: {time?.toTimeString().split("GMT")[0]}</span>
+              <span >Date: {date?.toDateString()}</span>
+              <span >Time: {time?.toTimeString().split("GMT")[0]}</span>
               <Button
                 className="bg-[#2F80ED] text-white hover:bg-[#1366d6]"
                 disabled={!date || !time || loading === true}

@@ -93,7 +93,7 @@ export default function Sidebar({ user }: { user: UserType }) {
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              className="bg-[#2F80ED]"
+             className="bg-[#2F80ED]"
               onClick={async () =>
                 await signOut({
                   fetchOptions: {

@@ -36,7 +36,7 @@ export default function HeroSection() {
         </div>
         <div className="overflow-hidden rounded-lg">
           <Image
-            src="/telemedicinePic.jpg"
+            src="/heroPicture.jpg"
             width={500}
             height={300}
             alt="Online consultation"

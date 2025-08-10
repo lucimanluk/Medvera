@@ -57,6 +57,8 @@ export default function Profile() {
   const [digSigNumber, setDigSigNumber] = useState<string>("");
   const [digSigDateOfIssue, setDigSigDateOfIssue] = useState<string>("");
   const [digSigExpirationDate, setDigSigExpirationDate] = useState<string>("");
+  const [apptPrice, setApptPrice] = useState<number>();
+  const [apptDuration, setApptDuration] = useState<number>();
   const [familyDoctor, setFamilyDoctor] = useState<string>("");
   const [familyDoctorPhone, setFamilyDoctorPhone] = useState<string>("");
   const [bloodType, setBloodType] = useState<string>("");
@@ -1028,6 +1030,28 @@ export default function Profile() {
                     value2={digSigExpirationDate}
                     setValue2={setDigSigExpirationDate}
                     type={["input", "input"]}
+                    editing={editing}
+                  />
+                </div>
+                <div className="flex flex-col gap-4">
+                  <div className="flex flex-col">
+                    <h1 className="font-semibold">
+                      Schedule and appointment details
+                    </h1>
+                    <span className="text-muted-foreground text-sm">
+                      Details about your schedule and appointments
+                    </span>
+                  </div>
+                  <InputRow
+                    label_name1={"Appointment price (prices in RON)"}
+                    label_name2={"Appointment duration"}
+                    inputType1="number"
+                    type={["input", "select"]}
+                    data2={["15 minutes", "30 minutes", "45 minutes", "60 minutes"]}
+                    value1={apptPrice}
+                    setValue1={setApptPrice}
+                    value2={apptDuration}
+                    setValue2={setApptDuration}
                     editing={editing}
                   />
                 </div>
