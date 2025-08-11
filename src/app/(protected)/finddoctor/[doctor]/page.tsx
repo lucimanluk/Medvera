@@ -88,7 +88,6 @@ export default function Doctor() {
   if (error) {
     return <div>Error</div>;
   }
-  console.log(data?.doctorAppointments);
   if (data === null) {
     return (
       <div className="flex h-screen w-full flex-col items-center justify-center gap-2">
@@ -104,15 +103,30 @@ export default function Doctor() {
         <Card className="flex h-full w-3/4 flex-col border-none px-16 py-4 shadow-none">
           <CardHeader className="flex flex-row items-center justify-between p-0">
             <div className="flex flex-row items-center gap-2">
-              <div className="h-20 w-20 rounded-full bg-black" />
-              <div className="flex flex-col gap-2">
+              <img
+                src={data?.image || "/default_pfp.jpg"}
+                className="h-20 w-20 overflow-hidden rounded-full"
+              />
+              <div className="flex flex-col gap-1">
                 <CardTitle>Dr. {data?.name}</CardTitle>
-                <CardDescription>specialitate</CardDescription>
+                <CardDescription className="flex flex-col">
+                  <span>{data?.doctorProfile?.specialization}</span>
+                  <span>
+                    {data?.email}
+                    {", +"}
+                    {data?.doctorProfile?.cabinetPhone}
+                  </span>
+                </CardDescription>
               </div>
             </div>
-            <div className="flex flex-col p-2">
-              <span >Date: {date?.toDateString()}</span>
-              <span >Time: {time?.toTimeString().split("GMT")[0]}</span>
+            <div className="flex flex-col items-center p-2">
+              <span className="font-bold">Date: {date?.toDateString()} </span>
+              <span className="font-bold">
+                Time: {time?.toTimeString().split("GMT")[0]}
+              </span>
+              <span className="font-bold ">
+                Price: {data?.doctorProfile?.appointmentPrice} lei
+              </span>
               <Button
                 className="bg-[#2F80ED] text-white hover:bg-[#1366d6]"
                 disabled={!date || !time || loading === true}

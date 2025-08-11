@@ -30,6 +30,7 @@ export const doctorsRouter = createTRPCRouter({
       },
       include: {
         doctorAppointments: true,
+        doctorProfile: true,
       }
     })
      return data;

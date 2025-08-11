@@ -423,25 +423,15 @@ export default function Profile() {
                       className="w-full"
                     />
                   ) : null}
-                  {imagePreview ? (
-                    <div className="relative h-32 w-32 overflow-hidden rounded-full">
-                      <Image
-                        src={imagePreview}
-                        alt="Profile preview"
-                        layout="fill"
-                        objectFit="cover"
-                      />
-                    </div>
-                  ) : (
-                    <div className="relative h-32 w-32 overflow-hidden rounded-full">
-                      <Image
-                        src="/default_pfp.jpg"
-                        alt="Blank avatar"
-                        layout="fill"
-                        objectFit="cover"
-                      />
-                    </div>
-                  )}
+
+                  <div className="relative h-32 w-32 overflow-hidden rounded-full">
+                    <Image
+                      src={imagePreview || "/default_pfp.jpg"}
+                      alt="Profile preview"
+                      layout="fill"
+                      objectFit="cover"
+                    />
+                  </div>
                 </div>
               </CardHeader>
               <CardContent className="flex flex-col gap-4">
@@ -1047,7 +1037,12 @@ export default function Profile() {
                     label_name2={"Appointment duration"}
                     inputType1="number"
                     type={["input", "select"]}
-                    data2={["15 minutes", "30 minutes", "45 minutes", "60 minutes"]}
+                    data2={[
+                      "15 minutes",
+                      "30 minutes",
+                      "45 minutes",
+                      "60 minutes",
+                    ]}
                     value1={apptPrice}
                     setValue1={setApptPrice}
                     value2={apptDuration}

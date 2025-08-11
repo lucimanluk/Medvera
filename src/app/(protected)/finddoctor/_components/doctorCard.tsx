@@ -1,6 +1,6 @@
 "use client";
 
-import { Calendar, Clock, Video, UserPlus2 } from "lucide-react";
+import {UserPlus2, UserMinus2 } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -73,9 +73,9 @@ export default function DoctorCard({
               Send connection request
             </Button>
           ) : (
-            <Button variant="outline" className="bg-gray-100">
-              <UserPlus2 />
-              Connection request sent
+            <Button variant="outline" className="bg-gray-100 hover:bg-gray-200">
+              <UserMinus2 />
+              Cancel friend request
             </Button>
           )}
 
