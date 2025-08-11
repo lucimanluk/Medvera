@@ -12,7 +12,6 @@ import { Button } from "~/components/ui/button";
 import type { User as UserType } from "~/types/user";
 import { api } from "~/trpc/react";
 import type { DoctorConnection } from "~/types/connection";
-import { toast } from "sonner";
 
 export default function ConnectionCard({
   type,
@@ -26,27 +25,11 @@ export default function ConnectionCard({
   const utils = api.useUtils();
   const acceptMutation = api.connection.acceptConnection.useMutation({
     onSuccess: () => {
-      toast("Successfully accepted connection!", {
-        action: {
-          label: "Close",
-          onClick: () => {
-            return;
-          },
-        },
-      });
       utils.connection.getConnections.invalidate();
     },
   });
   const declineMutation = api.connection.declineConnection.useMutation({
     onSuccess: () => {
-      toast("Declined connection!", {
-        action: {
-          label: "Close",
-          onClick: () => {
-            return;
-          },
-        },
-      });
       utils.connection.getConnections.invalidate();
     },
   });

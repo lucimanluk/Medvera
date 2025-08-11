@@ -95,6 +95,9 @@ model DoctorProfile {
   digiSigIssueDate      DateTime?
   digiSigExpirationDate DateTime?
 
+  appointmentDuration Int?
+  appointmentPrice    Int?
+
   freeDays DateTime[]
 }
 

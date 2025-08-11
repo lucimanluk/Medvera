@@ -40,16 +40,22 @@ export default function DoctorCard({
           },
         },
       });
+      setConn(true);
     },
   });
   return (
     <Card>
       <CardHeader className="flex flex-row justify-between">
         <div className="flex flex-row items-center gap-2">
-          <div className="h-10 w-10 rounded-full bg-black" />
+          <img
+            src={doctor.image || "/default_pfp.jpg"}
+            className="h-10 w-10 rounded-full"
+          />
           <div className="flex flex-col gap-1">
             <CardTitle>{doctor.name}</CardTitle>
-            <CardDescription>specializare</CardDescription>
+            <CardDescription>
+              {doctor.doctorProfile?.specialization}
+            </CardDescription>
           </div>
         </div>
         <div className="flex flex-row gap-4">
@@ -81,17 +87,26 @@ export default function DoctorCard({
         </div>
       </CardHeader>
       <CardContent className="flex w-3/4 flex-row justify-between text-sm">
-        <div className="g-2 flex flex-row items-center text-sm">
-          <Calendar width={18} height={18} />
-          ceva
+        <div className="g-2 flex flex-row items-center">
+          <p>Email: {doctor.email}</p>
         </div>
         <div className="g-2 flex flex-row items-center">
-          <Clock width={18} height={18} />
-          nu stiu
+          <p>
+            Appointment duration: {doctor.doctorProfile?.appointmentDuration}
+            <span>minutes</span>
+          </p>
         </div>
         <div className="g-2 flex flex-row items-center">
-          <Video width={18} height={18} />
-          inca ceva
+          <p>
+            Appointment price: {doctor.doctorProfile?.appointmentPrice}
+            <span>RON</span>
+          </p>
+        </div>
+        <div className="g-2 flex flex-row items-center">
+          <p>Cabinet phone number: {doctor.doctorProfile?.cabinetPhone}</p>
+        </div>
+        <div className="g-2 flex flex-row items-center">
+          <p>Cabinet location: {doctor.doctorProfile?.cabinetCity}</p>
         </div>
       </CardContent>
     </Card>

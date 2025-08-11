@@ -8,7 +8,6 @@ import PopoverFilter from "./_components/popoverFilter";
 import SelectorFilter from "./_components/selectorFilter";
 import { frameworks } from "~/types/framework";
 import { api } from "~/trpc/react";
-const appointment_types = ["Live and video", "Video", "Live"];
 
 export default function FindDoctor() {
   const {
@@ -22,6 +21,8 @@ export default function FindDoctor() {
 
   const doctors = doctorsResponse?.data ?? [];
   const user = doctorsResponse?.user;
+
+  console.log(doctorsResponse);
 
   const filteredSearch = useMemo(() => {
     const term = search.toLowerCase().trim();

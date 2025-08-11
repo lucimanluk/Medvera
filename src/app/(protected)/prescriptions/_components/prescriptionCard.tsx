@@ -21,7 +21,6 @@ import { ScrollArea } from "~/components/ui/scroll-area";
 import type { Prescription as PrescriptionType } from "~/types/prescription";
 import type { User } from "~/types/user";
 import { Eye } from "lucide-react";
-import { doctorsRouter } from "~/server/api/routers/doctors";
 
 export default function PrescriptionCard({
   props,

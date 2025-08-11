@@ -16,6 +16,7 @@ export const doctorsRouter = createTRPCRouter({
             patient: true,
           }
         },
+        doctorProfile: true,
       }
     });
     return {data, user};
