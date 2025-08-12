@@ -1,0 +1,517 @@
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card";
+import { Input } from "~/components/ui/input";
+import Image from "next/image";
+import InputRow from "./InputRow";
+import { useState, useEffect } from "react";
+import { Edit, Save, X } from "lucide-react";
+import { Button } from "~/components/ui/button";
+import { specializations } from "~/data/specializations";
+
+export default function DoctorProfile({ data }: { data: any }) {
+  const [editing, setEditing] = useState<boolean>(false);
+  const [image, setImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [firstName, setFirstName] = useState<string>("");
+  const [lastName, setLastName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
+  const [series, setSeries] = useState<string>("");
+  const [cnp, setCnp] = useState<string>("");
+  const [birthDate, setBirthDate] = useState<Date | undefined>();
+  const [gender, setGender] = useState<string>("");
+  const [specialization, setSpecialization] = useState<string>("");
+  const [spcializationDateOfIssue, setSpecializationDateOfIssue] = useState<
+    Date | undefined
+  >();
+  const [cabinetName, setCabinetName] = useState<string>("");
+  const [cabinetPhoneNumber, setCabinetPhoneNumber] = useState<string>("");
+  const [cabinetAddress, setCabinetAddress] = useState<string>("");
+  const [cabinetCity, setCabinetCity] = useState<string>("");
+  const [cabinetCounty, setCabinetCounty] = useState<string>("");
+  const [cabinetZip, setCabinetZip] = useState<string>("");
+  const [cmrSeries, setCmrSeries] = useState<string>("");
+  const [cmrNumber, setCmrNumber] = useState<string>("");
+  const [cmrDateOfIssue, setCmrDateOfIssue] = useState<string>("");
+  const [cmrExpirationDate, setCmrExpirationDate] = useState<string>("");
+  const [digSigSeries, setDigSigSeries] = useState<string>("");
+  const [digSigNumber, setDigSigNumber] = useState<string>("");
+  const [digSigDateOfIssue, setDigSigDateOfIssue] = useState<string>("");
+  const [digSigExpirationDate, setDigSigExpirationDate] = useState<string>("");
+  const [apptPrice, setApptPrice] = useState<number>();
+  const [apptDuration, setApptDuration] = useState<number>();
+
+  useEffect(() => {
+    if (!data) return;
+
+    const profile = data.doctorProfile ?? data.patientProfile!;
+
+    setImagePreview(data.image ?? null);
+    setFirstName(profile.firstName);
+    setLastName(profile.lastName);
+    setEmail(data.email);
+    setPhoneNumber(profile.phoneNumber ?? "");
+    setSeries(profile.series ?? "");
+    setCnp(profile.cnp ?? "");
+    setBirthDate(profile.birthDate ? new Date(profile.birthDate) : undefined);
+    setGender(profile.gender ?? "");
+    setSpecialization(
+      "specialization" in profile ? (profile.specialization ?? "") : "",
+    );
+    setSpecializationDateOfIssue(
+      "specializationIssueDate" in profile && profile.specializationIssueDate
+        ? new Date(profile.specializationIssueDate)
+        : undefined,
+    );
+    setCabinetName("cabinetName" in profile ? (profile.cabinetName ?? "") : "");
+    setCabinetPhoneNumber(
+      "cabinetPhone" in profile ? (profile.cabinetPhone ?? "") : "",
+    );
+    setCabinetAddress(
+      "cabinetAddress" in profile ? (profile.cabinetAddress ?? "") : "",
+    );
+    setCabinetCity("cabinetCity" in profile ? (profile.cabinetCity ?? "") : "");
+    setCabinetCounty(
+      "cabinetCounty" in profile ? (profile.cabinetCounty ?? "") : "",
+    );
+    setCabinetZip(
+      "cabinetZipCode" in profile ? (profile.cabinetZipCode ?? "") : "",
+    );
+    setCmrSeries("cmrSeries" in profile ? (profile.cmrSeries ?? "") : "");
+    setCmrNumber("cmrNumber" in profile ? (profile.cmrNumber ?? "") : "");
+    setCmrDateOfIssue(
+      "cmrIssueDate" in profile && profile.cmrIssueDate
+        ? profile.cmrIssueDate.toISOString().slice(0, 10)
+        : "",
+    );
+    setCmrExpirationDate(
+      "cmrExpirationDate" in profile && profile.cmrExpirationDate
+        ? profile.cmrExpirationDate.toISOString().slice(0, 10)
+        : "",
+    );
+    setDigSigSeries(
+      "digiSigSeries" in profile ? (profile.digiSigSeries ?? "") : "",
+    );
+    setDigSigNumber(
+      "digiSigNumber" in profile ? (profile.digiSigNumber ?? "") : "",
+    );
+    setDigSigDateOfIssue(
+      "digiSigIssueDate" in profile && profile.digiSigIssueDate
+        ? profile.digiSigIssueDate.toISOString().slice(0, 10)
+        : "",
+    );
+    setDigSigExpirationDate(
+      "digiSigExpirationDate" in profile && profile.digiSigExpirationDate
+        ? profile.digiSigExpirationDate.toISOString().slice(0, 10)
+        : "",
+    );
+    setApptPrice(
+      "appointmentPrice" in profile && profile.appointmentPrice
+        ? profile.appointmentPrice
+        : 0,
+    );
+    setApptDuration(
+      "appointmentDuration" in profile && profile.appointmentDuration
+        ? profile.appointmentDuration
+        : 0,
+    );
+    console.log(profile);
+  }, [data]);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  return (
+    <div className="flex w-full flex-col gap-4 py-4 pr-4">
+      <div className="flex flex-col gap-1">
+        <span className="text-3xl font-bold">Profile</span>
+        <span className="text-base text-gray-400">Manage your profile</span>
+      </div>
+      <Tabs defaultValue="personal" className="w-full">
+        <div className="flex flex-row justify-between">
+          <TabsList>
+            <TabsTrigger value="personal" disabled={editing}>
+              Personal Information
+            </TabsTrigger>
+            <TabsTrigger value="professional" disabled={editing}>
+              Professional Information
+            </TabsTrigger>
+          </TabsList>
+          <div className="flex flex-row gap-2">
+            <Button
+              className="bg-[#2F80ED] text-white hover:bg-[#1366d6]"
+              onClick={() => {
+                setEditing(!editing);
+              }}
+            >
+              {editing ? (
+                <>
+                  <Save />
+                  <span>Save changes</span>
+                </>
+              ) : (
+                <>
+                  <Edit />
+                  <span>Edit profile</span>
+                </>
+              )}
+            </Button>
+            {editing ? (
+              <Button
+                onClick={() => {
+                  setEditing(false);
+
+                  const profile = data?.doctorProfile ?? data?.patientProfile!;
+
+                  setImagePreview(data?.image ?? null);
+                  setFirstName(profile.firstName);
+                  setLastName(profile.lastName);
+                  setPhoneNumber(profile.phoneNumber ?? "");
+                  setSeries(profile.series ?? "");
+                  setCnp(profile.cnp ?? "");
+                  setBirthDate(
+                    profile.birthDate ? new Date(profile.birthDate) : undefined,
+                  );
+                  setGender(profile.gender ?? "");
+
+                  setSpecialization(
+                    "specialization" in profile
+                      ? (profile.specialization ?? "")
+                      : "",
+                  );
+                  setSpecializationDateOfIssue(
+                    "specializationIssueDate" in profile &&
+                      profile.specializationIssueDate
+                      ? new Date(profile.specializationIssueDate)
+                      : undefined,
+                  );
+                  setCabinetName(
+                    "cabinetName" in profile ? (profile.cabinetName ?? "") : "",
+                  );
+                  setCabinetPhoneNumber(
+                    "cabinetPhone" in profile
+                      ? (profile.cabinetPhone ?? "")
+                      : "",
+                  );
+                  setCabinetAddress(
+                    "cabinetAddress" in profile
+                      ? (profile.cabinetAddress ?? "")
+                      : "",
+                  );
+                  setCabinetCity(
+                    "cabinetCity" in profile ? (profile.cabinetCity ?? "") : "",
+                  );
+                  setCabinetCounty(
+                    "cabinetCounty" in profile
+                      ? (profile.cabinetCounty ?? "")
+                      : "",
+                  );
+                  setCabinetZip(
+                    "cabinetZipCode" in profile
+                      ? (profile.cabinetZipCode ?? "")
+                      : "",
+                  );
+                  setCmrSeries(
+                    "cmrSeries" in profile ? (profile.cmrSeries ?? "") : "",
+                  );
+                  setCmrNumber(
+                    "cmrNumber" in profile ? (profile.cmrNumber ?? "") : "",
+                  );
+                  setCmrDateOfIssue(
+                    "cmrIssueDate" in profile && profile.cmrIssueDate
+                      ? profile.cmrIssueDate.toISOString().slice(0, 10)
+                      : "",
+                  );
+                  setCmrExpirationDate(
+                    "cmrExpirationDate" in profile && profile.cmrExpirationDate
+                      ? profile.cmrExpirationDate.toISOString().slice(0, 10)
+                      : "",
+                  );
+                  setDigSigSeries(
+                    "digiSigSeries" in profile
+                      ? (profile.digiSigSeries ?? "")
+                      : "",
+                  );
+                  setDigSigNumber(
+                    "digiSigNumber" in profile
+                      ? (profile.digiSigNumber ?? "")
+                      : "",
+                  );
+                  setDigSigDateOfIssue(
+                    "digiSigIssueDate" in profile && profile.digiSigIssueDate
+                      ? profile.digiSigIssueDate.toISOString().slice(0, 10)
+                      : "",
+                  );
+                  setDigSigExpirationDate(
+                    "digiSigExpirationDate" in profile &&
+                      profile.digiSigExpirationDate
+                      ? profile.digiSigExpirationDate.toISOString().slice(0, 10)
+                      : "",
+                  );
+                }}
+              >
+                <X />
+                Cancel editing
+              </Button>
+            ) : null}
+          </div>
+        </div>
+        <TabsContent value="personal">
+          <Card>
+            <CardHeader className="flex flex-row justify-between">
+              <div>
+                <CardTitle>Personal information</CardTitle>
+                <CardDescription>
+                  Basic personal information about yourself
+                </CardDescription>
+              </div>
+              <div className="flex w-1/4 flex-col items-end gap-2">
+                {editing ? (
+                  <Input
+                    id="image"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="w-full"
+                  />
+                ) : null}
+                {imagePreview ? (
+                  <div className="relative h-32 w-32 overflow-hidden rounded-full">
+                    <Image
+                      src={imagePreview}
+                      alt="Profile preview"
+                      layout="fill"
+                      objectFit="cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="relative h-32 w-32 overflow-hidden rounded-full">
+                    <Image
+                      src="/default_pfp.jpg"
+                      alt="Blank avatar"
+                      layout="fill"
+                      objectFit="cover"
+                    />
+                  </div>
+                )}
+              </div>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-4">
+              <InputRow
+                label_name1={"First name"}
+                label_name2={"Last name"}
+                value1={firstName}
+                setValue1={setFirstName}
+                value2={lastName}
+                setValue2={setLastName}
+                type={["input", "input"]}
+                editing={editing}
+              />
+              <InputRow
+                label_name1={"Email"}
+                label_name2={"Phone number"}
+                inputType1={"email"}
+                value1={email}
+                setValue1={setEmail}
+                value2={phoneNumber}
+                setValue2={setPhoneNumber}
+                type={["input", "input"]}
+                editing={editing}
+              />
+              <InputRow
+                label_name1={"Series"}
+                label_name2={"CNP"}
+                value1={series}
+                setValue1={setSeries}
+                value2={cnp}
+                setValue2={setCnp}
+                type={["input", "input"]}
+                editing={editing}
+              />
+              <InputRow
+                label_name1={"Birth date"}
+                label_name2={"Gender"}
+                inputType1="date"
+                inputType2="text"
+                value1={birthDate}
+                setValue1={setBirthDate}
+                value2={gender}
+                setValue2={setGender}
+                type={["input", "select"]}
+                data2={["Male", "Female"]}
+                editing={editing}
+              />
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="professional">
+          <Card>
+            <CardHeader>
+              <CardTitle>Professional information</CardTitle>
+              <CardDescription>
+                Profesional information about you
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-4">
+              <InputRow
+                label_name1={"Specialization"}
+                label_name2={"Date of issue"}
+                inputType2="date"
+                type={["select", "input"]}
+                value1={specialization}
+                setValue1={setSpecialization}
+                value2={spcializationDateOfIssue}
+                setValue2={setSpecializationDateOfIssue}
+                editing={editing}
+                data1={specializations}
+              />
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-col">
+                  <h1 className="font-semibold">Adress information</h1>
+                  <span className="text-muted-foreground text-sm">
+                    Details about your cabinet location
+                  </span>
+                </div>
+
+                <InputRow
+                  label_name1={"Cabinet name"}
+                  label_name2={"Cabinet phone number"}
+                  value1={cabinetName}
+                  setValue1={setCabinetName}
+                  value2={cabinetPhoneNumber}
+                  setValue2={setCabinetPhoneNumber}
+                  type={["input", "input"]}
+                  editing={editing}
+                />
+                <InputRow
+                  label_name1={"Address"}
+                  label_name2={"City"}
+                  value1={cabinetAddress}
+                  setValue1={setCabinetAddress}
+                  value2={cabinetCity}
+                  setValue2={setCabinetCity}
+                  type={["input", "input"]}
+                  editing={editing}
+                />
+                <InputRow
+                  label_name1={"County"}
+                  label_name2={"ZIP Code"}
+                  value1={cabinetCounty}
+                  setValue1={setCabinetCounty}
+                  value2={cabinetZip}
+                  setValue2={setCabinetZip}
+                  type={["input", "input"]}
+                  editing={editing}
+                />
+              </div>
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-col">
+                  <h1 className="font-semibold">
+                    CMR information (Romanian College of Physicians)
+                  </h1>
+                  <span className="text-muted-foreground text-sm">
+                    Your CMR details
+                  </span>
+                </div>
+                <InputRow
+                  label_name1={"CMR Series"}
+                  label_name2={"CMR Number"}
+                  value1={cmrSeries}
+                  setValue1={setCmrSeries}
+                  value2={cmrNumber}
+                  setValue2={setCmrNumber}
+                  type={["input", "input"]}
+                  editing={editing}
+                />
+                <InputRow
+                  label_name1={"Date of issue"}
+                  label_name2={"Expiration date"}
+                  inputType1="date"
+                  inputType2="date"
+                  value1={cmrDateOfIssue}
+                  setValue1={setCmrDateOfIssue}
+                  value2={cmrExpirationDate}
+                  setValue2={setCmrExpirationDate}
+                  type={["input", "input"]}
+                  editing={editing}
+                />
+              </div>
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-col">
+                  <h1 className="font-semibold">Digital signature</h1>
+                  <span className="text-muted-foreground text-sm">
+                    Your digital signature details
+                  </span>
+                </div>
+                <InputRow
+                  label_name1={"Digital signature series"}
+                  label_name2={"Digital signature number"}
+                  value1={digSigSeries}
+                  setValue1={setDigSigSeries}
+                  value2={digSigNumber}
+                  setValue2={setDigSigNumber}
+                  type={["input", "input"]}
+                  editing={editing}
+                />
+                <InputRow
+                  label_name1={"Date of issue"}
+                  label_name2={"Expiration date"}
+                  inputType1="date"
+                  inputType2="date"
+                  value1={digSigDateOfIssue}
+                  setValue1={setDigSigDateOfIssue}
+                  value2={digSigExpirationDate}
+                  setValue2={setDigSigExpirationDate}
+                  type={["input", "input"]}
+                  editing={editing}
+                />
+              </div>
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-col">
+                  <h1 className="font-semibold">
+                    Schedule and appointment details
+                  </h1>
+                  <span className="text-muted-foreground text-sm">
+                    Details about your schedule and appointments
+                  </span>
+                </div>
+                <InputRow
+                  label_name1={"Appointment price (prices in RON)"}
+                  label_name2={"Appointment duration"}
+                  inputType1="number"
+                  type={["input", "select"]}
+                  data2={[
+                    "15 minutes",
+                    "30 minutes",
+                    "45 minutes",
+                    "60 minutes",
+                  ]}
+                  value1={apptPrice}
+                  setValue1={setApptPrice}
+                  value2={apptDuration}
+                  setValue2={setApptDuration}
+                  editing={editing}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}
