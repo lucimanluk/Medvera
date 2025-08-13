@@ -1,4 +1,5 @@
 import { z } from "zod";
+import PatientProfile from "~/app/(protected)/profile/_components/patientProfile";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
@@ -32,8 +33,16 @@ getDashboardAppointments: publicProcedure.query(async ({ ctx }) => {
       const data = await ctx.db.appointment.findMany({
         where: whereClause,
         include: {
-          patient: true,
-          doctor: true,
+          patient: {
+            include: {
+              patientProfile: true,
+            }
+          },
+          doctor: {
+            include: {
+              doctorProfile: true,
+            }
+          },
         },
       });
   

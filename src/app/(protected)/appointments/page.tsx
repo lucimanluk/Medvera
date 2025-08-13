@@ -4,13 +4,16 @@ import Appointment from "../_components/appointment";
 import { Button } from "~/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import PopoverFilter from "../finddoctor/_components/popoverFilter";
-import SelectorFilter from "../finddoctor/_components/selectorFilter";
+import type { DoctorProfile } from "@prisma/client";
+import type { PatientProfile } from "@prisma/client";
 import { Input } from "~/components/ui/input";
 import Link from "next/link";
 import * as React from "react";
 import { api } from "~/trpc/react";
 import { usePeerContext } from "~/context/peerContext";
 import { Loader2 } from "lucide-react";
+import type { User } from "~/types/user";
+
 
 interface Framework {
   value: string;
@@ -64,6 +67,8 @@ export default function Appointments() {
     return;
   }
 
+  console.log(data);
+
   return (
     <div className="flex w-full flex-col justify-between gap-4 py-4 pr-4">
       <div className="flex flex-col gap-1">
@@ -99,6 +104,17 @@ export default function Appointments() {
           />
         ) : null}
       </div>
+      {appts.map((appointment, index) => (
+        <Appointment
+          key={index}
+          appointment={appointment}
+          user={user as User}
+          type={"upcoming"}
+          profile = {user?.doctor ? appointment.patient.patientProfile as PatientProfile : appointment.doctor.doctorProfile as DoctorProfile}
+          price = {appointment.doctor.doctorProfile?.appointmentPrice as number}
+          duration = {appointment.doctor.doctorProfile?.appointmentDuration as number}
+        />
+      ))}
     </div>
   );
 }

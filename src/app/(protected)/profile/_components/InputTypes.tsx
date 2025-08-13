@@ -28,7 +28,7 @@ export default function InputTypes({
         ></Input>
         <Button
           className="w-1/10 bg-[#2F80ED] text-white hover:bg-[#1366d6]"
-          disabled={!editing}
+          disabled={!editing || value == ""}
         >
           Add information
         </Button>

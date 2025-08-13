@@ -1,6 +1,6 @@
 "use client";
 
-import { Calendar, Clock, Video, PhoneCall } from "lucide-react";
+import { Calendar, Clock, Banknote, PhoneCall, Hourglass } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -11,6 +11,8 @@ import {
 import { Button } from "~/components/ui/button";
 import type { Appointment as AppointmentType } from "~/types/appointment";
 import type { User } from "~/types/user";
+import type { DoctorProfile } from "@prisma/client";
+import type { PatientProfile } from "@prisma/client";
 import { useEffect, useState } from "react";
 import { usePeerContext } from "~/context/peerContext";
 import { toast } from "sonner";
@@ -19,10 +21,16 @@ export default function Appointment({
   appointment,
   user,
   type,
+  profile,
+  price,
+  duration,
 }: {
   appointment: AppointmentType;
   user: User;
   type: string;
+  profile: PatientProfile | DoctorProfile;
+  price: number;
+  duration: number;
 }) {
   const { peer, startCall, inCall } = usePeerContext()!;
   const [isCallTime, setIsCallTime] = useState(false);
@@ -69,7 +77,14 @@ export default function Appointment({
     <Card>
       <CardHeader className="flex justify-between">
         <div className="flex items-center gap-2">
-          <div className="h-10 w-10 rounded-full bg-black" />
+          <img
+            className="h-10 w-10 rounded-full"
+            src={
+              user.id === appointment.patient.id
+                ? appointment.doctor.image || "/default_pfp.jpg"
+                : appointment.patient.image || "/default_pfp.jpg"
+            }
+          />
           <div className="flex flex-col gap-1">
             <CardTitle>
               {user.id === appointment.patient.id
@@ -77,7 +92,9 @@ export default function Appointment({
                 : appointment.patient.name}
             </CardTitle>
             <CardDescription>
-              {user.id === appointment.patient.id ? "specialitate" : "patient"}
+              {"specialization" in profile
+                ? profile.specialization
+                : profile.gender}
             </CardDescription>
           </div>
         </div>
@@ -112,9 +129,13 @@ export default function Appointment({
           {apptDateObj.toTimeString().split("GMT")[0]}
         </div>
         <div className="flex items-center gap-2">
-          <Video width={18} height={18} />
-          Video call
-        </div>
+          <Banknote width={18} height={18} />
+          {price} lei
+        </div> 
+           <div className="flex items-center gap-2">
+          <Hourglass width={18} height={18} />
+          {duration} minutes
+        </div> 
       </CardContent>
     </Card>
   );

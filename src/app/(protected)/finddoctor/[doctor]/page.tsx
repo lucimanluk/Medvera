@@ -78,6 +78,8 @@ export default function Doctor() {
     { enabled: !!id },
   );
 
+  console.log(data?.doctorProfile);
+
   if (isLoading) {
     return (
       <div className="flex h-screen w-full flex-row items-center justify-center">
@@ -124,7 +126,7 @@ export default function Doctor() {
               <span className="font-bold">
                 Time: {time?.toTimeString().split("GMT")[0]}
               </span>
-              <span className="font-bold ">
+              <span className="font-bold">
                 Price: {data?.doctorProfile?.appointmentPrice} lei
               </span>
               <Button
