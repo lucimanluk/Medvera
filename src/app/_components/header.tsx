@@ -18,7 +18,7 @@ export default function Header() {
           {hrefs.map((href, index) => (
             <li key={index}>
               <Link
-                href={`#${href.toLowerCase().replace(/\s+/g, "-")}`}
+                href={`/#${href.toLowerCase().replace(/\s+/g, "-")}`}
                 className="text-md text-black transition-colors hover:text-blue-600"
               >
                 {href}

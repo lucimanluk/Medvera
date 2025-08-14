@@ -62,7 +62,7 @@ export default function SpecialitySection() {
         </Card>
       </div>
       <div className="mt-8 text-center">
-        <Link href="/find-doctor">
+        <Link href="/finddoctor">
           <Button className="rounded-3xl bg-[#2F80ED] text-white hover:bg-[#1366d6]">
             View All Specialties
           </Button>

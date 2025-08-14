@@ -139,7 +139,7 @@ export default function PrescriptionCard({
 
               <DialogFooter>
                 <DialogClose asChild>
-                  <Button variant="outline">Cancel</Button>
+                  <Button variant="outline">Close</Button>
                 </DialogClose>
               </DialogFooter>
             </DialogContent>

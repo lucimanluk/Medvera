@@ -74,7 +74,7 @@ export default function Appointment({
   };
 
   return (
-    <Card>
+    <Card className="mb-2">
       <CardHeader className="flex justify-between">
         <div className="flex items-center gap-2">
           <img

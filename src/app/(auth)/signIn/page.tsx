@@ -14,7 +14,6 @@ import { Checkbox } from "~/components/ui/checkbox";
 import { useState, useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import { signIn } from "~/lib/auth-client";
-import Link from "next/link";
 import Header from "~/app/_components/header";
 import { useRouter } from "next/navigation";
 
@@ -54,12 +53,6 @@ export default function SignIn() {
             <div className="grid gap-2">
               <div className="flex items-center">
                 <Label htmlFor="password">Password</Label>
-                <Link
-                  href="#"
-                  className="ml-auto inline-block text-sm underline"
-                >
-                  Forgot your password?
-                </Link>
               </div>
 
               <Input
