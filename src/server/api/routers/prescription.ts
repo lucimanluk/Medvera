@@ -1,43 +1,53 @@
-    import { z } from "zod";
+import { z } from "zod";
 
-    import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
-    export const prescriptionRouter = createTRPCRouter({
-      getDashboardPrescriptions: publicProcedure.query(async ({ ctx }) => {
-        const user = ctx.session?.user;
+export const prescriptionRouter = createTRPCRouter({
+  getDashboardPrescriptions: publicProcedure.query(async ({ ctx }) => {
+    const user = ctx.session?.user;
 
-        const whereClause = user?.doctor
-          ? { doctorId: user?.id }
-          : { patientId: user?.id };
+    const whereClause = user?.doctor
+      ? { doctorId: user?.id }
+      : { patientId: user?.id };
 
-        const data = await ctx.db.prescription.findMany({
-          take: 5,
-          where: whereClause,
+    const data = await ctx.db.prescription.findMany({
+      take: 5,
+      where: whereClause,
+      include: {
+        patient: true,
+        doctor: true,
+      },
+    });
+
+    return { data, user };
+  }),
+  getPrescriptions: publicProcedure.query(async ({ ctx }) => {
+    const user = ctx.session?.user;
+
+    const whereClause = user?.doctor
+      ? { doctorId: user?.id }
+      : { patientId: user?.id };
+
+    const data = await ctx.db.prescription.findMany({
+      where: whereClause,
+      include: {
+        patient: {
           include: {
-            patient: true,
-            doctor: true,
+            patientProfile: true,
           },
-        });
-
-        return {data, user};
-      }),
-      getPrescriptions: publicProcedure.query(async ({ctx}) => {
-        const user = ctx.session?.user;
-        const data = await ctx.db.prescription.findMany({ include: {
-            patient: {
-              include: {
-                patientProfile:true,
-              }
-            },
-            doctor: {
-              include: {
-                doctorProfile: true,
-              }
-            }
-          },});
-        return {data, user};
-      }),
-      createPrescription: publicProcedure.input(z.object({
+        },
+        doctor: {
+          include: {
+            doctorProfile: true,
+          },
+        },
+      },
+    });
+    return { data, user };
+  }),
+  createPrescription: publicProcedure
+    .input(
+      z.object({
         patientId: z.string(),
         startingDate: z.date(),
         endingDate: z.date(),
@@ -46,11 +56,13 @@
         instructions: z.string(),
         medicationName: z.string(),
         quantity: z.string(),
-      })).mutation(async ({ctx, input}) => {
-        const user = ctx.session?.user;
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const user = ctx.session?.user;
 
       if (user)
-          return await ctx.db.prescription.create({
+        return await ctx.db.prescription.create({
           data: {
             patientId: input.patientId,
             startingDate: input.startingDate,
@@ -62,6 +74,6 @@
             medicationName: input.medicationName,
             quantity: input.quantity,
           },
-        })
-      })
-    });
+        });
+    }),
+});

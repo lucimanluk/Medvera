@@ -29,6 +29,7 @@ export default function SignUp() {
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [doctor, setDoctor] = useState(false);
+  const [error, setError] = useState("");
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const utils = api.useUtils();
@@ -146,6 +147,7 @@ export default function SignUp() {
               <Checkbox onClick={() => setDoctor(!doctor)} id="doctorSet" />
               <Label htmlFor="doctorSet">Are you a doctor?</Label>
             </div>
+            <p className="text-red-600">{error}</p>
             <Button
               type="submit"
               className="w-full bg-[#2F80ED] text-white hover:bg-[#1366d6]"
@@ -161,7 +163,7 @@ export default function SignUp() {
                     onResponse: () => setLoading(false),
                     onRequest: () => setLoading(true),
                     onError: (ctx) => {
-                      toast.error(ctx.error.message);
+                      setError(ctx.error.message);
                     },
                     onSuccess: async () => {
                       await setDoctorMutation.mutateAsync({

@@ -130,8 +130,8 @@ export default function ConnectionCard({
             </>
           ) : (
             <>
-              <span>Cabinet address: </span>
-              {connection.doctor.doctorProfile?.cabinetAddress}
+              <span>Cabinet city: </span>
+              {connection.doctor.doctorProfile?.cabinetCity}
             </>
           )}
         </span>

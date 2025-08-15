@@ -53,7 +53,7 @@ export default function Dashboard() {
             <CardDescription>See your future appointments</CardDescription>
           </CardHeader>
           <CardContent>
-            <ScrollArea className="h-68 w-full">
+            {/*<ScrollArea className="h-68 w-full">
               {!appointments?.data || appointments.data.length === 0 ? (
                 <span>No appointments ongoing.</span>
               ) : (
@@ -72,7 +72,7 @@ export default function Dashboard() {
                     </div>
                   ))
               )}
-            </ScrollArea>
+            </ScrollArea>*/}
           </CardContent>
         </Card>
         <Card className="w-full">

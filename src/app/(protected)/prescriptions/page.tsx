@@ -113,6 +113,8 @@ export default function Prescriptions() {
     return null;
   }
 
+  console.log(prescriptionsResponse);
+
   return (
     <div className="flex w-full flex-col gap-4 py-4 pr-4">
       <div className="flex flex-col gap-1">

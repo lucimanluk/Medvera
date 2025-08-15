@@ -21,7 +21,7 @@ export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
+  const [error, setError] = useState("");
   const router = useRouter();
 
   return (
@@ -64,17 +64,9 @@ export default function SignIn() {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-
-            <div className="flex items-center gap-2">
-              <Checkbox
-                id="remember"
-                onClick={() => {
-                  setRememberMe(!rememberMe);
-                }}
-              />
-              <Label htmlFor="remember">Remember me</Label>
-            </div>
-
+            {error !== "" ? (
+              <p className="text-base text-red-500">{error}</p>
+            ) : null}
             <Button
               type="submit"
               className="w-full bg-[#2F80ED] text-white hover:bg-[#1366d6]"
@@ -92,7 +84,11 @@ export default function SignIn() {
                     onResponse: (ctx) => {
                       setLoading(false);
                     },
+                    onError: (ctx) => {
+                      setError(ctx.error.message);
+                    },
                     onSuccess: async () => {
+                      setError("");
                       router.push(`/dashboard`);
                     },
                   },
