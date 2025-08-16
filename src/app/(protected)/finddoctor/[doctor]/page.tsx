@@ -65,7 +65,7 @@ export default function Doctor() {
       utils.doctor.getPage.invalidate({ doctor: id });
     },
     onError: () => toast("Error"),
-    onMutate(variables) {
+    onMutate() {
       setLoading(true);
     },
     onSettled: () => {

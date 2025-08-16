@@ -15,6 +15,8 @@ import InputTypes from "./InputTypes";
 import { useState, useEffect } from "react";
 import { Button } from "~/components/ui/button";
 import { Edit, Save, X } from "lucide-react";
+import { api } from "~/trpc/react";
+import { toast } from "sonner";
 
 export default function PatientProfile({ data }: { data: any }) {
   const [editing, setEditing] = useState<boolean>(false);
@@ -40,13 +42,41 @@ export default function PatientProfile({ data }: { data: any }) {
   const [familyDoctorPhone, setFamilyDoctorPhone] = useState<string>("");
   const [bloodType, setBloodType] = useState<string>("");
   const [rhFactor, setRhFactor] = useState<string>("");
-  const [weight, setWeight] = useState<string>("");
-  const [height, setHeight] = useState<string>("");
+  const [weight, setWeight] = useState<number>();
+  const [height, setHeight] = useState<number>();
   const [allergies, setAllergies] = useState<string[]>([]);
   const [allergyInput, setAllergyInput] = useState<string>("");
   const [meidcalConditionInput, setMedicalConditionInput] =
     useState<string>("");
   const [meidcalCondition, setMedicalCondition] = useState<string[]>([]);
+
+  const utils = api.useUtils();
+  const mutation = api.profile.updatePatientProfile.useMutation({
+    onSuccess: () => {
+      toast("Successfully modified profile!", {
+        action: {
+          label: "Close",
+          onClick: () => {
+            return;
+          },
+        },
+      });
+      setEditing(false);
+      utils.user.get3.invalidate();
+    },
+    onError: (err) => {
+      const zodMsg = err?.data?.zodError
+        ? Object.values(err.data.zodError.fieldErrors)
+            .flat()
+            .filter(Boolean)
+            .join(", ")
+        : null;
+
+      toast.error("Couldn't update profile", {
+        description: zodMsg || err.message || "Something went wrong.",
+      });
+    },
+  });
 
   useEffect(() => {
     if (!data) return;
@@ -89,13 +119,13 @@ export default function PatientProfile({ data }: { data: any }) {
     setRhFactor("rhFactor" in profile ? (profile.rhFactor ?? "") : "");
     setWeight(
       "weight" in profile && typeof profile.weight === "number"
-        ? profile.weight.toString()
-        : "",
+        ? profile.weight
+        : undefined,
     );
     setHeight(
       "height" in profile && typeof profile.height === "number"
-        ? profile.height.toString()
-        : "",
+        ? profile.height
+        : undefined,
     );
     setAllergies("allergies" in profile ? profile.allergies : []);
     setMedicalCondition(
@@ -123,18 +153,39 @@ export default function PatientProfile({ data }: { data: any }) {
       <Tabs defaultValue="personal" className="w-full">
         <div className="flex flex-row justify-between">
           <TabsList>
-            <TabsTrigger value="personal" disabled={editing}>
-              Personal Information
-            </TabsTrigger>
-            <TabsTrigger value="medical" disabled={editing}>
-              Medical Information
-            </TabsTrigger>
+            <TabsTrigger value="personal">Personal Information</TabsTrigger>
+            <TabsTrigger value="medical">Medical Information</TabsTrigger>
           </TabsList>
           <div className="flex flex-row gap-2">
             <Button
               className="bg-[#2F80ED] text-white hover:bg-[#1366d6]"
               onClick={() => {
-                setEditing(!editing);
+                if (editing) {
+                  mutation.mutate({
+                    firstName,
+                    lastName,
+                    phoneNumber,
+                    series,
+                    cnp,
+                    birthDate,
+                    gender,
+                    address,
+                    city,
+                    county,
+                    zipCode,
+                    emergencyFirst,
+                    emergencyLast,
+                    emergencyRelation,
+                    emergencyPhone,
+                    familyDoctor,
+                    familyDoctorPhone,
+                    bloodType,
+                    rhFactor,
+                    weight,
+                  });
+                } else if (editing == false) {
+                  setEditing(!editing);
+                }
               }}
             >
               {editing ? (
@@ -401,6 +452,8 @@ export default function PatientProfile({ data }: { data: any }) {
               <InputRow
                 label_name1={"Weight"}
                 label_name2={"Height"}
+                inputType1="number"
+                inputType2="number"
                 type={["input", "input"]}
                 value1={weight}
                 setValue1={setWeight}

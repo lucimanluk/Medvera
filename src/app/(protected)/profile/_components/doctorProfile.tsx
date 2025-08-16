@@ -1,3 +1,5 @@
+"use client";
+
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
 import {
   Card,
@@ -12,7 +14,9 @@ import InputRow from "./InputRow";
 import { useState, useEffect } from "react";
 import { Edit, Save, X } from "lucide-react";
 import { Button } from "~/components/ui/button";
+import { api } from "~/trpc/react";
 import { specializations } from "~/data/specializations";
+import { toast } from "sonner";
 
 export default function DoctorProfile({ data }: { data: any }) {
   const [editing, setEditing] = useState<boolean>(false);
@@ -27,25 +31,53 @@ export default function DoctorProfile({ data }: { data: any }) {
   const [birthDate, setBirthDate] = useState<Date | undefined>();
   const [gender, setGender] = useState<string>("");
   const [specialization, setSpecialization] = useState<string>("");
-  const [spcializationDateOfIssue, setSpecializationDateOfIssue] = useState<
+  const [specializationIssueDate, setSpecializationIssueDate] = useState<
     Date | undefined
   >();
   const [cabinetName, setCabinetName] = useState<string>("");
-  const [cabinetPhoneNumber, setCabinetPhoneNumber] = useState<string>("");
+  const [cabinetPhone, setCabinetPhone] = useState<string>("");
   const [cabinetAddress, setCabinetAddress] = useState<string>("");
   const [cabinetCity, setCabinetCity] = useState<string>("");
   const [cabinetCounty, setCabinetCounty] = useState<string>("");
-  const [cabinetZip, setCabinetZip] = useState<string>("");
+  const [cabinetZipCode, setCabinetZipCode] = useState<string>("");
   const [cmrSeries, setCmrSeries] = useState<string>("");
   const [cmrNumber, setCmrNumber] = useState<string>("");
-  const [cmrDateOfIssue, setCmrDateOfIssue] = useState<string>("");
-  const [cmrExpirationDate, setCmrExpirationDate] = useState<string>("");
-  const [digSigSeries, setDigSigSeries] = useState<string>("");
-  const [digSigNumber, setDigSigNumber] = useState<string>("");
-  const [digSigDateOfIssue, setDigSigDateOfIssue] = useState<string>("");
-  const [digSigExpirationDate, setDigSigExpirationDate] = useState<string>("");
-  const [apptPrice, setApptPrice] = useState<number>();
-  const [apptDuration, setApptDuration] = useState<number>();
+  const [cmrIssueDate, setCmrIssueDate] = useState<Date>();
+  const [cmrExpirationDate, setCmrExpirationDate] = useState<Date>();
+  const [digiSigSeries, setDigiSigSeries] = useState<string>("");
+  const [digiSigNumber, setDigiSigNumber] = useState<string>("");
+  const [digiSigIssueDate, setDigiSigIssueDate] = useState<Date>();
+  const [digiSigExpirationDate, setDigiSigExpirationDate] = useState<Date>();
+  const [appointmentPrice, setAppointmentPrice] = useState<number>();
+  const [appointmentDuration, setAppointmentDuration] = useState<number>();
+
+  const utils = api.useUtils();
+  const mutation = api.profile.updateDoctorProfile.useMutation({
+    onSuccess: () => {
+      toast("Successfully modified profile!", {
+        action: {
+          label: "Close",
+          onClick: () => {
+            return;
+          },
+        },
+      });
+      setEditing(false);
+      utils.user.get3.invalidate();
+    },
+    onError: (err) => {
+      const zodMsg = err?.data?.zodError
+        ? Object.values(err.data.zodError.fieldErrors)
+            .flat()
+            .filter(Boolean)
+            .join(", ")
+        : null;
+
+      toast.error("Couldn't update profile", {
+        description: zodMsg || err.message || "Something went wrong.",
+      });
+    },
+  });
 
   useEffect(() => {
     if (!data) return;
@@ -64,13 +96,13 @@ export default function DoctorProfile({ data }: { data: any }) {
     setSpecialization(
       "specialization" in profile ? (profile.specialization ?? "") : "",
     );
-    setSpecializationDateOfIssue(
+    setSpecializationIssueDate(
       "specializationIssueDate" in profile && profile.specializationIssueDate
         ? new Date(profile.specializationIssueDate)
         : undefined,
     );
     setCabinetName("cabinetName" in profile ? (profile.cabinetName ?? "") : "");
-    setCabinetPhoneNumber(
+    setCabinetPhone(
       "cabinetPhone" in profile ? (profile.cabinetPhone ?? "") : "",
     );
     setCabinetAddress(
@@ -80,12 +112,12 @@ export default function DoctorProfile({ data }: { data: any }) {
     setCabinetCounty(
       "cabinetCounty" in profile ? (profile.cabinetCounty ?? "") : "",
     );
-    setCabinetZip(
+    setCabinetZipCode(
       "cabinetZipCode" in profile ? (profile.cabinetZipCode ?? "") : "",
     );
     setCmrSeries("cmrSeries" in profile ? (profile.cmrSeries ?? "") : "");
     setCmrNumber("cmrNumber" in profile ? (profile.cmrNumber ?? "") : "");
-    setCmrDateOfIssue(
+    setCmrIssueDate(
       "cmrIssueDate" in profile && profile.cmrIssueDate
         ? profile.cmrIssueDate.toISOString().slice(0, 10)
         : "",
@@ -95,28 +127,28 @@ export default function DoctorProfile({ data }: { data: any }) {
         ? profile.cmrExpirationDate.toISOString().slice(0, 10)
         : "",
     );
-    setDigSigSeries(
+    setDigiSigSeries(
       "digiSigSeries" in profile ? (profile.digiSigSeries ?? "") : "",
     );
-    setDigSigNumber(
+    setDigiSigNumber(
       "digiSigNumber" in profile ? (profile.digiSigNumber ?? "") : "",
     );
-    setDigSigDateOfIssue(
+    setDigiSigIssueDate(
       "digiSigIssueDate" in profile && profile.digiSigIssueDate
         ? profile.digiSigIssueDate.toISOString().slice(0, 10)
         : "",
     );
-    setDigSigExpirationDate(
+    setDigiSigExpirationDate(
       "digiSigExpirationDate" in profile && profile.digiSigExpirationDate
         ? profile.digiSigExpirationDate.toISOString().slice(0, 10)
         : "",
     );
-    setApptPrice(
+    setAppointmentPrice(
       "appointmentPrice" in profile && profile.appointmentPrice
         ? profile.appointmentPrice
         : 0,
     );
-    setApptDuration(
+    setAppointmentDuration(
       "appointmentDuration" in profile && profile.appointmentDuration
         ? profile.appointmentDuration
         : 0,
@@ -145,10 +177,8 @@ export default function DoctorProfile({ data }: { data: any }) {
       <Tabs defaultValue="personal" className="w-full">
         <div className="flex flex-row justify-between">
           <TabsList>
-            <TabsTrigger value="personal" disabled={editing}>
-              Personal Information
-            </TabsTrigger>
-            <TabsTrigger value="professional" disabled={editing}>
+            <TabsTrigger value="personal">Personal Information</TabsTrigger>
+            <TabsTrigger value="professional">
               Professional Information
             </TabsTrigger>
           </TabsList>
@@ -156,6 +186,35 @@ export default function DoctorProfile({ data }: { data: any }) {
             <Button
               className="bg-[#2F80ED] text-white hover:bg-[#1366d6]"
               onClick={() => {
+                if (editing) {
+                  mutation.mutate({
+                    firstName,
+                    lastName,
+                    phoneNumber,
+                    series,
+                    cnp,
+                    birthDate,
+                    gender,
+                    specialization,
+                    specializationIssueDate,
+                    cabinetName,
+                    cabinetPhone,
+                    cabinetAddress,
+                    cabinetCity,
+                    cabinetCounty,
+                    cabinetZipCode,
+                    cmrSeries,
+                    cmrNumber,
+                    cmrIssueDate,
+                    cmrExpirationDate,
+                    digiSigSeries,
+                    digiSigNumber,
+                    digiSigIssueDate,
+                    digiSigExpirationDate,
+                    appointmentDuration,
+                    appointmentPrice,
+                  });
+                }
                 setEditing(!editing);
               }}
             >
@@ -194,7 +253,7 @@ export default function DoctorProfile({ data }: { data: any }) {
                       ? (profile.specialization ?? "")
                       : "",
                   );
-                  setSpecializationDateOfIssue(
+                  setSpecializationIssueDate(
                     "specializationIssueDate" in profile &&
                       profile.specializationIssueDate
                       ? new Date(profile.specializationIssueDate)
@@ -203,7 +262,7 @@ export default function DoctorProfile({ data }: { data: any }) {
                   setCabinetName(
                     "cabinetName" in profile ? (profile.cabinetName ?? "") : "",
                   );
-                  setCabinetPhoneNumber(
+                  setCabinetPhone(
                     "cabinetPhone" in profile
                       ? (profile.cabinetPhone ?? "")
                       : "",
@@ -221,7 +280,7 @@ export default function DoctorProfile({ data }: { data: any }) {
                       ? (profile.cabinetCounty ?? "")
                       : "",
                   );
-                  setCabinetZip(
+                  setCabinetZipCode(
                     "cabinetZipCode" in profile
                       ? (profile.cabinetZipCode ?? "")
                       : "",
@@ -232,7 +291,7 @@ export default function DoctorProfile({ data }: { data: any }) {
                   setCmrNumber(
                     "cmrNumber" in profile ? (profile.cmrNumber ?? "") : "",
                   );
-                  setCmrDateOfIssue(
+                  setCmrIssueDate(
                     "cmrIssueDate" in profile && profile.cmrIssueDate
                       ? profile.cmrIssueDate.toISOString().slice(0, 10)
                       : "",
@@ -242,22 +301,22 @@ export default function DoctorProfile({ data }: { data: any }) {
                       ? profile.cmrExpirationDate.toISOString().slice(0, 10)
                       : "",
                   );
-                  setDigSigSeries(
+                  setDigiSigSeries(
                     "digiSigSeries" in profile
                       ? (profile.digiSigSeries ?? "")
                       : "",
                   );
-                  setDigSigNumber(
+                  setDigiSigNumber(
                     "digiSigNumber" in profile
                       ? (profile.digiSigNumber ?? "")
                       : "",
                   );
-                  setDigSigDateOfIssue(
+                  setDigiSigIssueDate(
                     "digiSigIssueDate" in profile && profile.digiSigIssueDate
                       ? profile.digiSigIssueDate.toISOString().slice(0, 10)
                       : "",
                   );
-                  setDigSigExpirationDate(
+                  setDigiSigExpirationDate(
                     "digiSigExpirationDate" in profile &&
                       profile.digiSigExpirationDate
                       ? profile.digiSigExpirationDate.toISOString().slice(0, 10)
@@ -375,8 +434,8 @@ export default function DoctorProfile({ data }: { data: any }) {
                 type={["select", "input"]}
                 value1={specialization}
                 setValue1={setSpecialization}
-                value2={spcializationDateOfIssue}
-                setValue2={setSpecializationDateOfIssue}
+                value2={specializationIssueDate}
+                setValue2={setSpecializationIssueDate}
                 editing={editing}
                 data1={specializations}
               />
@@ -393,8 +452,8 @@ export default function DoctorProfile({ data }: { data: any }) {
                   label_name2={"Cabinet phone number"}
                   value1={cabinetName}
                   setValue1={setCabinetName}
-                  value2={cabinetPhoneNumber}
-                  setValue2={setCabinetPhoneNumber}
+                  value2={cabinetPhone}
+                  setValue2={setCabinetPhone}
                   type={["input", "input"]}
                   editing={editing}
                 />
@@ -413,8 +472,8 @@ export default function DoctorProfile({ data }: { data: any }) {
                   label_name2={"ZIP Code"}
                   value1={cabinetCounty}
                   setValue1={setCabinetCounty}
-                  value2={cabinetZip}
-                  setValue2={setCabinetZip}
+                  value2={cabinetZipCode}
+                  setValue2={setCabinetZipCode}
                   type={["input", "input"]}
                   editing={editing}
                 />
@@ -443,8 +502,8 @@ export default function DoctorProfile({ data }: { data: any }) {
                   label_name2={"Expiration date"}
                   inputType1="date"
                   inputType2="date"
-                  value1={cmrDateOfIssue}
-                  setValue1={setCmrDateOfIssue}
+                  value1={cmrIssueDate}
+                  setValue1={setCmrIssueDate}
                   value2={cmrExpirationDate}
                   setValue2={setCmrExpirationDate}
                   type={["input", "input"]}
@@ -461,10 +520,10 @@ export default function DoctorProfile({ data }: { data: any }) {
                 <InputRow
                   label_name1={"Digital signature series"}
                   label_name2={"Digital signature number"}
-                  value1={digSigSeries}
-                  setValue1={setDigSigSeries}
-                  value2={digSigNumber}
-                  setValue2={setDigSigNumber}
+                  value1={digiSigSeries}
+                  setValue1={setDigiSigSeries}
+                  value2={digiSigNumber}
+                  setValue2={setDigiSigNumber}
                   type={["input", "input"]}
                   editing={editing}
                 />
@@ -473,10 +532,10 @@ export default function DoctorProfile({ data }: { data: any }) {
                   label_name2={"Expiration date"}
                   inputType1="date"
                   inputType2="date"
-                  value1={digSigDateOfIssue}
-                  setValue1={setDigSigDateOfIssue}
-                  value2={digSigExpirationDate}
-                  setValue2={setDigSigExpirationDate}
+                  value1={digiSigIssueDate}
+                  setValue1={setDigiSigIssueDate}
+                  value2={digiSigExpirationDate}
+                  setValue2={setDigiSigExpirationDate}
                   type={["input", "input"]}
                   editing={editing}
                 />
@@ -501,10 +560,10 @@ export default function DoctorProfile({ data }: { data: any }) {
                     "45 minutes",
                     "60 minutes",
                   ]}
-                  value1={apptPrice}
-                  setValue1={setApptPrice}
-                  value2={apptDuration}
-                  setValue2={setApptDuration}
+                  value1={appointmentPrice}
+                  setValue1={setAppointmentPrice}
+                  value2={appointmentDuration}
+                  setValue2={setAppointmentDuration}
                   editing={editing}
                 />
               </div>

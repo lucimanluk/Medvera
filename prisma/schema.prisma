@@ -39,8 +39,8 @@ model PatientProfile {
   userEmail String @unique
   user      User   @relation("PatientProfileToUser", fields: [userEmail], references: [email], onDelete: Cascade)
 
-  firstName         String
-  lastName          String
+  firstName         String?
+  lastName          String?
   phoneNumber       String?
   series            String?
   cnp               String?
@@ -69,8 +69,8 @@ model DoctorProfile {
   id                      String    @id @default(uuid())
   userEmail               String    @unique
   user                    User      @relation("DoctorProfileToUser", fields: [userEmail], references: [email], onDelete: Cascade)
-  firstName               String
-  lastName                String
+  firstName               String?
+  lastName                String?
   phoneNumber             String?
   series                  String?
   cnp                     String?
@@ -98,7 +98,7 @@ model DoctorProfile {
   appointmentDuration Int?
   appointmentPrice    Int?
 
-  freeDays DateTime[]
+  
 }
 
 model Session {
