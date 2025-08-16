@@ -18,7 +18,6 @@ import { signUp } from "~/lib/auth-client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import Header from "~/app/_components/header";
-import { useSession } from "~/lib/auth-client";
 import { api } from "~/trpc/react";
 
 export default function SignUp() {
@@ -153,7 +152,7 @@ export default function SignUp() {
               className="w-full bg-[#2F80ED] text-white hover:bg-[#1366d6]"
               disabled={loading}
               onClick={async () => {
-                await signUp.email({
+              await signUp.email({
                   email,
                   password,
                   name: `${firstName} ${lastName}`,

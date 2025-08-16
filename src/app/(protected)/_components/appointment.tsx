@@ -86,7 +86,7 @@ export default function Appointment({
             }
           />
           <div className="flex flex-col gap-1">
-            <CardTitle>
+          <CardTitle>
               {user.id === appointment.patient.id
                 ? appointment.doctor.name
                 : appointment.patient.name}
@@ -94,7 +94,7 @@ export default function Appointment({
             <CardDescription>
               {"specialization" in profile
                 ? profile.specialization
-                : profile.gender}
+                : "Care Recipient"}
             </CardDescription>
           </div>
         </div>
