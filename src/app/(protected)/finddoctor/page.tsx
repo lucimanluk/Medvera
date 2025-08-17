@@ -13,14 +13,19 @@ export default function FindDoctor() {
     data: doctorsResponse,
     isLoading: doctorLoading,
     error: doctorsError,
-  } = api.doctor.getDoctors.useQuery();
+  } = api.doctor.getDoctors.useQuery(undefined, {
+    staleTime: 0,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
+  });
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("All specialisations");
 
   const doctors = doctorsResponse?.data ?? [];
   const user = doctorsResponse?.user;
-  
+
   const filteredSearch = useMemo(() => {
     const term = search.toLowerCase().trim();
     if (!term) return doctors;

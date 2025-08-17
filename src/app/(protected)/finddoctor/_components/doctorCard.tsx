@@ -40,6 +40,9 @@ export default function DoctorCard({
   }, [doctorConnection, user.id]);
 
   const createConnection = api.connection.createConnection.useMutation({
+    onMutate: () => {
+      setLoading(true);
+    },
     onSuccess: () => {
       toast("Successfully sent connection request!", {
         action: {
@@ -71,10 +74,13 @@ export default function DoctorCard({
   });
 
   const cancelConnection = api.connection.cancelConnection.useMutation({
+    onMutate: () => {
+      setLoading(true);
+    },
     onSuccess: () => {
       toast(
         friend === false
-          ? "Successfully cancelled connection request!"
+          ? "Successfully canceled connection request!"
           : "Successfully removed connection!",
         {
           action: {
@@ -146,7 +152,6 @@ export default function DoctorCard({
               variant="outline"
               className="bg-gray-100 hover:bg-gray-200"
               onClick={() => {
-                setLoading(true);
                 cancelConnection.mutate({
                   doctorId: doctor.id,
                   patientId: user.id,
@@ -162,7 +167,6 @@ export default function DoctorCard({
               variant="outline"
               className="bg-gray-100 hover:bg-gray-200"
               onClick={() => {
-                setLoading(true);
                 cancelConnection.mutate({
                   doctorId: doctor.id,
                   patientId: user.id,

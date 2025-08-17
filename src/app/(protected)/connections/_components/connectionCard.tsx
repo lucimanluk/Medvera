@@ -7,11 +7,13 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
-import { Check, X, Eye } from "lucide-react";
+import { Check, X, Eye, UserMinus2 } from "lucide-react";
 import { Button } from "~/components/ui/button";
+import { toast } from "sonner";
 import type { User as UserType } from "~/types/user";
-import { api } from "~/trpc/react";
 import type { DoctorConnection } from "~/types/connection";
+import { api } from "~/trpc/react";
+import { useState } from "react";
 
 export default function ConnectionCard({
   type,
@@ -22,20 +24,80 @@ export default function ConnectionCard({
   connection: DoctorConnection;
   user: UserType;
 }) {
+  const [loading, setLoading] = useState(false);
   const utils = api.useUtils();
+
   const acceptMutation = api.connection.acceptConnection.useMutation({
-    onSuccess: () => {
-      utils.connection.getConnections.invalidate();
-      utils.doctor.getDoctors.invalidate();
-      utils.connection.getPrescriptionConnections.invalidate();
+    onMutate: () => {
+      setLoading(true);
+    },
+    onSettled: async () => {
+      await Promise.all([
+        utils.connection.getConnections.invalidate(),
+        utils.doctor.getDoctors.invalidate(),
+        utils.connection.getPrescriptionConnections.invalidate(),
+      ]);
+      setLoading(false);
+      toast("Connection accepted!", {
+        action: {
+          label: "Close",
+          onClick: () => {
+            return;
+          },
+        },
+      });
     },
   });
+
   const declineMutation = api.connection.declineConnection.useMutation({
-    onSuccess: () => {
-      utils.connection.getConnections.invalidate();
-      utils.doctor.getDoctors.invalidate();
+    onMutate: () => {
+      setLoading(true);
+    },
+    onSettled: async () => {
+      await Promise.all([
+        utils.connection.getConnections.invalidate(),
+        utils.doctor.getDoctors.invalidate(),
+      ]);
+      setLoading(false);
+      toast(
+        user.doctor == true ? "Connection declined!" : "Connection canceled!",
+        {
+          action: {
+            label: "Close",
+            onClick: () => {
+              return;
+            },
+          },
+        },
+      );
     },
   });
+
+  const deleteMutation = api.connection.declineConnection.useMutation({
+    onMutate: () => {
+      setLoading(true);
+    },
+    onSettled: async () => {
+      await Promise.all([
+        utils.connection.getConnections.invalidate(),
+        utils.doctor.getDoctors.invalidate(),
+        utils.connection.getPrescriptionConnections.invalidate(),
+      ]);
+      setLoading(false);
+      toast(
+        "Connection removed!",
+        {
+          action: {
+            label: "Close",
+            onClick: () => {
+              return;
+            },
+          },
+        },
+      );
+    },
+  });
+
   return (
     <Card>
       <CardHeader className="flex justify-between">
@@ -65,12 +127,13 @@ export default function ConnectionCard({
         </div>
         {type === "request" && user.doctor ? (
           <div className="flex flex-row gap-2">
-            <Button variant="outline">
+            <Button variant="outline" disabled={loading}>
               <Eye />
               View details
             </Button>
             <Button
               className="bg-[#2F80ED] text-white hover:bg-[#1366d6]"
+              disabled={loading}
               onClick={() => {
                 acceptMutation.mutate({ id: connection.id });
               }}
@@ -80,6 +143,7 @@ export default function ConnectionCard({
             </Button>
             <Button
               className="bg-red-500 text-white hover:bg-red-600 hover:text-white"
+              disabled={loading}
               onClick={() => declineMutation.mutate({ id: connection.id })}
             >
               <X />
@@ -87,15 +151,37 @@ export default function ConnectionCard({
             </Button>
           </div>
         ) : type === "request" && user.doctor === false ? (
-          <Button variant="outline">
-            <Eye />
-            View details
-          </Button>
+          <div className="flex flex-row gap-2">
+            <Button
+              variant="outline"
+              disabled={loading}
+              onClick={() => {
+                declineMutation.mutate({
+                  id: connection.id,
+                });
+              }}
+            >
+              <UserMinus2 />
+              Cancel connection request
+            </Button>
+            <Button variant="outline" disabled={loading}>
+              <Eye />
+              View details
+            </Button>
+          </div>
         ) : type === "connection" ? (
-          <Button variant="outline">
-            <Eye />
-            View details
-          </Button>
+          <div className="flex flex-row gap-2">
+            <Button variant="outline" disabled={loading} onClick={() => {
+              deleteMutation.mutate({id: connection.id});
+            }}>
+              <UserMinus2 />
+              Remove connection
+            </Button>
+            <Button variant="outline" disabled={loading}>
+              <Eye />
+              View details
+            </Button>
+          </div>
         ) : null}
       </CardHeader>
       <CardContent className="flex w-3/4 justify-between text-sm">
