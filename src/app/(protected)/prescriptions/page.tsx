@@ -34,7 +34,7 @@ export default function Prescriptions() {
     data: connectionResponse,
     isLoading: isConnectionLoading,
     error: connectionError,
-  } = api.connection.getConnections.useQuery();
+  } = api.connection.getPrescriptionConnections.useQuery();
 
   const prescriptions = prescriptionsResponse?.data ?? [];
   const user = prescriptionsResponse?.user;

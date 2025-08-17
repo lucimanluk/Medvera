@@ -119,13 +119,13 @@ export default function DoctorProfile({ data }: { data: any }) {
     setCmrNumber("cmrNumber" in profile ? (profile.cmrNumber ?? "") : "");
     setCmrIssueDate(
       "cmrIssueDate" in profile && profile.cmrIssueDate
-        ? profile.cmrIssueDate.toISOString().slice(0, 10)
-        : "",
+        ? profile.cmrIssueDate
+        : undefined,
     );
     setCmrExpirationDate(
       "cmrExpirationDate" in profile && profile.cmrExpirationDate
-        ? profile.cmrExpirationDate.toISOString().slice(0, 10)
-        : "",
+        ? profile.cmrExpirationDate
+        : undefined,
     );
     setDigiSigSeries(
       "digiSigSeries" in profile ? (profile.digiSigSeries ?? "") : "",
@@ -135,13 +135,13 @@ export default function DoctorProfile({ data }: { data: any }) {
     );
     setDigiSigIssueDate(
       "digiSigIssueDate" in profile && profile.digiSigIssueDate
-        ? profile.digiSigIssueDate.toISOString().slice(0, 10)
-        : "",
+        ? profile.digiSigIssueDate
+        : undefined,
     );
     setDigiSigExpirationDate(
       "digiSigExpirationDate" in profile && profile.digiSigExpirationDate
-        ? profile.digiSigExpirationDate.toISOString().slice(0, 10)
-        : "",
+        ? profile.digiSigExpirationDate
+        : undefined,
     );
     setAppointmentPrice(
       "appointmentPrice" in profile && profile.appointmentPrice
@@ -293,13 +293,13 @@ export default function DoctorProfile({ data }: { data: any }) {
                   );
                   setCmrIssueDate(
                     "cmrIssueDate" in profile && profile.cmrIssueDate
-                      ? profile.cmrIssueDate.toISOString().slice(0, 10)
-                      : "",
+                      ? profile.cmrIssueDate
+                      : undefined,
                   );
                   setCmrExpirationDate(
                     "cmrExpirationDate" in profile && profile.cmrExpirationDate
-                      ? profile.cmrExpirationDate.toISOString().slice(0, 10)
-                      : "",
+                      ? profile.cmrExpirationDate
+                      : undefined,
                   );
                   setDigiSigSeries(
                     "digiSigSeries" in profile
@@ -313,14 +313,14 @@ export default function DoctorProfile({ data }: { data: any }) {
                   );
                   setDigiSigIssueDate(
                     "digiSigIssueDate" in profile && profile.digiSigIssueDate
-                      ? profile.digiSigIssueDate.toISOString().slice(0, 10)
-                      : "",
+                      ? profile.digiSigIssueDate
+                      : undefined,
                   );
                   setDigiSigExpirationDate(
                     "digiSigExpirationDate" in profile &&
                       profile.digiSigExpirationDate
-                      ? profile.digiSigExpirationDate.toISOString().slice(0, 10)
-                      : "",
+                      ? profile.digiSigExpirationDate
+                      : undefined,
                   );
                 }}
               >

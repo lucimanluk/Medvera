@@ -19,6 +19,8 @@ export default function Connections() {
     setRequests(pendingCount);
   }, [data]);
 
+  console.log(data);
+
   if (isLoading) {
     return (
       <div className="flex h-screen w-full flex-row items-center justify-center">

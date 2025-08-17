@@ -5,7 +5,6 @@ import { Input } from "~/components/ui/input";
 import DoctorCard from "./_components/doctorCard";
 import { useState, useMemo } from "react";
 import PopoverFilter from "./_components/popoverFilter";
-import SelectorFilter from "./_components/selectorFilter";
 import { frameworks } from "~/types/framework";
 import { api } from "~/trpc/react";
 
@@ -21,9 +20,7 @@ export default function FindDoctor() {
 
   const doctors = doctorsResponse?.data ?? [];
   const user = doctorsResponse?.user;
-
-  console.log(doctorsResponse);
-
+  
   const filteredSearch = useMemo(() => {
     const term = search.toLowerCase().trim();
     if (!term) return doctors;

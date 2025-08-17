@@ -26,11 +26,14 @@ export default function ConnectionCard({
   const acceptMutation = api.connection.acceptConnection.useMutation({
     onSuccess: () => {
       utils.connection.getConnections.invalidate();
+      utils.doctor.getDoctors.invalidate();
+      utils.connection.getPrescriptionConnections.invalidate();
     },
   });
   const declineMutation = api.connection.declineConnection.useMutation({
     onSuccess: () => {
       utils.connection.getConnections.invalidate();
+      utils.doctor.getDoctors.invalidate();
     },
   });
   return (
@@ -52,7 +55,11 @@ export default function ConnectionCard({
                 : connection.patient.name}
             </CardTitle>
             <CardDescription>
-              {user.doctor === false ? <p>Doctor</p> : <p>patient</p>}
+              {user.doctor === false ? (
+                connection.doctor.doctorProfile?.specialization
+              ) : (
+                <p>patient</p>
+              )}
             </CardDescription>
           </div>
         </div>
@@ -91,9 +98,9 @@ export default function ConnectionCard({
           </Button>
         ) : null}
       </CardHeader>
-      <CardContent className="flex w-3/4 justify-between">
+      <CardContent className="flex w-3/4 justify-between text-sm">
         <span>
-          Email:
+          Email:{" "}
           {user.doctor ? connection.patient.email : connection.doctor.email}
         </span>
         <span>
@@ -125,8 +132,8 @@ export default function ConnectionCard({
         <span>
           {user.doctor ? (
             <>
-              <span>Family doctor: </span>
-              {connection.patient.patientProfile?.familyDoctor}
+              <span>Family doctor phone number: </span>
+              {connection.patient.patientProfile?.familyDoctorPhone}
             </>
           ) : (
             <>
