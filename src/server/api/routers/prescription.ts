@@ -78,12 +78,5 @@ export const prescriptionRouter = createTRPCRouter({
           },
         });
     }),
-  getDownloadPrescription: publicProcedure
-    .input(z.object({ id: z.string() }))
-    .query(async ({ ctx, input }) => {
 
-      return await ctx.db.prescription.findUnique({
-        where: { id: input.id },
-      });
-    }),
 });

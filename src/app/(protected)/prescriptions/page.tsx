@@ -17,12 +17,9 @@ import {
   DialogTrigger,
 } from "~/components/ui/dialog";
 import { Label } from "~/components/ui/label";
-import { Textarea } from "~/components/ui/textarea";
 import { Loader2, FilePlus } from "lucide-react";
 import PrescriptionCard from "./_components/prescriptionCard";
 import { toast } from "sonner";
-
-const appointment_types = ["Live and video", "Video", "Live"];
 
 export default function Prescriptions() {
   const {
@@ -181,7 +178,7 @@ export default function Prescriptions() {
                       !endingDate ||
                       !dosage ||
                       !frequency ||
-                      !diagnostic || 
+                      !diagnostic ||
                       !instructions ||
                       !medicationName ||
                       !quantity
@@ -215,7 +212,7 @@ export default function Prescriptions() {
                       Create prescriptions for patients you're connected to.
                     </DialogDescription>
                   </DialogHeader>
-                  <div className="flex flex-col gap-4">
+                  <div className="flex w-full flex-col gap-4 overflow-auto">
                     <div className="flex flex-col gap-2">
                       <Label>Patient name</Label>
                       <PopoverFilterModal
@@ -288,18 +285,22 @@ export default function Prescriptions() {
                     </div>
                     <div className="flex flex-col gap-2">
                       <Label>Diagnostic</Label>
-                      <Textarea
+                      <Input
                         placeholder="Diagnostic for the patient..."
                         value={diagnostic}
+                        maxLength={100}
                         onChange={(e) => setDiagnostic(e.target.value)}
+                        className="resize-none overflow-auto [overflow-wrap:anywhere] break-words"
                       />
                     </div>
                     <div className="flex flex-col gap-2">
                       <Label>Instructions</Label>
-                      <Textarea
+                      <Input
                         placeholder="Instructions for the patient..."
+                        maxLength={100}
                         value={instructions}
                         onChange={(e) => setInstructions(e.target.value)}
+                        className="resize-none overflow-auto [overflow-wrap:anywhere] break-words"
                       />
                     </div>
                   </div>

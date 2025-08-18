@@ -1,4 +1,5 @@
 import { Page, Text, View, Document, StyleSheet } from "@react-pdf/renderer";
+import type { User as UserType } from "~/types/user";
 
 const styles = StyleSheet.create({
   page: {
@@ -10,16 +11,17 @@ const styles = StyleSheet.create({
   },
   header: {
     textAlign: "center",
-    marginBottom: 12,
+    marginBottom: 50,
   },
-  title: { fontSize: 16, marginBottom: 4 },
-  subtitle: { fontSize: 9, color: "gray" },
+  title: { fontSize: 24, marginBottom: 4 },
+  subtitle: { fontSize: 10, color: "gray" },
 
   body: {
     flexGrow: 1,
+    marginBottom: 8,
+    gap: 4,
   },
-  section: { marginBottom: 8 },
-  row: { flexDirection: "row" },
+  col: { flexDirection: "column" },
   mr12: { marginRight: 12 },
 
   footer: {
@@ -38,8 +40,11 @@ type PDFData = {
   quantity: number | string;
   startingDate: string | Date;
   endingDate: string | Date;
+  diagnostic: string;
   instructions: string;
   createdAt: string | Date;
+  doctor: UserType;
+  patient: UserType;
 };
 
 const fmtISO = (d: string | Date) => new Date(d).toISOString().slice(0, 10);
@@ -47,30 +52,29 @@ const fmtISO = (d: string | Date) => new Date(d).toISOString().slice(0, 10);
 export function PrescriptionPDF({ data }: { data: PDFData }) {
   return (
     <Document>
-      <Page size="A4" style={styles.page}>
+      <Page size="A5" style={styles.page}>
         <View style={styles.header}>
-          <Text style={styles.title}>Prescription</Text>
-          <Text style={styles.subtitle}>#{data.id}</Text>
+          <Text style={styles.title}>Medical prescription</Text>
+          <Text style={styles.subtitle}>{data.doctor.name}</Text>
         </View>
 
         <View style={styles.body}>
-          <View style={styles.section}>
-            <Text>Medication: {data.medicationName}</Text>
-            <View style={[styles.row, { marginTop: 4 }]}>
-              <Text style={styles.mr12}>Dosage: {data.dosage}</Text>
-              <Text style={styles.mr12}>Frequency: {data.frequency}</Text>
-              <Text>Quantity: {String(data.quantity)}</Text>
-            </View>
-            <Text style={{ marginTop: 4 }}>
-              Start: {fmtISO(data.startingDate)} | End:{" "}
-              {fmtISO(data.endingDate)}
-            </Text>
-          </View>
-
-          <View style={styles.section}>
-            <Text>Instructions:</Text>
-            <Text>{data.instructions}</Text>
-          </View>
+          <Text>Medication: {data.medicationName}</Text>
+          <Text style={styles.mr12}>Dosage: {data.dosage}</Text>
+          <Text style={styles.mr12}>Frequency: {data.frequency}</Text>
+          <Text>Quantity: {String(data.quantity)}</Text>
+          <Text>
+            Start: {fmtISO(data.startingDate)} --- End:{" "}
+            {fmtISO(data.endingDate)}
+          </Text>
+          <Text>
+            Diagnostics:
+            {data.diagnostic}
+          </Text>
+          <Text>
+            Instructions:
+            {data.instructions}
+          </Text>
         </View>
 
         <View style={styles.footer}>
