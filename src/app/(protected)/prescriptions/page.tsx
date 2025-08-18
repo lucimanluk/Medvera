@@ -68,6 +68,7 @@ export default function Prescriptions() {
   const [endingDate, setEndingDate] = useState<Date | null>(null);
   const [dosage, setDosage] = useState("");
   const [frequency, setFrequency] = useState("");
+  const [diagnostic, setDiagnostic] = useState("");
   const [instructions, setInstructions] = useState("");
   const [medicationName, setMedicationName] = useState("");
   const [quantity, setQuantity] = useState("");
@@ -151,6 +152,7 @@ export default function Prescriptions() {
                 setEndingDate(null);
                 setDosage("");
                 setFrequency("");
+                setDiagnostic("");
                 setInstructions("");
                 setMedicationName("");
                 setQuantity("");
@@ -179,6 +181,7 @@ export default function Prescriptions() {
                       !endingDate ||
                       !dosage ||
                       !frequency ||
+                      !diagnostic || 
                       !instructions ||
                       !medicationName ||
                       !quantity
@@ -199,6 +202,7 @@ export default function Prescriptions() {
                       endingDate,
                       dosage,
                       frequency,
+                      diagnostic,
                       instructions,
                       medicationName,
                       quantity,
@@ -281,6 +285,14 @@ export default function Prescriptions() {
                           }
                         />
                       </div>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <Label>Diagnostic</Label>
+                      <Textarea
+                        placeholder="Diagnostic for the patient..."
+                        value={diagnostic}
+                        onChange={(e) => setDiagnostic(e.target.value)}
+                      />
                     </div>
                     <div className="flex flex-col gap-2">
                       <Label>Instructions</Label>

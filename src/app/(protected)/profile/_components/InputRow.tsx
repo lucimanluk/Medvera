@@ -14,8 +14,8 @@ interface InputRowProps {
   inputType1?: string;
   inputType2?: string;
   type: string[];
-  data1?: string[];
-  data2?: string[];
+  data1?: any[];
+  data2?: any[];
   editing: boolean;
   value1: any;
   setValue1: (value1: any) => void;

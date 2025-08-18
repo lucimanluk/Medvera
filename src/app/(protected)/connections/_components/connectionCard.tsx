@@ -7,6 +7,16 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "~/components/ui/dialog";
 import { Check, X, Eye, UserMinus2 } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { toast } from "sonner";
@@ -31,6 +41,16 @@ export default function ConnectionCard({
     onMutate: () => {
       setLoading(true);
     },
+    onSuccess: () => {
+      toast("Connection accepted!", {
+        action: {
+          label: "Close",
+          onClick: () => {
+            return;
+          },
+        },
+      });
+    },
     onSettled: async () => {
       await Promise.all([
         utils.connection.getConnections.invalidate(),
@@ -38,7 +58,9 @@ export default function ConnectionCard({
         utils.connection.getPrescriptionConnections.invalidate(),
       ]);
       setLoading(false);
-      toast("Connection accepted!", {
+    },
+    onError: () => {
+      toast("Couldn't accept connection request!", {
         action: {
           label: "Close",
           onClick: () => {
@@ -53,12 +75,7 @@ export default function ConnectionCard({
     onMutate: () => {
       setLoading(true);
     },
-    onSettled: async () => {
-      await Promise.all([
-        utils.connection.getConnections.invalidate(),
-        utils.doctor.getDoctors.invalidate(),
-      ]);
-      setLoading(false);
+    onSuccess: () => {
       toast(
         user.doctor == true ? "Connection declined!" : "Connection canceled!",
         {
@@ -71,11 +88,38 @@ export default function ConnectionCard({
         },
       );
     },
+    onSettled: async () => {
+      await Promise.all([
+        utils.connection.getConnections.invalidate(),
+        utils.doctor.getDoctors.invalidate(),
+      ]);
+      setLoading(false);
+    },
+    onError: () => {
+      toast("Error declining connection! ", {
+        action: {
+          label: "Close",
+          onClick: () => {
+            return;
+          },
+        },
+      });
+    },
   });
 
   const deleteMutation = api.connection.declineConnection.useMutation({
     onMutate: () => {
       setLoading(true);
+    },
+    onSuccess: () => {
+      toast("Connection removed!", {
+        action: {
+          label: "Close",
+          onClick: () => {
+            return;
+          },
+        },
+      });
     },
     onSettled: async () => {
       await Promise.all([
@@ -84,17 +128,16 @@ export default function ConnectionCard({
         utils.connection.getPrescriptionConnections.invalidate(),
       ]);
       setLoading(false);
-      toast(
-        "Connection removed!",
-        {
-          action: {
-            label: "Close",
-            onClick: () => {
-              return;
-            },
+    },
+    onError: () => {
+      toast("Couldn't remove connection!", {
+        action: {
+          label: "Close",
+          onClick: () => {
+            return;
           },
         },
-      );
+      });
     },
   });
 
@@ -171,9 +214,13 @@ export default function ConnectionCard({
           </div>
         ) : type === "connection" ? (
           <div className="flex flex-row gap-2">
-            <Button variant="outline" disabled={loading} onClick={() => {
-              deleteMutation.mutate({id: connection.id});
-            }}>
+            <Button
+              variant="outline"
+              disabled={loading}
+              onClick={() => {
+                deleteMutation.mutate({ id: connection.id });
+              }}
+            >
               <UserMinus2 />
               Remove connection
             </Button>

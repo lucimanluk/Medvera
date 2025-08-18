@@ -136,7 +136,6 @@ export default function DoctorCard({
             <Button
               variant="outline"
               onClick={() => {
-                setLoading(true);
                 createConnection.mutate({
                   doctorId: doctor.id,
                   patientId: user.id,
@@ -186,22 +185,22 @@ export default function DoctorCard({
         </div>
       </CardHeader>
       <CardContent className="flex w-3/4 flex-row justify-between text-sm">
-        <div className="g-2 flex flex-row items-center">
+        <div className="flex flex-row items-center gap-2">
           <p>
             Appointment duration: {doctor.doctorProfile?.appointmentDuration}
-            <span>minutes</span>
+            <span> minutes</span>
           </p>
         </div>
-        <div className="g-2 flex flex-row items-center">
+        <div className="flex flex-row items-center gap-2">
           <p>
             Appointment price: {doctor.doctorProfile?.appointmentPrice}
             <span>RON</span>
           </p>
         </div>
-        <div className="g-2 flex flex-row items-center">
+        <div className="flex flex-row items-center gap-2">
           <p>Cabinet phone number: {doctor.doctorProfile?.cabinetPhone}</p>
         </div>
-        <div className="g-2 flex flex-row items-center">
+        <div className="flex flex-row items-center gap-2">
           <p>Cabinet location: {doctor.doctorProfile?.cabinetCity}</p>
         </div>
       </CardContent>

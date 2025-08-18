@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -20,7 +22,10 @@ import { Label } from "~/components/ui/label";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import type { Prescription as PrescriptionType } from "~/types/prescription";
 import type { User } from "~/types/user";
-import { Eye } from "lucide-react";
+import { Eye, Download } from "lucide-react";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import { PrescriptionPDF } from "./prescriptionPDF";
+import { useMemo } from "react";
 
 export default function PrescriptionCard({
   props,
@@ -31,6 +36,7 @@ export default function PrescriptionCard({
   user: User;
   type: string;
 }) {
+  const memoizedDoc = useMemo(() => <PrescriptionPDF data={props} />, [props]);
   return (
     <Card>
       <CardHeader className="flex justify-between">
@@ -57,6 +63,24 @@ export default function PrescriptionCard({
           </div>
         </div>
         <div className="flex flex-row gap-2">
+          {type != "past" || user.doctor == true ? (
+            <PDFDownloadLink
+              document={memoizedDoc}
+              fileName={`prescription-${props.id}.pdf`}
+              className="inline-flex items-center gap-2 rounded-md border px-4 py-2 text-sm font-medium shadow-xs hover:bg-gray-100"
+            >
+              {({ loading, error }) => (
+                <>
+                  <Download className="h-4 w-4" />
+                  {loading
+                    ? "Preparing PDF…"
+                    : error
+                      ? "Try again"
+                      : "Download prescription"}
+                </>
+              )}
+            </PDFDownloadLink>
+          ) : null}
           <Dialog>
             <DialogTrigger asChild>
               <Button className="bg-[#2F80ED] text-white hover:bg-[#1366d6]">
@@ -117,9 +141,15 @@ export default function PrescriptionCard({
                   <span>{props.endingDate.toISOString().slice(0, 10)}</span>
                 </div>
               </div>
-              <div className="flex flex-col gap-2">
-                <Label>Instructions</Label>
-                <ScrollArea className="h-70">{props.instructions}</ScrollArea>
+              <div className="flex h-70 flex-col">
+                <div className="flex flex-col gap-2">
+                  <Label>Diagnostics</Label>
+                  <ScrollArea>{props.diagnostic}</ScrollArea>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Label>Instructions</Label>
+                  <ScrollArea>{props.instructions}</ScrollArea>
+                </div>
               </div>
               <div className="flex flex-row justify-between">
                 <div className="flex flex-col">
@@ -136,7 +166,6 @@ export default function PrescriptionCard({
                   />
                 </div>
               </div>
-
               <DialogFooter>
                 <DialogClose asChild>
                   <Button variant="outline">Close</Button>

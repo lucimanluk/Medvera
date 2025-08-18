@@ -9,6 +9,7 @@ export interface Prescription {
   dosage: string;
   frequency: string;
   quantity: string;
+  diagnostic: string;
   instructions: string;
   patient: User;
   doctor: User;

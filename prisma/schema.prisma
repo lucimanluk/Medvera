@@ -97,8 +97,6 @@ model DoctorProfile {
 
   appointmentDuration Int?
   appointmentPrice    Int?
-
-  
 }
 
 model Session {
@@ -177,6 +175,7 @@ model Prescription {
   doctorId       String
   dosage         String
   frequency      String
+  diagnostic     String
   instructions   String
   medicationName String
   quantity       String

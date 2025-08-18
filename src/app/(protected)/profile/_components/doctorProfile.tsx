@@ -551,15 +551,11 @@ export default function DoctorProfile({ data }: { data: any }) {
                 </div>
                 <InputRow
                   label_name1={"Appointment price (prices in RON)"}
-                  label_name2={"Appointment duration"}
+                  label_name2={"Appointment duration (in minutes)"}
                   inputType1="number"
+                  inputType2="number"
                   type={["input", "select"]}
-                  data2={[
-                    "15 minutes",
-                    "30 minutes",
-                    "45 minutes",
-                    "60 minutes",
-                  ]}
+                  data2={[15, 30, 45, 60]}
                   value1={appointmentPrice}
                   setValue1={setAppointmentPrice}
                   value2={appointmentDuration}

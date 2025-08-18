@@ -1,4 +1,4 @@
-export default function DocctorLayout({
+export default function DoctorLayout({
   children,
 }: {
   children: React.ReactNode;

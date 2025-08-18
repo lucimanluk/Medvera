@@ -53,6 +53,7 @@ export const prescriptionRouter = createTRPCRouter({
         endingDate: z.date(),
         dosage: z.string(),
         frequency: z.string(),
+        diagnostic: z.string(),
         instructions: z.string(),
         medicationName: z.string(),
         quantity: z.string(),
@@ -69,11 +70,20 @@ export const prescriptionRouter = createTRPCRouter({
             endingDate: input.endingDate,
             doctorId: user?.id,
             dosage: input.dosage,
+            diagnostic: input.diagnostic,
             frequency: input.frequency,
             instructions: input.instructions,
             medicationName: input.medicationName,
             quantity: input.quantity,
           },
         });
+    }),
+  getDownloadPrescription: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+
+      return await ctx.db.prescription.findUnique({
+        where: { id: input.id },
+      });
     }),
 });
