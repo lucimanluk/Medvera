@@ -11,14 +11,27 @@ export const connectionRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      return await ctx.db.connection.update({
-        where: {
-          id: input.id,
-        },
-        data: {
-          accepted: true,
-        },
-      });
+      try {
+        return await ctx.db.connection.update({
+          where: {
+            id: input.id,
+          },
+          data: {
+            accepted: true,
+          },
+        });
+      } catch (e) {
+        if (
+          e instanceof Prisma.PrismaClientKnownRequestError &&
+          e.code === "P2025"
+        ) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Connection was already canceled.",
+          });
+        }
+        throw e;
+      }
     }),
   declineConnection: publicProcedure
     .input(
@@ -27,11 +40,24 @@ export const connectionRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      return await ctx.db.connection.delete({
-        where: {
-          id: input.id,
-        },
-      });
+      try {
+        return await ctx.db.connection.delete({
+          where: {
+            id: input.id,
+          },
+        });
+      } catch (e) {
+        if (
+          e instanceof Prisma.PrismaClientKnownRequestError &&
+          e.code === "P2025"
+        ) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Connection was already canceled.",
+          });
+        }
+        throw e;
+      }
     }),
   createConnection: publicProcedure
     .input(

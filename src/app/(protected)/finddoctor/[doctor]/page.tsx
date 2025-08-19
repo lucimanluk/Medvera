@@ -113,11 +113,7 @@ export default function Doctor() {
                 <CardTitle>Dr. {data?.name}</CardTitle>
                 <CardDescription className="flex flex-col">
                   <span>{data?.doctorProfile?.specialization}</span>
-                  <span>
-                    {data?.email}
-                    {", +"}
-                    {data?.doctorProfile?.cabinetPhone}
-                  </span>
+                  <span>Cabinet phone number: {data?.doctorProfile?.cabinetPhone}</span>
                 </CardDescription>
               </div>
             </div>

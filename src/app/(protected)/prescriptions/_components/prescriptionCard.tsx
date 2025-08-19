@@ -26,6 +26,7 @@ import { Eye, Download } from "lucide-react";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { PrescriptionPDF } from "./prescriptionPDF";
 import { useMemo } from "react";
+import Image from "next/image";
 
 export default function PrescriptionCard({
   props,
@@ -41,23 +42,33 @@ export default function PrescriptionCard({
     <Card>
       <CardHeader className="flex justify-between">
         <div className="flex items-center gap-2">
-          <img
-            src={
-              user.doctor === false
-                ? props.doctor.image || "/default_pfp.jpg"
-                : props.patient.image || "/default_pfp.jpg"
-            }
-            className="h-10 w-10 rounded-full"
-          />
+          <div className="relative h-10 w-10 self-center overflow-hidden rounded-full">
+            <Image
+              src={
+                user.doctor === false
+                  ? props.doctor.doctorProfile?.image || "/default_pfp.jpg"
+                  : props.patient.patientProfile?.image || "/default_pfp.jpg"
+              }
+              alt=""
+              layout="fill"
+              objectFit="cover"
+            />
+          </div>
           <div className="flex flex-col gap-1">
             <CardTitle>
               {props.dosage} {props.medicationName}
             </CardTitle>
             <CardDescription>
               {user.doctor ? (
-                <span>Assigned to {props.patient.name}</span>
+                <span>
+                  Assigned to {props.patient.patientProfile?.firstName}{" "}
+                  {props.patient.patientProfile?.lastName}
+                </span>
               ) : (
-                <span>Assigned by {props.doctor.name}</span>
+                <span>
+                  Assigned by {props.doctor.doctorProfile?.firstName}{" "}
+                  {props.doctor.doctorProfile?.lastName}
+                </span>
               )}
             </CardDescription>
           </div>
@@ -96,19 +107,28 @@ export default function PrescriptionCard({
                 </DialogDescription>
               </DialogHeader>
               <div className="flex flex-row items-center gap-2">
-                <img
+                <Image
                   src={
                     user.doctor === false
-                      ? props.doctor.image || "/default_pfp.jpg"
-                      : props.patient.image || "/default_pfp.jpg"
+                      ? props.doctor.doctorProfile?.image || "/default_pfp.jpg"
+                      : props.patient.patientProfile?.image ||
+                        "/default_pfp.jpg"
                   }
-                  className="h-10 w-10 rounded-full"
+                  alt=""
+                  layout="fill"
+                  objectFit="cover"
                 />
                 <div className="flex flex-col">
                   {user.doctor ? (
-                    <span>Assigned to {props.patient.name}</span>
+                    <span>
+                      Assigned to {props.patient.patientProfile?.firstName}{" "}
+                      {props.patient.patientProfile?.lastName}
+                    </span>
                   ) : (
-                    <span>Assigned by {props.doctor.name}</span>
+                    <span>
+                      Assigned by {props.doctor.doctorProfile?.firstName}{" "}
+                      {props.doctor.doctorProfile?.lastName}
+                    </span>
                   )}
                   <span>{props.doctor.doctorProfile?.specialization}</span>
                 </div>

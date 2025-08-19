@@ -15,8 +15,10 @@ import type { User as UserType } from "~/types/user";
 import type { DoctorConnection } from "~/types/connection";
 import { api } from "~/trpc/react";
 import { useState } from "react";
+import Image from "next/image";
 import PatientDialog from "./patientDialog";
 import DoctorDialog from "./doctorDialog";
+import { TRPCClientError } from "@trpc/client";
 
 export default function ConnectionCard({
   type,
@@ -52,15 +54,24 @@ export default function ConnectionCard({
       ]);
       setLoading(false);
     },
-    onError: () => {
-      toast("Couldn't accept connection request!", {
-        action: {
-          label: "Close",
-          onClick: () => {
-            return;
+    onError: (err) => {
+      const code = err instanceof TRPCClientError ? err.data?.code : undefined;
+
+      if (code === "NOT_FOUND") {
+        toast("Connection was already canceled.", {
+          action: { label: "Close", onClick: () => {} },
+        });
+        return;
+      } else {
+        toast("Couldn't accept connection request!", {
+          action: {
+            label: "Close",
+            onClick: () => {
+              return;
+            },
           },
-        },
-      });
+        });
+      }
     },
   });
 
@@ -88,15 +99,24 @@ export default function ConnectionCard({
       ]);
       setLoading(false);
     },
-    onError: () => {
-      toast("Error declining connection! ", {
-        action: {
-          label: "Close",
-          onClick: () => {
-            return;
+    onError: (err) => {
+      const code = err instanceof TRPCClientError ? err.data?.code : undefined;
+
+      if (code === "NOT_FOUND") {
+        toast("Connection was already canceled.", {
+          action: { label: "Close", onClick: () => {} },
+        });
+        return;
+      } else {
+        toast("Error declining connection! ", {
+          action: {
+            label: "Close",
+            onClick: () => {
+              return;
+            },
           },
-        },
-      });
+        });
+      }
     },
   });
 
@@ -122,15 +142,24 @@ export default function ConnectionCard({
       ]);
       setLoading(false);
     },
-    onError: () => {
-      toast("Couldn't remove connection!", {
-        action: {
-          label: "Close",
-          onClick: () => {
-            return;
+    onError: (err) => {
+      const code = err instanceof TRPCClientError ? err.data?.code : undefined;
+
+      if (code === "NOT_FOUND") {
+        toast("Connection was already removed.", {
+          action: { label: "Close", onClick: () => {} },
+        });
+        return;
+      } else {
+        toast("Couldn't remove connection!", {
+          action: {
+            label: "Close",
+            onClick: () => {
+              return;
+            },
           },
-        },
-      });
+        });
+      }
     },
   });
 
@@ -138,19 +167,25 @@ export default function ConnectionCard({
     <Card>
       <CardHeader className="flex justify-between">
         <div className="flex items-center gap-2">
-          <img
-            src={
-              user.doctor === false
-                ? connection.doctor.image || "/default_pfp.jpg"
-                : connection.patient.image || "/default_pfp.jpg"
-            }
-            className="h-10 w-10 rounded-full"
-          />
+          <div className="relative h-10 w-10 self-center overflow-hidden rounded-full">
+            <Image
+              src={
+                user.doctor === false
+                  ? connection.doctor.doctorProfile?.image || "/default_pfp.jpg"
+                  : connection.patient.patientProfile?.image ||
+                    "/default_pfp.jpg"
+              }
+              alt=""
+              layout="fill"
+              objectFit="cover"
+            />
+          </div>
+
           <div className="flex flex-col gap-1">
             <CardTitle>
               {user.doctor === false
-                ? connection.doctor.name
-                : connection.patient.name}
+                ? `${connection.doctor.doctorProfile?.firstName} ${connection.doctor.doctorProfile?.lastName}`
+                : `${connection.patient.patientProfile?.firstName} ${connection.patient.patientProfile?.lastName}`}
             </CardTitle>
             <CardDescription>
               {user.doctor === false ? (
@@ -240,10 +275,6 @@ export default function ConnectionCard({
       </CardHeader>
       <CardContent className="flex w-3/4 justify-between text-sm">
         <span>
-          Email:{" "}
-          {user.doctor ? connection.patient.email : connection.doctor.email}
-        </span>
-        <span>
           {user.doctor ? (
             <>
               <span>Phone number: </span>
@@ -282,6 +313,19 @@ export default function ConnectionCard({
             </>
           )}
         </span>
+           <span>
+          {user.doctor ? (
+            <>
+              <span>Family doctor name: </span>
+              {connection.patient.patientProfile?.familyDoctor}
+            </>
+          ) : (
+            <>
+              <span>Cabinet county: </span>
+              {connection.doctor.doctorProfile?.cabinetCounty}
+            </>
+          )}
+          </span>
       </CardContent>
     </Card>
   );

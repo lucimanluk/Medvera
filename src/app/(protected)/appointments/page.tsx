@@ -126,17 +126,6 @@ export default function Appointments() {
               appointment={appointment}
               user={user as User}
               type={"upcoming"}
-              profile={
-                user?.doctor
-                  ? (appointment.patient.patientProfile as PatientProfile)
-                  : (appointment.doctor.doctorProfile as DoctorProfile)
-              }
-              price={
-                appointment.doctor.doctorProfile?.appointmentPrice as number
-              }
-              duration={
-                appointment.doctor.doctorProfile?.appointmentDuration as number
-              }
             />
           ))}
         </TabsContent>
@@ -147,17 +136,6 @@ export default function Appointments() {
               appointment={appointment}
               user={user as User}
               type={"past"}
-              profile={
-                user?.doctor
-                  ? (appointment.patient.patientProfile as PatientProfile)
-                  : (appointment.doctor.doctorProfile as DoctorProfile)
-              }
-              price={
-                appointment.doctor.doctorProfile?.appointmentPrice as number
-              }
-              duration={
-                appointment.doctor.doctorProfile?.appointmentDuration as number
-              }
             />
           ))}
         </TabsContent>

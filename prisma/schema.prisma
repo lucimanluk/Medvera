@@ -41,6 +41,7 @@ model PatientProfile {
 
   firstName         String?
   lastName          String?
+  image             String?
   phoneNumber       String?
   series            String?
   cnp               String?
@@ -71,6 +72,7 @@ model DoctorProfile {
   user                    User      @relation("DoctorProfileToUser", fields: [userEmail], references: [email], onDelete: Cascade)
   firstName               String?
   lastName                String?
+  image                   String?
   phoneNumber             String?
   series                  String?
   cnp                     String?

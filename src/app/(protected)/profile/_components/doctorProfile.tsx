@@ -84,7 +84,7 @@ export default function DoctorProfile({ data }: { data: any }) {
 
     const profile = data.doctorProfile ?? data.patientProfile!;
 
-    setImagePreview(data.image ?? null);
+    setImagePreview(profile.image ?? null);
     setFirstName(profile.firstName);
     setLastName(profile.lastName);
     setEmail(data.email);
@@ -153,7 +153,6 @@ export default function DoctorProfile({ data }: { data: any }) {
         ? profile.appointmentDuration
         : 0,
     );
-    console.log(profile);
   }, [data]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -185,11 +184,13 @@ export default function DoctorProfile({ data }: { data: any }) {
           <div className="flex flex-row gap-2">
             <Button
               className="bg-[#2F80ED] text-white hover:bg-[#1366d6]"
-              onClick={() => {
+              disabled={mutation.isPending}
+              onClick={async () => {
                 if (editing) {
-                  mutation.mutate({
+                  await mutation.mutateAsync({
                     firstName,
                     lastName,
+                    image: image ? await convertImageToBase64(image) : "",
                     phoneNumber,
                     series,
                     cnp,
@@ -232,12 +233,13 @@ export default function DoctorProfile({ data }: { data: any }) {
             </Button>
             {editing ? (
               <Button
+                disabled={mutation.isPending}
                 onClick={() => {
                   setEditing(false);
 
                   const profile = data?.doctorProfile ?? data?.patientProfile!;
 
-                  setImagePreview(data?.image ?? null);
+                  setImagePreview(profile?.image ?? null);
                   setFirstName(profile.firstName);
                   setLastName(profile.lastName);
                   setPhoneNumber(profile.phoneNumber ?? "");
@@ -569,4 +571,13 @@ export default function DoctorProfile({ data }: { data: any }) {
       </Tabs>
     </div>
   );
+}
+
+async function convertImageToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
 }

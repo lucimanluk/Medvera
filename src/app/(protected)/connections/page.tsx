@@ -18,9 +18,7 @@ export default function Connections() {
     const pendingCount = data?.data.filter((c) => !c.accepted).length ?? 0;
     setRequests(pendingCount);
   }, [data]);
-
-  console.log(data);
-
+  
   if (isLoading) {
     return (
       <div className="flex h-screen w-full flex-row items-center justify-center">

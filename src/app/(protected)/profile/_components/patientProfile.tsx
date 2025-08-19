@@ -42,8 +42,8 @@ export default function PatientProfile({ data }: { data: any }) {
   const [familyDoctorPhone, setFamilyDoctorPhone] = useState<string>("");
   const [bloodType, setBloodType] = useState<string>("");
   const [rhFactor, setRhFactor] = useState<string>("");
-  const [weight, setWeight] = useState<number>();
-  const [height, setHeight] = useState<number>();
+  const [weight, setWeight] = useState<string>("");
+  const [height, setHeight] = useState<string>("");
   const [allergies, setAllergies] = useState<string[]>([]);
   const [allergyInput, setAllergyInput] = useState<string>("");
   const [meidcalConditionInput, setMedicalConditionInput] =
@@ -65,15 +65,13 @@ export default function PatientProfile({ data }: { data: any }) {
       utils.user.get3.invalidate();
     },
     onError: (err) => {
-      const zodMsg = err?.data?.zodError
-        ? Object.values(err.data.zodError.fieldErrors)
-            .flat()
-            .filter(Boolean)
-            .join(", ")
-        : null;
-
-      toast.error("Couldn't update profile", {
-        description: zodMsg || err.message || "Something went wrong.",
+      toast.error("Couldn't update profile, something went wrong.", {
+        action: {
+          label: "Close",
+          onClick: () => {
+            return;
+          },
+        },
       });
     },
   });
@@ -83,7 +81,7 @@ export default function PatientProfile({ data }: { data: any }) {
 
     const profile = data.doctorProfile ?? data.patientProfile!;
 
-    setImagePreview(data.image ?? null);
+    setImagePreview(profile.image ?? null);
     setFirstName(profile.firstName);
     setLastName(profile.lastName);
     setEmail(data.email);
@@ -119,13 +117,13 @@ export default function PatientProfile({ data }: { data: any }) {
     setRhFactor("rhFactor" in profile ? (profile.rhFactor ?? "") : "");
     setWeight(
       "weight" in profile && typeof profile.weight === "number"
-        ? profile.weight
-        : undefined,
+        ? profile.weight.toString()
+        : "",
     );
     setHeight(
       "height" in profile && typeof profile.height === "number"
-        ? profile.height
-        : undefined,
+        ? profile.height.toString()
+        : "",
     );
     setAllergies("allergies" in profile ? profile.allergies : []);
     setMedicalCondition(
@@ -159,11 +157,13 @@ export default function PatientProfile({ data }: { data: any }) {
           <div className="flex flex-row gap-2">
             <Button
               className="bg-[#2F80ED] text-white hover:bg-[#1366d6]"
-              onClick={() => {
+              disabled={mutation.isPending}
+              onClick={async () => {
                 if (editing) {
-                  mutation.mutate({
+                  await mutation.mutateAsync({
                     firstName,
                     lastName,
+                    image: image ? await convertImageToBase64(image) : "",
                     phoneNumber,
                     series,
                     cnp,
@@ -181,10 +181,11 @@ export default function PatientProfile({ data }: { data: any }) {
                     familyDoctorPhone,
                     bloodType,
                     rhFactor,
-                    weight,
+                    weight: weight ? parseFloat(weight) : null,
+                    height: height ? parseFloat(height) : null,
                   });
-                } else if (editing == false) {
-                  setEditing(!editing);
+                } else {
+                  setEditing(true);
                 }
               }}
             >
@@ -202,12 +203,13 @@ export default function PatientProfile({ data }: { data: any }) {
             </Button>
             {editing ? (
               <Button
+                disabled={mutation.isPending}
                 onClick={() => {
                   setEditing(false);
 
                   const profile = data?.doctorProfile ?? data?.patientProfile!;
 
-                  setImagePreview(data?.image ?? null);
+                  setImagePreview(profile?.image ?? null);
                   setFirstName(profile.firstName);
                   setLastName(profile.lastName);
                   setPhoneNumber(profile.phoneNumber ?? "");
@@ -487,4 +489,13 @@ export default function PatientProfile({ data }: { data: any }) {
       </Tabs>
     </div>
   );
+}
+
+async function convertImageToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
 }

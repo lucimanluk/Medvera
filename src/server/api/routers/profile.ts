@@ -10,6 +10,7 @@ export const profileRouter = createTRPCRouter({
         email: z.string(),
         firstName: z.string(),
         lastName: z.string(),
+        image: z.string().optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -18,6 +19,7 @@ export const profileRouter = createTRPCRouter({
           userEmail: input.email,
           firstName: input.firstName,
           lastName: input.lastName,
+          image: input.image,
         },
       });
     }),
@@ -26,6 +28,7 @@ export const profileRouter = createTRPCRouter({
       z.object({
         firstName: z.string().optional(),
         lastName: z.string().optional(),
+        image: z.string().optional(),
         phoneNumber: z.string().nullable().optional(),
         series: z.string().nullable().optional(),
         cnp: z.string().nullable().optional(),
@@ -61,6 +64,7 @@ export const profileRouter = createTRPCRouter({
           data: {
             firstName: input.firstName,
             lastName: input.lastName,
+            image: input.image,
             phoneNumber: input.phoneNumber,
             series: input.series,
             cnp: input.cnp,
@@ -97,6 +101,7 @@ export const profileRouter = createTRPCRouter({
         email: z.string(),
         firstName: z.string(),
         lastName: z.string(),
+        image: z.string().optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -105,6 +110,7 @@ export const profileRouter = createTRPCRouter({
           userEmail: input.email,
           firstName: input.firstName,
           lastName: input.lastName,
+          image: input.image,
         },
       });
     }),
@@ -113,6 +119,7 @@ export const profileRouter = createTRPCRouter({
       z.object({
         firstName: z.string().optional(),
         lastName: z.string().optional(),
+        image: z.string().optional(),
         phoneNumber: z.string().nullable().optional(),
         series: z.string().nullable().optional(),
         cnp: z.string().nullable().optional(),
@@ -152,6 +159,7 @@ export const profileRouter = createTRPCRouter({
           data: {
             firstName: input.firstName,
             lastName: input.lastName,
+            image: input.image,
             phoneNumber: input.phoneNumber,
             series: input.series,
             cnp: input.cnp,

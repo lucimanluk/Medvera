@@ -16,6 +16,7 @@ import { api } from "~/trpc/react";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { TRPCClientError } from "@trpc/client";
+import Image from "next/image";
 
 export default function DoctorCard({
   doctor,
@@ -120,12 +121,16 @@ export default function DoctorCard({
     <Card>
       <CardHeader className="flex flex-row justify-between">
         <div className="flex flex-row items-center gap-2">
-          <img
-            src={doctor.image || "/default_pfp.jpg"}
-            className="h-10 w-10 rounded-full"
-          />
+          <div className="relative h-10 w-10 self-center overflow-hidden rounded-full">
+            <Image
+              src={doctor.doctorProfile?.image || "/default_pfp.jpg"}
+              alt=""
+              layout="fill"
+              objectFit="cover"
+            />
+          </div>
           <div className="flex flex-col gap-1">
-            <CardTitle>{doctor.name}</CardTitle>
+            <CardTitle>{`${doctor.doctorProfile?.firstName} ${doctor.doctorProfile?.lastName}`}</CardTitle>
             <CardDescription>
               {doctor.doctorProfile?.specialization}
             </CardDescription>

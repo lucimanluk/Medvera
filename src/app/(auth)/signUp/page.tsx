@@ -152,42 +152,52 @@ export default function SignUp() {
               className="w-full bg-[#2F80ED] text-white hover:bg-[#1366d6]"
               disabled={loading}
               onClick={async () => {
-              await signUp.email({
-                  email,
-                  password,
-                  name: `${firstName} ${lastName}`,
-                  image: image ? await convertImageToBase64(image) : "",
-                  callbackURL: `/profile`,
-                  fetchOptions: {
-                    onResponse: () => setLoading(false),
-                    onRequest: () => setLoading(true),
-                    onError: (ctx) => {
-                      setError(ctx.error.message);
-                    },
-                    onSuccess: async () => {
-                      await setDoctorMutation.mutateAsync({
-                        email: email,
-                        doctor: doctor,
-                      });
+                if (firstName.trim() !== "" && lastName.trim() !== "") {
+                  await signUp.email({
+                    email,
+                    password,
+                    name: `${firstName} ${lastName}`,
+                    image: image ? await convertImageToBase64(image) : "",
+                    callbackURL: `/profile`,
+                    fetchOptions: {
+                      onResponse: () => setLoading(false),
+                      onRequest: () => setLoading(true),
+                      onError: (ctx) => {
+                        setError(ctx.error.message);
+                      },
+                      onSuccess: async () => {
+                        await setDoctorMutation.mutateAsync({
+                          email: email,
+                          doctor: doctor,
+                        });
 
-                      if (doctor) {
-                        await createDoctorProfile.mutateAsync({
-                          email: email,
-                          firstName,
-                          lastName,
-                        });
-                      } else {
-                        await createPatientProfile.mutateAsync({
-                          email: email,
-                          firstName,
-                          lastName,
-                        });
-                      }
-                      toast.success("Account created!");
-                      router.push(`/profile`);
+                        if (doctor) {
+                          await createDoctorProfile.mutateAsync({
+                            email: email,
+                            firstName,
+                            lastName,
+                            image: image
+                              ? await convertImageToBase64(image)
+                              : "",
+                          });
+                        } else {
+                          await createPatientProfile.mutateAsync({
+                            email: email,
+                            firstName,
+                            lastName,
+                            image: image
+                              ? await convertImageToBase64(image)
+                              : "",
+                          });
+                        }
+                        toast.success("Account created!");
+                        router.push(`/profile`);
+                      },
                     },
-                  },
-                });
+                  });
+                } else {
+                  setError("Fill both name fields!");
+                }
               }}
             >
               {loading ? (

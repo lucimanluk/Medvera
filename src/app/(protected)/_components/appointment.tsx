@@ -11,8 +11,7 @@ import {
 import { Button } from "~/components/ui/button";
 import type { Appointment as AppointmentType } from "~/types/appointment";
 import type { User } from "~/types/user";
-import type { DoctorProfile } from "@prisma/client";
-import type { PatientProfile } from "@prisma/client";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { usePeerContext } from "~/context/peerContext";
 import { toast } from "sonner";
@@ -21,16 +20,10 @@ export default function Appointment({
   appointment,
   user,
   type,
-  profile,
-  price,
-  duration,
 }: {
   appointment: AppointmentType;
   user: User;
   type: string;
-  profile: PatientProfile | DoctorProfile;
-  price: number;
-  duration: number;
 }) {
   const { peer, startCall, inCall } = usePeerContext()!;
   const [isCallTime, setIsCallTime] = useState(false);
@@ -77,46 +70,39 @@ export default function Appointment({
     <Card className="mb-2">
       <CardHeader className="flex justify-between">
         <div className="flex items-center gap-2">
-          <img
-            className="h-10 w-10 rounded-full"
-            src={
-              user.id === appointment.patient.id
-                ? appointment.doctor.image || "/default_pfp.jpg"
-                : appointment.patient.image || "/default_pfp.jpg"
-            }
-          />
+          <div className="relative h-10 w-10 self-center overflow-hidden rounded-full">
+            <Image
+              src={
+                user.id === appointment.patient.id
+                  ? appointment.doctor.doctorProfile?.image || "/default_pfp.jpg"
+                  : appointment.patient.patientProfile?.image || "/default_pfp.jpg"
+              }
+              alt=""
+              layout="fill"
+              objectFit="cover"
+            />
+          </div>
+
           <div className="flex flex-col gap-1">
-          <CardTitle>
+            <CardTitle>
               {user.id === appointment.patient.id
-                ? appointment.doctor.name
-                : appointment.patient.name}
+                ? `${appointment.doctor.doctorProfile?.firstName} ${appointment.doctor.doctorProfile?.lastName}`
+                : `${appointment.patient.patientProfile?.firstName} ${appointment.patient.patientProfile?.lastName}`}
             </CardTitle>
             <CardDescription>
-              {"specialization" in profile
-                ? profile.specialization
+              {user.doctor == false
+                ? appointment.doctor.doctorProfile?.specialization
                 : "Care Recipient"}
             </CardDescription>
           </div>
         </div>
         <div className="flex gap-4">
-          {isCallTime && !inCall && (
-            <Button
-              onClick={handleJoinCall}
-              className="bg-[#2F80ED] text-white hover:bg-[#1366d6]"
-            >
-              <PhoneCall /> Join call
-            </Button>
-          )}
-          {inCall && (
-            <Button variant="outline" disabled={true}>
-              <PhoneCall /> In call
-            </Button>
-          )}
-          {!isCallTime && !inCall && (
-            <Button variant="outline" disabled>
-              <PhoneCall /> Call at {apptDateObj.toTimeString().split("GMT")[0]}
-            </Button>
-          )}
+          <Button
+            onClick={handleJoinCall}
+            className="bg-[#2F80ED] text-white hover:bg-[#1366d6]"
+          >
+            <PhoneCall /> Join call
+          </Button>
         </div>
       </CardHeader>
       <CardContent className="flex w-3/4 justify-between">
@@ -130,12 +116,12 @@ export default function Appointment({
         </div>
         <div className="flex items-center gap-2">
           <Banknote width={18} height={18} />
-          {price} lei
-        </div> 
-           <div className="flex items-center gap-2">
+          {appointment.doctor.doctorProfile?.appointmentPrice} lei
+        </div>
+        <div className="flex items-center gap-2">
           <Hourglass width={18} height={18} />
-          {duration} minutes
-        </div> 
+          {appointment.doctor.doctorProfile?.appointmentDuration} minutes
+        </div>
       </CardContent>
     </Card>
   );
