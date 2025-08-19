@@ -7,16 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "~/components/ui/dialog";
+import { Dialog, DialogTrigger } from "~/components/ui/dialog";
 import { Check, X, Eye, UserMinus2 } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { toast } from "sonner";
@@ -24,6 +15,8 @@ import type { User as UserType } from "~/types/user";
 import type { DoctorConnection } from "~/types/connection";
 import { api } from "~/trpc/react";
 import { useState } from "react";
+import PatientDialog from "./patientDialog";
+import DoctorDialog from "./doctorDialog";
 
 export default function ConnectionCard({
   type,
@@ -170,10 +163,15 @@ export default function ConnectionCard({
         </div>
         {type === "request" && user.doctor ? (
           <div className="flex flex-row gap-2">
-            <Button variant="outline" disabled={loading}>
-              <Eye />
-              View details
-            </Button>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="outline" disabled={loading}>
+                  <Eye />
+                  View details
+                </Button>
+              </DialogTrigger>
+              <PatientDialog connection={connection} />
+            </Dialog>
             <Button
               className="bg-[#2F80ED] text-white hover:bg-[#1366d6]"
               disabled={loading}
@@ -224,10 +222,19 @@ export default function ConnectionCard({
               <UserMinus2 />
               Remove connection
             </Button>
-            <Button variant="outline" disabled={loading}>
-              <Eye />
-              View details
-            </Button>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="outline" disabled={loading}>
+                  <Eye />
+                  View details
+                </Button>
+              </DialogTrigger>
+              {user.doctor ? (
+                <PatientDialog connection={connection} />
+              ) : (
+                <DoctorDialog connection={connection} />
+              )}
+            </Dialog>
           </div>
         ) : null}
       </CardHeader>

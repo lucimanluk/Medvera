@@ -14,6 +14,21 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     -webkit-appearance: none;
 }
 
+.thin-scrollbar::-webkit-scrollbar {
+  width: 1px; 
+  height: 1px;
+}
+
+.thin-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(0,0,0,0.3); 
+  border-radius: 9999px; 
+}
+
+.thin-scrollbar {
+    scrollbar-width: thin;
+}
+
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
