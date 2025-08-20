@@ -163,7 +163,9 @@ export default function PatientProfile({ data }: { data: any }) {
                   await mutation.mutateAsync({
                     firstName,
                     lastName,
-                    image: image ? await convertImageToBase64(image) : "",
+                    image: image
+                      ? await convertImageToBase64(image)
+                      : imagePreview || "",
                     phoneNumber,
                     series,
                     cnp,

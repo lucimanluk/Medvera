@@ -47,6 +47,7 @@ export default function InputRow({
             disabled={inputType1 === "email" ? true : !editing}
             value={value1}
             onChange={(e) => setValue1(e.target.value)}
+            required
           ></Input>
         ) : (
           <Select disabled={!editing} value={value1} onValueChange={setValue1}>

@@ -244,6 +244,7 @@ export default function Prescriptions() {
                         placeholder="Eg: paracetamol"
                         value={medicationName}
                         onChange={(e) => setMedicationName(e.target.value)}
+                        required
                       />
                     </div>
                     <div className="flex gap-2">
@@ -253,6 +254,7 @@ export default function Prescriptions() {
                           placeholder="Eg: 10mg"
                           value={dosage}
                           onChange={(e) => setDosage(e.target.value)}
+                          required
                         />
                       </div>
                       <div className="flex flex-col gap-2">
@@ -261,6 +263,7 @@ export default function Prescriptions() {
                           placeholder="Eg: thrice a day"
                           value={frequency}
                           onChange={(e) => setFrequency(e.target.value)}
+                          required
                         />
                       </div>
                       <div className="flex flex-col gap-2">
@@ -269,6 +272,7 @@ export default function Prescriptions() {
                           placeholder="Eg: one tablet"
                           value={quantity}
                           onChange={(e) => setQuantity(e.target.value)}
+                          required
                         />
                       </div>
                     </div>
@@ -282,13 +286,17 @@ export default function Prescriptions() {
                           value={startingDate?.toISOString().slice(0, 10) ?? ""}
                           onChange={(e) => {
                             setStartingDate(
-                              e.target.value ? new Date(e.target.value) : null
+                              e.target.value ? new Date(e.target.value) : null,
                             );
-                            if (endingDate && e.target.value > endingDate?.toISOString().slice(0,10)) {
+                            if (
+                              endingDate &&
+                              e.target.value >
+                                endingDate?.toISOString().slice(0, 10)
+                            ) {
                               setEndingDate(null);
                             }
-                            }
-                          }
+                          }}
+                          required
                         />
                       </div>
                       <div className="flex w-1/2 flex-col gap-2">
@@ -303,6 +311,7 @@ export default function Prescriptions() {
                               e.target.value ? new Date(e.target.value) : null,
                             )
                           }
+                          required
                         />
                       </div>
                     </div>
@@ -314,6 +323,7 @@ export default function Prescriptions() {
                         maxLength={100}
                         onChange={(e) => setDiagnostic(e.target.value)}
                         className="resize-none overflow-auto [overflow-wrap:anywhere] break-words"
+                        required
                       />
                     </div>
                     <div className="flex flex-col gap-2">
@@ -324,6 +334,7 @@ export default function Prescriptions() {
                         value={instructions}
                         onChange={(e) => setInstructions(e.target.value)}
                         className="resize-none overflow-auto [overflow-wrap:anywhere] break-words"
+                        required
                       />
                     </div>
                   </div>

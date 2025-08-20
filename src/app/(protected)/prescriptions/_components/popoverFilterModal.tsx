@@ -69,7 +69,7 @@ export default function PopoverFilterModal({
         className="p-0"
       >
         <Command>
-          <CommandInput placeholder="Search for a connection..." />
+          <CommandInput placeholder="Search for a connection..."/>
           <CommandList>
             <CommandEmpty>No connections found.</CommandEmpty>
             <CommandGroup>
