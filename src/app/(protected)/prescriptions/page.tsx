@@ -3,7 +3,7 @@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
 import PopoverFilterModal from "./_components/popoverFilterModal";
 import { Input } from "~/components/ui/input";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { api } from "~/trpc/react";
 import { Button } from "~/components/ui/button";
 import {
@@ -73,9 +73,22 @@ export default function Prescriptions() {
   const [val, setVal] = useState("");
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
-  const todayStart = new Date();
-  todayStart.setHours(0, 0, 0, 0);
-  const todayTime = todayStart.getTime();
+
+  const isOngoing = (ending: Date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const endDate = new Date(ending);
+    endDate.setHours(0, 0, 0, 0);
+    return endDate >= today;
+  };
+
+  const isPast = (ending: Date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const endDate = new Date(ending);
+    endDate.setHours(0, 0, 0, 0);
+    return endDate < today;
+  };
 
   const filteredSearch = useMemo(() => {
     const term = search.toLowerCase().trim();
@@ -187,7 +200,9 @@ export default function Prescriptions() {
                       return;
                     }
                     const patientConn = connectionData.find(
-                      (d) => d.patient.name === val,
+                      (d) =>
+                        `${d.patient.patientProfile?.firstName} ${d.patient.patientProfile?.lastName}` ===
+                        val,
                     );
                     if (!patientConn) {
                       toast.error("Selected patient not found");
@@ -262,11 +277,17 @@ export default function Prescriptions() {
                         <Label>Starting date</Label>
                         <Input
                           type="date"
+                          min={new Date().toISOString().slice(0, 10)}
+                          onKeyDown={(e) => e.preventDefault()}
                           value={startingDate?.toISOString().slice(0, 10) ?? ""}
-                          onChange={(e) =>
+                          onChange={(e) => {
                             setStartingDate(
-                              e.target.value ? new Date(e.target.value) : null,
-                            )
+                              e.target.value ? new Date(e.target.value) : null
+                            );
+                            if (endingDate && e.target.value > endingDate?.toISOString().slice(0,10)) {
+                              setEndingDate(null);
+                            }
+                            }
                           }
                         />
                       </div>
@@ -274,6 +295,8 @@ export default function Prescriptions() {
                         <Label>Ending date</Label>
                         <Input
                           type="date"
+                          min={startingDate?.toISOString().slice(0, 10)}
+                          onKeyDown={(e) => e.preventDefault()}
                           value={endingDate?.toISOString().slice(0, 10) ?? ""}
                           onChange={(e) =>
                             setEndingDate(
@@ -337,8 +360,8 @@ export default function Prescriptions() {
 
         <TabsContent value="ongoing">
           {filteredSearch
-            .filter(
-              (prescription) => prescription.endingDate.getTime() >= todayTime,
+            .filter((prescription) =>
+              isOngoing(new Date(prescription.endingDate)),
             )
             .map((prescription, index) => (
               <div className="mb-2" key={index}>
@@ -352,9 +375,7 @@ export default function Prescriptions() {
         </TabsContent>
         <TabsContent value="past">
           {filteredSearch
-            .filter(
-              (prescription) => prescription.endingDate.getTime() < todayTime,
-            )
+            .filter((prescription) => isPast(new Date(prescription.endingDate)))
             .map((prescription, index) => (
               <div className="mb-2" key={index}>
                 <PrescriptionCard

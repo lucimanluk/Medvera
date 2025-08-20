@@ -14,25 +14,27 @@ export const doctorsRouter = createTRPCRouter({
           include: {
             doctor: true,
             patient: true,
-          }
+          },
         },
         doctorProfile: true,
-      }
-    });
-    return {data, user};
-  }),
-  getPage: publicProcedure.input(z.object({doctor: z.string()})).query(async ({ctx, input}) =>{
-    const clause = input.doctor;
-    
-    const data = await ctx.db.user.findUnique({
-      where: {
-        id: clause,
       },
-      include: {
-        doctorAppointments: true,
-        doctorProfile: true,
-      }
-    })
-     return data;
-  })
+    });
+    return { data, user };
+  }),
+  getPage: publicProcedure
+    .input(z.object({ doctor: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const clause = input.doctor;
+
+      const data = await ctx.db.user.findUnique({
+        where: {
+          id: clause,
+        },
+        include: {
+          doctorAppointments: true,
+          doctorProfile: true,
+        },
+      });
+      return data;
+    }),
 });

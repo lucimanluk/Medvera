@@ -107,17 +107,20 @@ export default function PrescriptionCard({
                 </DialogDescription>
               </DialogHeader>
               <div className="flex flex-row items-center gap-2">
-                <Image
-                  src={
-                    user.doctor === false
-                      ? props.doctor.doctorProfile?.image || "/default_pfp.jpg"
-                      : props.patient.patientProfile?.image ||
-                        "/default_pfp.jpg"
-                  }
-                  alt=""
-                  layout="fill"
-                  objectFit="cover"
-                />
+                <div className="relative h-10 w-10 self-center overflow-hidden rounded-full">
+                  <Image
+                    src={
+                      user.doctor === false
+                        ? props.doctor.doctorProfile?.image ||
+                          "/default_pfp.jpg"
+                        : props.patient.patientProfile?.image ||
+                          "/default_pfp.jpg"
+                    }
+                    alt=""
+                    layout="fill"
+                    objectFit="cover"
+                  />
+                </div>
                 <div className="flex flex-col">
                   {user.doctor ? (
                     <span>
@@ -161,14 +164,18 @@ export default function PrescriptionCard({
                   <span>{props.endingDate.toISOString().slice(0, 10)}</span>
                 </div>
               </div>
-              <div className="flex h-70 flex-col">
-                <div className="flex flex-col gap-2">
+              <div className="flex max-h-70 h-70 flex-col gap-2">
+                <div className="flex max-h-1/2 flex-col overflow-auto">
                   <Label>Diagnostics</Label>
-                  <ScrollArea>{props.diagnostic}</ScrollArea>
+                  <ScrollArea className="break-all whitespace-pre-wrap">
+                    {props.diagnostic}
+                  </ScrollArea>
                 </div>
-                <div className="flex flex-col gap-2">
+                <div className="flex max-h-1/2 flex-col overflow-auto">
                   <Label>Instructions</Label>
-                  <ScrollArea>{props.instructions}</ScrollArea>
+                  <ScrollArea className="break-all whitespace-pre-wrap">
+                  {props.instructions}
+                  </ScrollArea>
                 </div>
               </div>
               <div className="flex flex-row justify-between">

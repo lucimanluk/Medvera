@@ -50,7 +50,16 @@ export default function PopoverFilterModal({
           className="w-full justify-between"
         >
           {value
-            ? data.find((d) => d.patient.name === value)?.patient.name
+            ? (() => {
+                const selected = data.find(
+                  (d) =>
+                    `${d.patient.patientProfile?.firstName} ${d.patient.patientProfile?.lastName}` ===
+                    value,
+                );
+                return selected
+                  ? `${selected.patient.patientProfile?.firstName} ${selected.patient.patientProfile?.lastName}`
+                  : "Select a connection...";
+              })()
             : "Select a connection..."}
           <ChevronDown className="opacity-50" />
         </Button>
@@ -67,7 +76,7 @@ export default function PopoverFilterModal({
               {data.map((item) => (
                 <CommandItem
                   key={item.patient.id}
-                  value={item.patient.name}
+                  value={`${item.patient.patientProfile?.firstName} ${item.patient.patientProfile?.lastName}`}
                   onSelect={(current) => {
                     setValue(current === value ? "" : current);
                     setOpen(false);
@@ -79,7 +88,7 @@ export default function PopoverFilterModal({
                       value === item.patient.name ? "opacity-100" : "opacity-0",
                     )}
                   />
-                  {item.patient.name}
+                  {`${item.patient.patientProfile?.firstName} ${item.patient.patientProfile?.lastName}`}
                 </CommandItem>
               ))}
             </CommandGroup>

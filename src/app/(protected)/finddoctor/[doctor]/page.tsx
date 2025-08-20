@@ -16,6 +16,7 @@ import TimeSlot from "../../_components/timeSlot";
 import { api } from "~/trpc/react";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import Image from "next/image";
 
 const slots = [
   "09:00",
@@ -60,15 +61,17 @@ export default function Doctor() {
           },
         },
       });
-      utils.appointment.getAppointments.invalidate();
-      utils.appointment.getDashboardAppointments.invalidate();
-      utils.doctor.getPage.invalidate({ doctor: id });
     },
     onError: () => toast("Error"),
     onMutate() {
       setLoading(true);
     },
-    onSettled: () => {
+    onSettled: async () => {
+      await Promise.all([
+      utils.appointment.getAppointments.invalidate(),
+      utils.appointment.getDashboardAppointments.invalidate(),
+      utils.doctor.getPage.invalidate({ doctor: id }),
+      ]);
       setLoading(false);
       setDate(undefined);
     },
@@ -78,16 +81,20 @@ export default function Doctor() {
     { enabled: !!id },
   );
 
-  console.log(data?.doctorProfile);
+  const {
+    data: userAppointments,
+    isLoading: userAppointmentLoading,
+    error: userAppointmentError,
+  } = api.appointment.getAppointments.useQuery();
 
-  if (isLoading) {
+  if (isLoading || userAppointmentLoading) {
     return (
       <div className="flex h-screen w-full flex-row items-center justify-center">
         <Loader2 size={16} className="animate-spin" />
       </div>
     );
   }
-  if (error) {
+  if (error || userAppointmentError) {
     return <div>Error</div>;
   }
   if (data === null) {
@@ -105,15 +112,24 @@ export default function Doctor() {
         <Card className="flex h-full w-3/4 flex-col border-none px-16 py-4 shadow-none">
           <CardHeader className="flex flex-row items-center justify-between p-0">
             <div className="flex flex-row items-center gap-2">
-              <img
-                src={data?.image || "/default_pfp.jpg"}
-                className="h-20 w-20 overflow-hidden rounded-full"
-              />
+              <div className="relative h-18 w-18 self-center overflow-hidden rounded-full">
+                <Image
+                  src={data?.doctorProfile?.image || "/default_pfp.jpg"}
+                  alt=""
+                  layout="fill"
+                  objectFit="cover"
+                />
+              </div>
               <div className="flex flex-col gap-1">
-                <CardTitle>Dr. {data?.name}</CardTitle>
+                <CardTitle>
+                  Dr. {data?.doctorProfile?.firstName}{" "}
+                  {data?.doctorProfile?.lastName}
+                </CardTitle>
                 <CardDescription className="flex flex-col">
                   <span>{data?.doctorProfile?.specialization}</span>
-                  <span>Cabinet phone number: {data?.doctorProfile?.cabinetPhone}</span>
+                  <span>
+                    Cabinet phone number: {data?.doctorProfile?.cabinetPhone}
+                  </span>
                 </CardDescription>
               </div>
             </div>
@@ -178,7 +194,17 @@ export default function Doctor() {
                             apptDate.getMinutes() === timp.getMinutes();
                           return sameDay && sameTime;
                         }) ?? false;
-                      if (isBooked === false)
+                      const isBookedClient =
+                        userAppointments?.data?.some((appt) => {
+                          const apptDate = new Date(appt.appointmentDate);
+                          const sameDay =
+                            apptDate.toDateString() === date.toDateString();
+                          const sameTime =
+                            apptDate.getHours() === timp?.getHours() &&
+                            apptDate.getMinutes() === timp.getMinutes();
+                          return sameDay && sameTime;
+                        }) ?? false;
+                      if (isBooked === false && isBookedClient === false)
                         return (
                           <TimeSlot
                             hour={timp.toTimeString().split("GMT")[0]}

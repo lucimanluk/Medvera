@@ -8,10 +8,14 @@
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
-input[type="date"]::-webkit-inner-spin-button,
-input[type="date"]::-webkit-calendar-picker-indicator {
-    display: none;
-    -webkit-appearance: none;
+input[type="date"]::-webkit-calendar-picker-indicator {      
+  position: absolute; 
+  right: 2%;
+}
+
+input[type="date"] {
+  position:relative;
+  background-size: 1.25rem 1.25rem;
 }
 
 .thin-scrollbar::-webkit-scrollbar {
