@@ -67,17 +67,16 @@ export const PeerContextProvider = ({
     });
 
   const startCall = (remoteId: string) => {
-    setInCall(true);
     if (!peerRef.current) return;
     getIndexedStream(0).then((stream) => {
       setLocalStream(stream);
       const mc = peerRef.current!.call(remoteId, stream);
+      setInCall(true);
       mc.on("stream", (remote) => setRemoteStream(remote));
       mc.on("close", endCall);
       mc.on("error", endCall);
     });
   };
-
   useEffect(() => {
     if (!id || peerRef.current) return;
     const peer = new Peer(id);
