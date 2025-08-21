@@ -141,7 +141,7 @@ export const PeerContextProvider = ({
     return () => {
       peerRef.current?.off("call", onMediaCall);
     };
-  }, [ready, localStream]);
+  }, [ready]);
 
   if (!ready) return null;
 
