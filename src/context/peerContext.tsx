@@ -18,6 +18,13 @@ interface CallAccept {
   appointmentId: string;
 }
 
+interface CallAccepted {
+  type: "call-accepted";
+  from: string;
+  name: string;
+  appointmentId: string;
+}
+
 interface PeerContextValue {
   peer: Peer | null;
   inCall: boolean;
@@ -50,33 +57,53 @@ export const PeerContextProvider = ({
   const [inCall, setInCall] = useState(false);
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
+
   const endCall = () => {
     setInCall(false);
     localStream?.getTracks().forEach((t) => t.stop());
     setLocalStream(null);
     setRemoteStream(null);
   };
-  const getIndexedStream = (deviceIndex: 0 | 1): Promise<MediaStream> =>
-    navigator.mediaDevices.enumerateDevices().then((devs) => {
-      const cams = devs.filter((d) => d.kind === "videoinput");
-      const cam = cams[deviceIndex] ?? cams[0];
-      return navigator.mediaDevices.getUserMedia({
-        video: { deviceId: { exact: cam?.deviceId } },
-        audio: true,
-      });
+
+  const getIndexedStream = async (): Promise<MediaStream> => {
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    const cams = devices.filter((d) => d.kind === "videoinput");
+    for (const cam of cams) {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { deviceId: { exact: cam.deviceId } },
+          audio: true,
+        });
+        return stream;
+      } catch {
+        continue;
+      }
+    }
+    return navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: true,
     });
+  };
 
   const startCall = (remoteId: string) => {
     if (!peerRef.current) return;
     setInCall(true);
-    getIndexedStream(0).then((stream) => {
-      setLocalStream(stream);
-      const mc = peerRef.current!.call(remoteId, stream);
-      mc.on("stream", (remote) => setRemoteStream(remote));
-      mc.on("close", endCall);
-      mc.on("error", endCall);
-    });
+    getIndexedStream()
+      .then((stream) => {
+        setLocalStream(stream);
+        const mc = peerRef.current!.call(remoteId, stream);
+        mc.on("stream", (remote) => setRemoteStream(remote));
+        mc.on("close", endCall);
+        mc.on("error", endCall);
+      })
+      .catch(() => {
+        const mc = peerRef.current!.call(remoteId, undefined as any);
+        mc.on("stream", (remote) => setRemoteStream(remote));
+        mc.on("close", endCall);
+        mc.on("error", endCall);
+      });
   };
+
   useEffect(() => {
     if (!id || peerRef.current) return;
     const peer = new Peer(id);
@@ -89,9 +116,9 @@ export const PeerContextProvider = ({
       setReady(false);
     };
   }, [id]);
+
   useEffect(() => {
     if (!ready || !peerRef.current) return;
-
     const onDataConn = (conn: DataConnection) => {
       conn.on("data", (data) => {
         if (typeof data === "object" && (data as any).type === "call-request") {
@@ -113,10 +140,14 @@ export const PeerContextProvider = ({
         }
         if (typeof data === "object" && (data as any).type === "call-accept") {
           startCall((data as CallAccept).from);
+          conn.send({
+            type: "call-accepted",
+            from: id,
+            name: id,
+          });
         }
       });
     };
-
     peerRef.current.on("connection", onDataConn);
     return () => {
       peerRef.current?.off("connection", onDataConn);
@@ -125,18 +156,23 @@ export const PeerContextProvider = ({
 
   useEffect(() => {
     if (!ready || !peerRef.current) return;
-
     const onMediaCall = (call: MediaConnection) => {
-      getIndexedStream(1).then((stream) => {
-        setLocalStream(stream);
-        call.answer(stream);
-        setInCall(true);
-        call.on("stream", (remote) => setRemoteStream(remote));
-        call.on("close", endCall);
-        call.on("error", endCall);
-      });
+      setInCall(true);
+      getIndexedStream()
+        .then((stream) => {
+          setLocalStream(stream);
+          call.answer(stream);
+          call.on("stream", (remote) => setRemoteStream(remote));
+          call.on("close", endCall);
+          call.on("error", endCall);
+        })
+        .catch(() => {
+          call.answer(undefined as any);
+          call.on("stream", (remote) => setRemoteStream(remote));
+          call.on("close", endCall);
+          call.on("error", endCall);
+        });
     };
-
     peerRef.current.on("call", onMediaCall);
     return () => {
       peerRef.current?.off("call", onMediaCall);
