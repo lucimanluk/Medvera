@@ -58,7 +58,7 @@ export default function Appointment({
     });
     conn?.on("data", (data: unknown) => {
       if (typeof data === "object" && (data as any).type === "call-accept") {
-        startCall(remotePeerId);
+         startCall((data as any).from);
       }
     });
     conn?.on("error", () => {

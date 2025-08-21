@@ -29,7 +29,11 @@ export default function FindDoctor() {
   const filteredSearch = useMemo(() => {
     const term = search.toLowerCase().trim();
     if (!term) return doctors;
-    return doctors.filter((doctor) => doctor.name.toLowerCase().includes(term));
+    return doctors.filter((doctor) =>
+      `${doctor.doctorProfile?.firstName?.toLowerCase()} ${doctor.doctorProfile?.lastName?.toLowerCase()}`.includes(
+        term,
+      ),
+    );
   }, [doctors, search]);
 
   if (doctorLoading) {

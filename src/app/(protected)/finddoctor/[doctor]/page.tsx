@@ -50,32 +50,30 @@ export default function Doctor() {
   const rawId = params.doctor;
   const id = typeof rawId === "string" ? rawId : "";
 
-  const utils = api.useUtils();
-  const mutation = api.appointment.createAppointment.useMutation({
-    onSuccess: () => {
-      toast("Successfully created appointment!", {
-        action: {
-          label: "Close",
-          onClick: () => {
-            return;
-          },
-        },
-      });
-    },
-    onError: () => toast("Error"),
-    onMutate() {
-      setLoading(true);
-    },
-    onSettled: async () => {
-      await Promise.all([
-      utils.appointment.getAppointments.invalidate(),
-      utils.appointment.getDashboardAppointments.invalidate(),
-      utils.doctor.getPage.invalidate({ doctor: id }),
-      ]);
-      setLoading(false);
-      setDate(undefined);
-    },
-  });
+  const checkout = api.checkout.createSession.useMutation();
+
+  const handleCheckout = async () => {
+    if (!date || !time || !data?.doctorProfile?.id) return;
+
+    const appointmentDateISO = new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+      time.getHours(),
+      time.getMinutes(),
+    ).toISOString();
+
+    const res = await checkout.mutateAsync({
+      doctorId: id,
+      doctorProfileId: data?.doctorProfile?.id,
+      appointmentDate: appointmentDateISO,
+    });
+
+    if (res.url) {
+      window.location.href = res.url;
+    }
+  };
+
   const { data, isLoading, error } = api.doctor.getPage.useQuery(
     { doctor: id },
     { enabled: !!id },
@@ -143,22 +141,12 @@ export default function Doctor() {
               </span>
               <Button
                 className="bg-[#2F80ED] text-white hover:bg-[#1366d6]"
-                disabled={!date || !time || loading === true}
-                onClick={() => {
-                  if (!date || !time) return;
-                  const appointmentDate = new Date(
-                    date.getFullYear(),
-                    date.getMonth(),
-                    date.getDate(),
-                    time.getHours(),
-                    time.getMinutes(),
-                  );
-                  mutation.mutate({ id, appointmentDate });
-                }}
+                disabled={!date || !time || checkout.isPending}
+                onClick={handleCheckout}
               >
-                {loading === true ? (
+                {checkout.isPending ? (
                   <>
-                    <Loader2 className="animate-spin" /> <p>Make appointment</p>
+                    <Loader2 className="animate-spin" /> <p>Processing...</p>
                   </>
                 ) : (
                   <p>Make appointment</p>

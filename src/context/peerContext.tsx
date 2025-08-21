@@ -68,10 +68,10 @@ export const PeerContextProvider = ({
 
   const startCall = (remoteId: string) => {
     if (!peerRef.current) return;
+    setInCall(true);
     getIndexedStream(0).then((stream) => {
       setLocalStream(stream);
       const mc = peerRef.current!.call(remoteId, stream);
-      setInCall(true);
       mc.on("stream", (remote) => setRemoteStream(remote));
       mc.on("close", endCall);
       mc.on("error", endCall);
@@ -96,7 +96,7 @@ export const PeerContextProvider = ({
       conn.on("data", (data) => {
         if (typeof data === "object" && (data as any).type === "call-request") {
           const { from, name } = data as CallRequest;
-          toast(`${name} is calling`, {
+          toast(`${name} ${from} is calling`, {
             duration: 45000,
             cancel: { label: "Decline", onClick: () => conn.close() },
             action: {
@@ -121,7 +121,7 @@ export const PeerContextProvider = ({
     return () => {
       peerRef.current?.off("connection", onDataConn);
     };
-  }, [ready, localStream]);
+  }, [ready]);
 
   useEffect(() => {
     if (!ready || !peerRef.current) return;
