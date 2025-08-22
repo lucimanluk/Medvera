@@ -116,11 +116,11 @@ export default function Appointment({
         </div>
         <div className="flex items-center gap-2">
           <Banknote width={18} height={18} />
-          {appointment.doctor.doctorProfile?.appointmentPrice} lei
+          {appointment.appointmentPrice} lei
         </div>
         <div className="flex items-center gap-2">
           <Hourglass width={18} height={18} />
-          {appointment.doctor.doctorProfile?.appointmentDuration} minutes
+          {appointment.appointmentDuration} minutes
         </div>
       </CardContent>
     </Card>

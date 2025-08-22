@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
 
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as Stripe.Checkout.Session;
-    const { doctorId, patientId, appointmentDateISO } = session.metadata ?? {};
+    const { doctorId, patientId, appointmentDateISO, appointmentPrice, appointmentDuration } = session.metadata ?? {};
 
     if (doctorId && patientId && appointmentDateISO) {
       const exists = await db.appointment.findFirst({
@@ -42,6 +42,8 @@ export async function POST(req: NextRequest) {
             doctorId: doctorId,
             patientId: patientId,
             appointmentDate: new Date(appointmentDateISO),
+            appointmentPrice: appointmentPrice ? parseInt(appointmentPrice) : null,
+            appointmentDuration: appointmentDuration ? parseInt(appointmentDuration) : null,
           },
         });
       }

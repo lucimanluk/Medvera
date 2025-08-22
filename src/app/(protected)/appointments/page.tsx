@@ -4,8 +4,6 @@ import Appointment from "../_components/appointment";
 import { Button } from "~/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
 import PopoverFilter from "../finddoctor/_components/popoverFilter";
-import type { DoctorProfile } from "@prisma/client";
-import type { PatientProfile } from "@prisma/client";
 import { Input } from "~/components/ui/input";
 import Link from "next/link";
 import { useState } from "react";

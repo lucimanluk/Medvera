@@ -18,7 +18,7 @@ export const checkoutRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const doctor = await ctx.db.doctorProfile.findUnique({
         where: { id: input.doctorProfileId },
-        select: { appointmentPrice: true, firstName: true, lastName: true },
+        select: { appointmentPrice: true, appointmentDuration: true, firstName: true, lastName: true },
       });
 
       if (!doctor?.appointmentPrice) {
@@ -47,6 +47,8 @@ export const checkoutRouter = createTRPCRouter({
           doctorId: input.doctorId,
           patientId: ctx.session?.user.id ?? "anonymous",
           appointmentDateISO: input.appointmentDate,
+          appointmentPrice: doctor.appointmentPrice,
+          appointmentDuration: doctor.appointmentDuration,
         },
       });
       return { url: session.url };

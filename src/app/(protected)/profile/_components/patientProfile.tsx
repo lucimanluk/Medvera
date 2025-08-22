@@ -11,7 +11,7 @@ import {
 import { Input } from "~/components/ui/input";
 import Image from "next/image";
 import InputRow from "./InputRow";
-import InputTypes from "./InputTypes";
+
 import { useState, useEffect } from "react";
 import { Button } from "~/components/ui/button";
 import { Edit, Save, X } from "lucide-react";
@@ -44,11 +44,6 @@ export default function PatientProfile({ data }: { data: any }) {
   const [rhFactor, setRhFactor] = useState<string>("");
   const [weight, setWeight] = useState<string>("");
   const [height, setHeight] = useState<string>("");
-  const [allergies, setAllergies] = useState<string[]>([]);
-  const [allergyInput, setAllergyInput] = useState<string>("");
-  const [meidcalConditionInput, setMedicalConditionInput] =
-    useState<string>("");
-  const [meidcalCondition, setMedicalCondition] = useState<string[]>([]);
 
   const utils = api.useUtils();
   const mutation = api.profile.updatePatientProfile.useMutation({
@@ -124,10 +119,6 @@ export default function PatientProfile({ data }: { data: any }) {
       "height" in profile && typeof profile.height === "number"
         ? profile.height.toString()
         : "",
-    );
-    setAllergies("allergies" in profile ? profile.allergies : []);
-    setMedicalCondition(
-      "medicalConditions" in profile ? profile.medicalConditions : [],
     );
   }, [data]);
 
@@ -274,12 +265,6 @@ export default function PatientProfile({ data }: { data: any }) {
                     "height" in profile && typeof profile.height === "number"
                       ? profile.height.toString()
                       : "",
-                  );
-                  setAllergies("allergies" in profile ? profile.allergies : []);
-                  setMedicalCondition(
-                    "medicalConditions" in profile
-                      ? profile.medicalConditions
-                      : [],
                   );
                 }}
               >
@@ -465,26 +450,6 @@ export default function PatientProfile({ data }: { data: any }) {
                 setValue2={setHeight}
                 editing={editing}
               />
-              <div className="flex flex-col gap-4">
-                <div className="flex flex-col">
-                  <h1 className="font-semibold">Afflictions information</h1>
-                  <span className="text-muted-foreground text-sm">
-                    Details about allergies and medical conditions
-                  </span>
-                </div>
-                <InputTypes
-                  label_name={"Allergies"}
-                  value={allergyInput}
-                  setValue={setAllergyInput}
-                  editing={editing}
-                />
-                <InputTypes
-                  label_name={"Medical conditions"}
-                  value={meidcalConditionInput}
-                  setValue={setMedicalConditionInput}
-                  editing={editing}
-                />
-              </div>
             </CardContent>
           </Card>
         </TabsContent>

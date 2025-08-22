@@ -87,8 +87,6 @@ export const profileRouter = createTRPCRouter({
             rhFactor: input.rhFactor,
             weight: input.weight,
             height: input.height,
-            allergies: input.allergies,
-            medicalConditions: input.medicalConditions,
           },
         });
       } else {
