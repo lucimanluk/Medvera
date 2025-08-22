@@ -11,6 +11,11 @@ export interface Prescription {
   quantity: string;
   diagnostic: string;
   instructions: string;
+  patientName: string;
+  doctorName: string;
+  cabinetName: string;
+  cabinetPhone: string;
+  cabinetAddress: string;
   patient: User;
   doctor: User;
 }

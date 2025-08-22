@@ -57,6 +57,11 @@ export const prescriptionRouter = createTRPCRouter({
         instructions: z.string(),
         medicationName: z.string(),
         quantity: z.string(),
+        patientName: z.string(),
+        doctorName: z.string(),
+        cabinetName: z.string(),
+        cabinetPhone: z.string(),
+        cabinetAddress: z.string(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -75,6 +80,11 @@ export const prescriptionRouter = createTRPCRouter({
             instructions: input.instructions,
             medicationName: input.medicationName,
             quantity: input.quantity,
+            patientName: input.patientName,
+            doctorName: input.doctorName,
+            cabinetName: input.cabinetName,
+            cabinetPhone: input.cabinetPhone,
+            cabinetAddress: input.cabinetAddress,
           },
         });
     }),

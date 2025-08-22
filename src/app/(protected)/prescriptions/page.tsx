@@ -32,6 +32,11 @@ export default function Prescriptions() {
     isLoading: isConnectionLoading,
     error: connectionError,
   } = api.connection.getPrescriptionConnections.useQuery();
+  const {
+    data: profileResponse,
+    isLoading: isProfileLoading,
+    error: profileError,
+  } = api.doctor.getProfile.useQuery();
 
   const prescriptions = prescriptionsResponse?.data ?? [];
   const user = prescriptionsResponse?.user;
@@ -42,7 +47,6 @@ export default function Prescriptions() {
     onSuccess: () => {
       toast("Successfully created prescription!");
       setVal("");
-      setStartingDate(null);
       setEndingDate(null);
       setDosage("");
       setFrequency("");
@@ -61,7 +65,7 @@ export default function Prescriptions() {
     },
   });
 
-  const [startingDate, setStartingDate] = useState<Date | null>(null);
+  const [startingDate, setStartingDate] = useState<Date>(new Date());
   const [endingDate, setEndingDate] = useState<Date | null>(null);
   const [dosage, setDosage] = useState("");
   const [frequency, setFrequency] = useState("");
@@ -113,18 +117,16 @@ export default function Prescriptions() {
     });
   }, [prescriptions, search]);
 
-  if (isPrescriptionsLoading || isConnectionLoading) {
+  if (isPrescriptionsLoading || isConnectionLoading || isProfileLoading) {
     return (
       <div className="flex h-screen w-full items-center justify-center">
         <Loader2 size={16} className="animate-spin" />
       </div>
     );
   }
-  if (prescriptionsError || connectionError) {
+  if (prescriptionsError || connectionError || profileError) {
     return null;
   }
-
-  console.log(prescriptionsResponse);
 
   return (
     <div className="flex w-full flex-col gap-4 py-4 pr-4">
@@ -158,7 +160,7 @@ export default function Prescriptions() {
               onOpenChange={() => {
                 setOp(false);
                 setVal("");
-                setStartingDate(null);
+
                 setEndingDate(null);
                 setDosage("");
                 setFrequency("");
@@ -208,17 +210,33 @@ export default function Prescriptions() {
                       toast.error("Selected patient not found");
                       return;
                     }
-                    createPrescription.mutate({
-                      patientId: patientConn.patient.id,
-                      startingDate,
-                      endingDate,
-                      dosage,
-                      frequency,
-                      diagnostic,
-                      instructions,
-                      medicationName,
-                      quantity,
-                    });
+                    if (
+                      profileResponse?.doctorProfile?.cabinetName &&
+                      profileResponse?.doctorProfile?.cabinetPhone &&
+                      profileResponse?.doctorProfile?.cabinetAddress &&
+                      profileResponse?.doctorProfile?.cabinetCounty &&
+                      profileResponse?.doctorProfile?.cabinetCity
+                    ) {
+                      createPrescription.mutate({
+                        patientId: patientConn.patient.id,
+                        startingDate,
+                        endingDate,
+                        dosage,
+                        frequency,
+                        diagnostic,
+                        instructions,
+                        medicationName,
+                        quantity,
+                        patientName: val,
+                        doctorName: `${profileResponse.doctorProfile.firstName} ${profileResponse.doctorProfile.lastName}`,
+                        cabinetName: profileResponse.doctorProfile.cabinetName,
+                        cabinetPhone:
+                          profileResponse.doctorProfile.cabinetPhone,
+                        cabinetAddress: `${profileResponse.doctorProfile.cabinetAddress}, ${profileResponse.doctorProfile.cabinetCounty}, ${profileResponse.doctorProfile.cabinetCity}`,
+                      });
+                    } else {
+                      toast.error("Complete profile information.");
+                    }
                   }}
                 >
                   <DialogHeader>
@@ -281,20 +299,14 @@ export default function Prescriptions() {
                         <Label>Starting date</Label>
                         <Input
                           type="date"
-                          min={new Date().toISOString().slice(0, 10)}
+                          min={startingDate?.toISOString().slice(0, 10)}
+                          max={startingDate?.toISOString().slice(0, 10)}
                           onKeyDown={(e) => e.preventDefault()}
                           value={startingDate?.toISOString().slice(0, 10) ?? ""}
                           onChange={(e) => {
                             setStartingDate(
-                              e.target.value ? new Date(e.target.value) : null,
+                             new Date (e.target.value),
                             );
-                            if (
-                              endingDate &&
-                              e.target.value >
-                                endingDate?.toISOString().slice(0, 10)
-                            ) {
-                              setEndingDate(null);
-                            }
                           }}
                           required
                         />

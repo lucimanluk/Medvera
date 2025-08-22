@@ -37,4 +37,14 @@ export const doctorsRouter = createTRPCRouter({
       });
       return data;
     }),
+  getProfile: publicProcedure.query(async ({ ctx }) => {
+    const userId = ctx.session?.user.id;
+    if (userId)
+      return await ctx.db.user.findUnique({
+        where: { id: ctx.session?.user.id },
+        include: {
+          doctorProfile: true,
+        },
+      });
+  }),
 });

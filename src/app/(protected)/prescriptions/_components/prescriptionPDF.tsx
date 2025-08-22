@@ -1,5 +1,5 @@
 import { Page, Text, View, Document, StyleSheet } from "@react-pdf/renderer";
-import type { User as UserType } from "~/types/user";
+import type { User, User as UserType } from "~/types/user";
 
 const styles = StyleSheet.create({
   page: {
@@ -10,11 +10,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   header: {
-    textAlign: "center",
     marginBottom: 50,
   },
-  title: { fontSize: 24, marginBottom: 4 },
-  subtitle: { fontSize: 10, color: "gray" },
 
   body: {
     flexGrow: 1,
@@ -43,6 +40,11 @@ type PDFData = {
   diagnostic: string;
   instructions: string;
   createdAt: string | Date;
+  patientName: string;
+  doctorName: string;
+  cabinetName: string;
+  cabinetPhone: string;
+  cabinetAddress: string;
   doctor: UserType;
   patient: UserType;
 };
@@ -54,11 +56,15 @@ export function PrescriptionPDF({ data }: { data: PDFData }) {
     <Document>
       <Page size="A5" style={styles.page}>
         <View style={styles.header}>
-          <Text style={styles.title}>Medical prescription</Text>
-          <Text style={styles.subtitle}>{data.doctor.name}</Text>
+          <Text>Doctor name: {data.doctorName}</Text>
+          <Text>Cabinet name {data.cabinetName}</Text>
+          <Text>Cabinet name {data.cabinetPhone}</Text>
+          <Text>Cabinet name {data.cabinetAddress}</Text>
+          <Text></Text>
         </View>
 
         <View style={styles.body}>
+          <Text>Patient name: {data.patientName}</Text>
           <Text>Medication: {data.medicationName}</Text>
           <Text style={styles.mr12}>Dosage: {data.dosage}</Text>
           <Text style={styles.mr12}>Frequency: {data.frequency}</Text>
@@ -79,7 +85,7 @@ export function PrescriptionPDF({ data }: { data: PDFData }) {
 
         <View style={styles.footer}>
           <Text>Date: {new Date(data.createdAt).toDateString()}</Text>
-          <Text>Doctor signature: __________</Text>
+          <Text>Doctor signature: {data.doctorName}</Text>
         </View>
       </Page>
     </Document>

@@ -128,16 +128,13 @@ export default function PrescriptionCard({
                       {props.patient.patientProfile?.lastName}
                     </span>
                   ) : (
-                    <span>
-                      Assigned by {props.doctor.doctorProfile?.firstName}{" "}
-                      {props.doctor.doctorProfile?.lastName}
-                    </span>
+                    <span>Assigned by {props.doctorName}</span>
                   )}
                   <span>{props.doctor.doctorProfile?.specialization}</span>
                 </div>
               </div>
               <div className="flex flex-row justify-between gap-2">
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2 overflow-auto">
                   <Label>Medication</Label>
                   <span>{props.medicationName}</span>
                 </div>
@@ -164,7 +161,7 @@ export default function PrescriptionCard({
                   <span>{props.endingDate.toISOString().slice(0, 10)}</span>
                 </div>
               </div>
-              <div className="flex max-h-70 h-70 flex-col gap-2">
+              <div className="flex h-70 max-h-70 flex-col gap-2">
                 <div className="flex max-h-1/2 flex-col overflow-auto">
                   <Label>Diagnostics</Label>
                   <ScrollArea className="break-all whitespace-pre-wrap">
@@ -174,7 +171,7 @@ export default function PrescriptionCard({
                 <div className="flex max-h-1/2 flex-col overflow-auto">
                   <Label>Instructions</Label>
                   <ScrollArea className="break-all whitespace-pre-wrap">
-                  {props.instructions}
+                    {props.instructions}
                   </ScrollArea>
                 </div>
               </div>
@@ -185,12 +182,7 @@ export default function PrescriptionCard({
                 </div>
                 <div className="flex flex-col">
                   <span>Doctor's signature:</span>
-                  <img
-                    src="https://www.pngkey.com/png/detail/231-2318549_doctor-transparent-signature-signature-of-a-doctor.png"
-                    alt="Doctor signature"
-                    width="200"
-                    height="200"
-                  />
+                  {props.doctorName}
                 </div>
               </div>
               <DialogFooter>

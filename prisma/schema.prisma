@@ -182,6 +182,12 @@ model Prescription {
   medicationName String
   quantity       String
 
+  patientName    String
+  doctorName     String
+  cabinetName    String
+  cabinetPhone   String
+  cabinetAddress String
+
   doctor  User @relation("DoctorPrescriptions", fields: [doctorId], references: [id], onDelete: Cascade)
   patient User @relation("PatientPrescriptions", fields: [patientId], references: [id], onDelete: Cascade)
 }
