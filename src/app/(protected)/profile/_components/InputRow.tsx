@@ -44,9 +44,26 @@ export default function InputRow({
         {type[0] === "input" ? (
           <Input
             type={inputType1}
+            onKeyDown={
+              inputType1 === "date"
+                ? (e) => {
+                    e.preventDefault();
+                  }
+                : undefined
+            }
             disabled={inputType1 === "email" ? true : !editing}
-            value={value1}
-            onChange={(e) => setValue1(e.target.value)}
+            value={
+              inputType1 === "date"
+                ? value1
+                  ? value1.toISOString().slice(0, 10)
+                  : ""
+                : value1
+            }
+            onChange={(e) =>
+              inputType1 === "date"
+                ? setValue1(new Date(e.target.value))
+                : setValue1(e.target.value)
+            }
             required
           ></Input>
         ) : (
@@ -70,8 +87,25 @@ export default function InputRow({
           <Input
             type={inputType2}
             disabled={!editing}
-            value={value2}
-            onChange={(e) => setValue2(e.target.value)}
+            onKeyDown={
+              inputType2 === "date"
+                ? (e) => {
+                    e.preventDefault();
+                  }
+                : undefined
+            }
+            value={
+              inputType2 === "date"
+                ? value2
+                  ? value2.toISOString().slice(0, 10)
+                  : ""
+                : value2
+            }
+            onChange={(e) =>
+              inputType2 === "date"
+                ? setValue2(new Date(e.target.value))
+                : setValue2(e.target.value)
+            }
           ></Input>
         ) : (
           <Select disabled={!editing} value={value2} onValueChange={setValue2}>

@@ -28,7 +28,7 @@ export default function PatientProfile({ data }: { data: any }) {
   const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [series, setSeries] = useState<string>("");
   const [cnp, setCnp] = useState<string>("");
-  const [birthDate, setBirthDate] = useState<Date | undefined>();
+  const [birthDate, setBirthDate] = useState<Date | null>(null);
   const [gender, setGender] = useState<string>("");
   const [address, setAddress] = useState<string>("");
   const [city, setCity] = useState<string>("");
@@ -88,7 +88,7 @@ export default function PatientProfile({ data }: { data: any }) {
     setPhoneNumber(profile.phoneNumber ?? "");
     setSeries(profile.series ?? "");
     setCnp(profile.cnp ?? "");
-    setBirthDate(profile.birthDate ? new Date(profile.birthDate) : undefined);
+    setBirthDate(profile.birthDate ? new Date(profile.birthDate) : null);
     setGender(profile.gender ?? "");
     setAddress("address" in profile ? (profile.address ?? "") : "");
     setCity("city" in profile ? (profile.city ?? "") : "");
@@ -218,7 +218,7 @@ export default function PatientProfile({ data }: { data: any }) {
                   setSeries(profile.series ?? "");
                   setCnp(profile.cnp ?? "");
                   setBirthDate(
-                    profile.birthDate ? new Date(profile.birthDate) : undefined,
+                    profile.birthDate ? new Date(profile.birthDate) : null,
                   );
                   setGender(profile.gender ?? "");
                   setAddress(

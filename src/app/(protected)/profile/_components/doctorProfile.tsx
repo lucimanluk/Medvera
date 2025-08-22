@@ -28,12 +28,11 @@ export default function DoctorProfile({ data }: { data: any }) {
   const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [series, setSeries] = useState<string>("");
   const [cnp, setCnp] = useState<string>("");
-  const [birthDate, setBirthDate] = useState<Date | undefined>();
+  const [birthDate, setBirthDate] = useState<Date | null>(null);
   const [gender, setGender] = useState<string>("");
   const [specialization, setSpecialization] = useState<string>("");
-  const [specializationIssueDate, setSpecializationIssueDate] = useState<
-    Date | undefined
-  >();
+  const [specializationIssueDate, setSpecializationIssueDate] =
+    useState<Date | null>(null);
   const [cabinetName, setCabinetName] = useState<string>("");
   const [cabinetPhone, setCabinetPhone] = useState<string>("");
   const [cabinetAddress, setCabinetAddress] = useState<string>("");
@@ -42,13 +41,14 @@ export default function DoctorProfile({ data }: { data: any }) {
   const [cabinetZipCode, setCabinetZipCode] = useState<string>("");
   const [cmrSeries, setCmrSeries] = useState<string>("");
   const [cmrNumber, setCmrNumber] = useState<string>("");
-  const [cmrIssueDate, setCmrIssueDate] = useState<Date>();
-  const [cmrExpirationDate, setCmrExpirationDate] = useState<Date>();
+  const [cmrIssueDate, setCmrIssueDate] = useState<Date | null>(null);
+  const [cmrExpirationDate, setCmrExpirationDate] = useState<Date | null>(null);
   const [digiSigSeries, setDigiSigSeries] = useState<string>("");
   const [digiSigNumber, setDigiSigNumber] = useState<string>("");
-  const [digiSigIssueDate, setDigiSigIssueDate] = useState<Date>();
-  const [digiSigExpirationDate, setDigiSigExpirationDate] = useState<Date>();
-  const [appointmentPrice, setAppointmentPrice] = useState<number>();
+  const [digiSigIssueDate, setDigiSigIssueDate] = useState<Date | null>(null);
+  const [digiSigExpirationDate, setDigiSigExpirationDate] =
+    useState<Date | null>(null);
+  const [appointmentPrice, setAppointmentPrice] = useState<string>("");
   const [appointmentDuration, setAppointmentDuration] = useState<number>();
 
   const utils = api.useUtils();
@@ -91,7 +91,7 @@ export default function DoctorProfile({ data }: { data: any }) {
     setPhoneNumber(profile.phoneNumber ?? "");
     setSeries(profile.series ?? "");
     setCnp(profile.cnp ?? "");
-    setBirthDate(profile.birthDate ? new Date(profile.birthDate) : undefined);
+    setBirthDate(profile.birthDate ? new Date(profile.birthDate) : null);
     setGender(profile.gender ?? "");
     setSpecialization(
       "specialization" in profile ? (profile.specialization ?? "") : "",
@@ -99,7 +99,7 @@ export default function DoctorProfile({ data }: { data: any }) {
     setSpecializationIssueDate(
       "specializationIssueDate" in profile && profile.specializationIssueDate
         ? new Date(profile.specializationIssueDate)
-        : undefined,
+        : null,
     );
     setCabinetName("cabinetName" in profile ? (profile.cabinetName ?? "") : "");
     setCabinetPhone(
@@ -120,12 +120,12 @@ export default function DoctorProfile({ data }: { data: any }) {
     setCmrIssueDate(
       "cmrIssueDate" in profile && profile.cmrIssueDate
         ? profile.cmrIssueDate
-        : undefined,
+        : null,
     );
     setCmrExpirationDate(
       "cmrExpirationDate" in profile && profile.cmrExpirationDate
         ? profile.cmrExpirationDate
-        : undefined,
+        : null,
     );
     setDigiSigSeries(
       "digiSigSeries" in profile ? (profile.digiSigSeries ?? "") : "",
@@ -136,12 +136,12 @@ export default function DoctorProfile({ data }: { data: any }) {
     setDigiSigIssueDate(
       "digiSigIssueDate" in profile && profile.digiSigIssueDate
         ? profile.digiSigIssueDate
-        : undefined,
+        : null,
     );
     setDigiSigExpirationDate(
       "digiSigExpirationDate" in profile && profile.digiSigExpirationDate
         ? profile.digiSigExpirationDate
-        : undefined,
+        : null,
     );
     setAppointmentPrice(
       "appointmentPrice" in profile && profile.appointmentPrice
@@ -190,7 +190,9 @@ export default function DoctorProfile({ data }: { data: any }) {
                   await mutation.mutateAsync({
                     firstName,
                     lastName,
-                    image: image ? await convertImageToBase64(image) : imagePreview || "",
+                    image: image
+                      ? await convertImageToBase64(image)
+                      : imagePreview || "",
                     phoneNumber,
                     series,
                     cnp,
@@ -213,7 +215,7 @@ export default function DoctorProfile({ data }: { data: any }) {
                     digiSigIssueDate,
                     digiSigExpirationDate,
                     appointmentDuration,
-                    appointmentPrice,
+                    appointmentPrice: appointmentPrice ? parseInt(appointmentPrice) : null,
                   });
                 }
                 setEditing(!editing);
@@ -246,7 +248,7 @@ export default function DoctorProfile({ data }: { data: any }) {
                   setSeries(profile.series ?? "");
                   setCnp(profile.cnp ?? "");
                   setBirthDate(
-                    profile.birthDate ? new Date(profile.birthDate) : undefined,
+                    profile.birthDate ? new Date(profile.birthDate) : null,
                   );
                   setGender(profile.gender ?? "");
 
@@ -259,7 +261,7 @@ export default function DoctorProfile({ data }: { data: any }) {
                     "specializationIssueDate" in profile &&
                       profile.specializationIssueDate
                       ? new Date(profile.specializationIssueDate)
-                      : undefined,
+                      : null,
                   );
                   setCabinetName(
                     "cabinetName" in profile ? (profile.cabinetName ?? "") : "",
@@ -296,12 +298,12 @@ export default function DoctorProfile({ data }: { data: any }) {
                   setCmrIssueDate(
                     "cmrIssueDate" in profile && profile.cmrIssueDate
                       ? profile.cmrIssueDate
-                      : undefined,
+                      : null,
                   );
                   setCmrExpirationDate(
                     "cmrExpirationDate" in profile && profile.cmrExpirationDate
                       ? profile.cmrExpirationDate
-                      : undefined,
+                      : null,
                   );
                   setDigiSigSeries(
                     "digiSigSeries" in profile
@@ -316,13 +318,13 @@ export default function DoctorProfile({ data }: { data: any }) {
                   setDigiSigIssueDate(
                     "digiSigIssueDate" in profile && profile.digiSigIssueDate
                       ? profile.digiSigIssueDate
-                      : undefined,
+                      : null,
                   );
                   setDigiSigExpirationDate(
                     "digiSigExpirationDate" in profile &&
                       profile.digiSigExpirationDate
                       ? profile.digiSigExpirationDate
-                      : undefined,
+                      : null,
                   );
                 }}
               >
@@ -557,7 +559,7 @@ export default function DoctorProfile({ data }: { data: any }) {
                   inputType1="number"
                   inputType2="number"
                   type={["input", "select"]}
-                  data2={[15, 30, 45, 60]}
+                  data2={[15, 30, 60]}
                   value1={appointmentPrice}
                   setValue1={setAppointmentPrice}
                   value2={appointmentDuration}

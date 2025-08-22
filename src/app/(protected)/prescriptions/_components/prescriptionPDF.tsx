@@ -57,9 +57,9 @@ export function PrescriptionPDF({ data }: { data: PDFData }) {
       <Page size="A5" style={styles.page}>
         <View style={styles.header}>
           <Text>Doctor name: {data.doctorName}</Text>
-          <Text>Cabinet name {data.cabinetName}</Text>
-          <Text>Cabinet name {data.cabinetPhone}</Text>
-          <Text>Cabinet name {data.cabinetAddress}</Text>
+          <Text>Cabinet name: {data.cabinetName}</Text>
+          <Text>Cabinet phone number: {data.cabinetPhone}</Text>
+          <Text>Cabinet address: {data.cabinetAddress}</Text>
           <Text></Text>
         </View>
 

@@ -15,31 +15,10 @@ import { Button } from "~/components/ui/button";
 import TimeSlot from "../../_components/timeSlot";
 import { api } from "~/trpc/react";
 import { Loader2 } from "lucide-react";
-import { toast } from "sonner";
 import Image from "next/image";
-
-const slots = [
-  "09:00",
-  "10:00",
-  "11:00",
-  "12:00",
-  "13:00",
-  "14:00",
-  "15:00",
-  "16:00",
-  "17:00",
-];
-
-const times = slots.map((slot) => {
-  const [h = 0, m = 0] = slot.split(":").map(Number);
-  const d = new Date();
-  d.setHours(h, m, 0, 0);
-  return d;
-});
 
 export default function Doctor() {
   const params = useParams();
-  const [loading, setLoading] = useState(false);
   const [date, setDate] = useState<Date | undefined>();
   const [time, setTime] = useState<Date | undefined>();
 
@@ -78,6 +57,84 @@ export default function Doctor() {
     { doctor: id },
     { enabled: !!id },
   );
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const slots =
+    data?.doctorProfile?.appointmentDuration == 60
+      ? ["09:00", "10:00", "11:00", "12:00", "14:00", "15:00", "16:00", "17:00"]
+      : data?.doctorProfile?.appointmentDuration == 30
+        ? [
+            "09:00",
+            "09:30",
+            "10:00",
+            "10:30",
+            "11:00",
+            "11:30",
+            "13:00",
+            "13:30",
+            "14:00",
+            "14:30",
+            "15:00",
+            "15:30",
+            "16:00",
+            "16:30",
+            "17:00",
+            "17:30",
+          ]
+        : data?.doctorProfile?.appointmentDuration == 15
+          ? [
+              "09:00",
+              "09:15",
+              "09:30",
+              "09:45",
+              "10:00",
+              "10:15",
+              "10:30",
+              "10:45",
+              "11:00",
+              "11:15",
+              "11:30",
+              "11:45",
+              "13:00",
+              "13:15",
+              "13:30",
+              "13:45",
+              "14:00",
+              "14:15",
+              "14:30",
+              "14:45",
+              "15:00",
+              "15:15",
+              "15:30",
+              "15:45",
+              "16:00",
+              "16:15",
+              "16:30",
+              "16:45",
+              "17:00",
+              "17:15",
+              "17:30",
+              "17:45",
+            ]
+          : [];
+
+  const now = new Date();
+  const isToday = date && date.toDateString() === now.toDateString();
+
+  const visibleSlots = slots.filter((slot) => {
+    if (!isToday) return true;
+    const [h = 0, m = 0] = slot.split(":").map(Number);
+    return h > now.getHours() || (h === now.getHours() && m > now.getMinutes());
+  });
+
+  const times = visibleSlots.map((slot) => {
+    const [h = 0, m = 0] = slot.split(":").map(Number);
+    const d = new Date();
+    d.setHours(h, m, 0, 0);
+    return d;
+  });
 
   const {
     data: userAppointments,
@@ -163,8 +220,8 @@ export default function Doctor() {
                   selected={date}
                   onSelect={setDate}
                   className="rounded-md border shadow-sm"
-                  startMonth={new Date()}
-                  disabled={{ before: new Date() }}
+                  startMonth={today}
+                  disabled={{ before: today }}
                 />
               </div>
               {date ? (
@@ -192,6 +249,7 @@ export default function Doctor() {
                             apptDate.getMinutes() === timp.getMinutes();
                           return sameDay && sameTime;
                         }) ?? false;
+
                       if (isBooked === false && isBookedClient === false)
                         return (
                           <TimeSlot
