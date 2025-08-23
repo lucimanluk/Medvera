@@ -321,6 +321,7 @@ export default function PatientProfile({ data }: { data: any }) {
                 inputType1={"email"}
                 value1={email}
                 setValue1={setEmail}
+                inputType2={"phone"}
                 value2={phoneNumber}
                 setValue2={setPhoneNumber}
                 type={["input", "input"]}
@@ -399,6 +400,7 @@ export default function PatientProfile({ data }: { data: any }) {
                   label_name2={"Phone Number"}
                   value1={emergencyRelation}
                   setValue1={setEmergencyRelation}
+                  inputType2={"phone"}
                   value2={emergencyPhone}
                   setValue2={setEmergencyPhone}
                   type={["input", "input"]}
@@ -421,6 +423,7 @@ export default function PatientProfile({ data }: { data: any }) {
                 label_name2={"Family doctor's phone number"}
                 value1={familyDoctor}
                 setValue1={setFamilyDoctor}
+                inputType2={"phone"}
                 value2={familyDoctorPhone}
                 setValue2={setFamilyDoctorPhone}
                 type={["input", "input"]}

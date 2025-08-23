@@ -5,8 +5,9 @@ import { Input } from "~/components/ui/input";
 import DoctorCard from "./_components/doctorCard";
 import { useState, useMemo } from "react";
 import PopoverFilter from "./_components/popoverFilter";
-import { frameworks } from "~/types/framework";
 import { api } from "~/trpc/react";
+import { specializationsFilter } from "~/data/specializations";
+import { appointmentDuration } from "~/data/appointmentDuration";
 
 export default function FindDoctor() {
   const {
@@ -22,20 +23,36 @@ export default function FindDoctor() {
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("All specialisations");
+  const [open1, setOpen1] = useState(false);
+  const [value1, setValue1] = useState("All durations");
 
   const doctors = doctorsResponse?.data ?? [];
   const user = doctorsResponse?.user;
 
   const filteredSearch = useMemo(() => {
     const term = search.toLowerCase().trim();
-    if (!term) return doctors;
-    return doctors.filter((doctor) =>
-      `${doctor.doctorProfile?.firstName?.toLowerCase()} ${doctor.doctorProfile?.lastName?.toLowerCase()}`.includes(
-        term,
-      ),
-    );
-  }, [doctors, search]);
+    const selectedSpec =
+      value !== "All specialisations" ? value.toLowerCase() : "";
+    const selectedDur = value1 !== "All durations" ? Number(value1) : 0;
 
+    return doctors.filter((d) => {
+      const fullName =
+        `${d?.doctorProfile?.firstName ?? ""} ${d?.doctorProfile?.lastName ?? ""}`.toLowerCase();
+      if (term && !fullName.includes(term)) return false;
+
+      if (selectedSpec) {
+        const docSpec = d?.doctorProfile?.specialization?.toLowerCase() ?? "";
+        if (docSpec !== selectedSpec) return false;
+      }
+
+      if (selectedDur) {
+        const docMin = Number(d?.doctorProfile?.appointmentDuration);
+        if (!Number.isFinite(docMin) || docMin !== selectedDur) return false;
+      }
+
+      return true;
+    });
+  }, [doctors, search, value, value1]);
   if (doctorLoading) {
     return (
       <div className="flex h-screen w-full flex-row items-center justify-center">
@@ -67,7 +84,14 @@ export default function FindDoctor() {
           setOpen={setOpen}
           value={value}
           setValue={setValue}
-          frameworks={frameworks}
+          data={specializationsFilter}
+        />
+        <PopoverFilter
+          open={open1}
+          setOpen={setOpen1}
+          value={value1}
+          setValue={setValue1}
+          data={appointmentDuration}
         />
       </div>
       {filteredSearch.map((doctor, index) => (

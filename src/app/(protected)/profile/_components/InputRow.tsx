@@ -49,7 +49,30 @@ export default function InputRow({
                 ? (e) => {
                     e.preventDefault();
                   }
-                : undefined
+                : inputType1 === "number"
+                  ? (e) => {
+                      if (
+                        (e.key >= "0" && e.key <= "9") ||
+                        e.key == "." ||
+                        e.key == "Backspace"
+                      ) {
+                        return;
+                      } else {
+                        e.preventDefault();
+                      }
+                    }
+                  : inputType1 === "phone"
+                    ? (e) => {
+                        if (
+                          (e.key >= "0" && e.key <= "9") ||
+                          e.key == "Backspace"
+                        ) {
+                          return;
+                        } else {
+                          e.preventDefault();
+                        }
+                      }
+                    : undefined
             }
             disabled={inputType1 === "email" ? true : !editing}
             value={
@@ -92,7 +115,31 @@ export default function InputRow({
                 ? (e) => {
                     e.preventDefault();
                   }
-                : undefined
+                : inputType2 === "number"
+                  ? (e) => {
+                      if (
+                        (e.key >= "0" && e.key <= "9") ||
+                        e.key == "." ||
+                        e.key == "Backspace"
+                      ) {
+                        return;
+                      } else {
+                        e.preventDefault();
+                      }
+                    }
+                  : inputType2 === "phone"
+                    ? (e) => {
+                        if (
+                          (e.key >= "0" && e.key <= "9") ||
+                          e.key == "Backspace" ||
+                          (e.ctrlKey || e.metaKey)
+                        ) {
+                          return;
+                        } else {
+                          e.preventDefault();
+                        }
+                      }
+                    : undefined
             }
             value={
               inputType2 === "date"

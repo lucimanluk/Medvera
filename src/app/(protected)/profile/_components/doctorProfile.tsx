@@ -391,6 +391,7 @@ export default function DoctorProfile({ data }: { data: any }) {
                 inputType1={"email"}
                 value1={email}
                 setValue1={setEmail}
+                inputType2={"phone"}
                 value2={phoneNumber}
                 setValue2={setPhoneNumber}
                 type={["input", "input"]}
@@ -456,6 +457,7 @@ export default function DoctorProfile({ data }: { data: any }) {
                   label_name2={"Cabinet phone number"}
                   value1={cabinetName}
                   setValue1={setCabinetName}
+                  inputType2={"phone"}
                   value2={cabinetPhone}
                   setValue2={setCabinetPhone}
                   type={["input", "input"]}

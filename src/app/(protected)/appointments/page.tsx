@@ -11,38 +11,7 @@ import { api } from "~/trpc/react";
 import { usePeerContext } from "~/context/peerContext";
 import { Loader2 } from "lucide-react";
 import type { User } from "~/types/user";
-
-interface Framework {
-  value: string;
-  label: string;
-}
-
-const frameworks: Framework[] = [
-  {
-    value: "All specialisations",
-    label: "All specialisations",
-  },
-  {
-    value: "next.js",
-    label: "Next.js",
-  },
-  {
-    value: "sveltekit",
-    label: "SvelteKit",
-  },
-  {
-    value: "nuxt.js",
-    label: "Nuxt.js",
-  },
-  {
-    value: "remix",
-    label: "Remix",
-  },
-  {
-    value: "astro",
-    label: "Astro",
-  },
-];
+import { specializationsFilter } from "~/data/specializations";
 
 export default function Appointments() {
   const peer = usePeerContext();
@@ -103,7 +72,11 @@ export default function Appointments() {
         </div>
         <div className="flex flex-row items-center gap-2">
           <Input
-            placeholder="Search for an appointment based on doctor's name..."
+            placeholder={
+              user?.doctor
+                ? "Search for an appointment based on patient name..."
+                : "Search for an appointment based on doctor name..."
+            }
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -113,7 +86,7 @@ export default function Appointments() {
               setOpen={setOpen}
               value={value}
               setValue={setValue}
-              frameworks={frameworks}
+              data={specializationsFilter}
             />
           ) : null}
         </div>

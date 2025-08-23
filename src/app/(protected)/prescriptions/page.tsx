@@ -3,7 +3,7 @@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
 import PopoverFilterModal from "./_components/popoverFilterModal";
 import { Input } from "~/components/ui/input";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { api } from "~/trpc/react";
 import { Button } from "~/components/ui/button";
 import {
@@ -100,8 +100,8 @@ export default function Prescriptions() {
     return prescriptions.filter((prescription) => {
       const nameToCheck =
         user?.doctor === false
-          ? prescription.doctor.name
-          : prescription.patient.name;
+          ? `${prescription.doctor.doctorProfile?.firstName} ${prescription.doctor.doctorProfile?.lastName}`
+          : `${prescription.patient.patientProfile?.firstName} ${prescription.patient.patientProfile?.lastName}`;
       const nameMatch = nameToCheck.toLowerCase().includes(term);
       return (
         prescription.medicationName.toLowerCase().includes(term) ||

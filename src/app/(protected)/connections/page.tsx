@@ -8,6 +8,7 @@ import { Input } from "~/components/ui/input";
 import PopoverFilter from "../finddoctor/_components/popoverFilter";
 import { frameworks } from "~/types/framework";
 import { api } from "~/trpc/react";
+import { specializationsFilter } from "~/data/specializations";
 
 export default function Connections() {
   const { data, isLoading, error } = api.connection.getConnections.useQuery();
@@ -18,7 +19,7 @@ export default function Connections() {
     const pendingCount = data?.data.filter((c) => !c.accepted).length ?? 0;
     setRequests(pendingCount);
   }, [data]);
-  
+
   if (isLoading) {
     return (
       <div className="flex h-screen w-full flex-row items-center justify-center">
@@ -57,7 +58,7 @@ export default function Connections() {
               setOpen={setOpen}
               value={value}
               setValue={setValue}
-              frameworks={frameworks}
+              data={specializationsFilter}
             />
           ) : null}
         </div>
