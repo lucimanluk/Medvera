@@ -28,13 +28,11 @@ export default function Appointment({
   const { peer, startCall, inCall } = usePeerContext()!;
   const [isCallTime, setIsCallTime] = useState(false);
   const apptDateObj = new Date(appointment.appointmentDate);
-  const apptTs = apptDateObj.getTime();
-  const appointmentEndTs = apptTs + 60 * 60 * 1000;
 
   useEffect(() => {
     const check = () => {
-      const now = Date.now();
-      setIsCallTime(now >= apptTs - 600000 && now <= appointmentEndTs);
+      const now = new Date();
+      setIsCallTime(now <= apptDateObj);
     };
     check();
     const tid = setInterval(check, 30000);
@@ -58,7 +56,7 @@ export default function Appointment({
     });
     conn?.on("data", (data: unknown) => {
       if (typeof data === "object" && (data as any).type === "call-accept") {
-         startCall((data as any).from);
+        startCall((data as any).from);
       }
     });
     conn?.on("error", () => {
@@ -74,8 +72,10 @@ export default function Appointment({
             <Image
               src={
                 user.id === appointment.patient.id
-                  ? appointment.doctor.doctorProfile?.image || "/default_pfp.jpg"
-                  : appointment.patient.patientProfile?.image || "/default_pfp.jpg"
+                  ? appointment.doctor.doctorProfile?.image ||
+                    "/default_pfp.jpg"
+                  : appointment.patient.patientProfile?.image ||
+                    "/default_pfp.jpg"
               }
               alt=""
               layout="fill"
@@ -96,14 +96,17 @@ export default function Appointment({
             </CardDescription>
           </div>
         </div>
-        <div className="flex gap-4">
-          <Button
-            onClick={handleJoinCall}
-            className="bg-[#2F80ED] text-white hover:bg-[#1366d6]"
-          >
-            <PhoneCall /> Join call
-          </Button>
-        </div>
+        {type === "upcoming" ? (
+          <div className="flex gap-4">
+            <Button
+              onClick={handleJoinCall}
+              className="bg-[#2F80ED] text-white hover:bg-[#1366d6]"
+              disabled={inCall || isCallTime}
+            >
+              <PhoneCall /> Join call
+            </Button>
+          </div>
+        ) : null}
       </CardHeader>
       <CardContent className="flex w-3/4 justify-between">
         <div className="flex items-center gap-2">

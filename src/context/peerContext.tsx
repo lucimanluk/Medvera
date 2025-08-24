@@ -18,8 +18,8 @@ interface CallAccept {
   appointmentId: string;
 }
 
-interface CallAccepted {
-  type: "call-accepted";
+interface CallClosed {
+  type: "call-closed";
   from: string;
   name: string;
   appointmentId: string;
@@ -30,7 +30,7 @@ interface PeerContextValue {
   inCall: boolean;
   setInCall: (inCall: boolean) => void;
   startCall: (remoteId: string) => void;
-  endCall: () => void;
+  endCall: (notify?: boolean) => void;
   localStream: MediaStream | null;
   remoteStream: MediaStream | null;
 }
@@ -53,56 +53,134 @@ export const PeerContextProvider = ({
   children: React.ReactNode;
 }) => {
   const peerRef = useRef<Peer | null>(null);
+  const dataConnRef = useRef<DataConnection | null>(null);
+  const mediaCallRef = useRef<MediaConnection | null>(null);
   const [ready, setReady] = useState(false);
   const [inCall, setInCall] = useState(false);
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
 
-  const endCall = () => {
-    setInCall(false);
+  const endCall = (notify = true) => {
+    if (notify && dataConnRef.current?.open) {
+      try {
+        dataConnRef.current.send({
+          type: "call-closed",
+          from: id,
+          name: id,
+        } as CallClosed);
+      } catch {}
+    }
+    try {
+      mediaCallRef.current?.close();
+    } catch {}
+    try {
+      dataConnRef.current?.close();
+    } catch {}
+    mediaCallRef.current = null;
+    dataConnRef.current = null;
     localStream?.getTracks().forEach((t) => t.stop());
     setLocalStream(null);
     setRemoteStream(null);
+    setInCall(false);
   };
 
-  const getIndexedStream = async (): Promise<MediaStream> => {
+  const getBestLocalStream = async (): Promise<MediaStream> => {
     const devices = await navigator.mediaDevices.enumerateDevices();
-    const cams = devices.filter((d) => d.kind === "videoinput");
-    for (const cam of cams) {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: { deviceId: { exact: cam.deviceId } },
-          audio: true,
-        });
-        return stream;
-      } catch {
-        continue;
-      }
+    const hasCam = devices.some((d) => d.kind === "videoinput");
+    const hasMic = devices.some((d) => d.kind === "audioinput");
+    if (!hasCam && !hasMic) {
+      return new MediaStream();
     }
-    return navigator.mediaDevices.getUserMedia({
-      video: true,
-      audio: true,
-    });
+    const constraints: MediaStreamConstraints = {
+      video: hasCam ? true : false,
+      audio: hasMic ? true : false,
+    };
+    try {
+      return await navigator.mediaDevices.getUserMedia(constraints);
+    } catch {
+      if (hasCam) {
+        const cams = devices.filter((d) => d.kind === "videoinput");
+        for (const cam of cams) {
+          try {
+            return await navigator.mediaDevices.getUserMedia({
+              video: { deviceId: { exact: cam.deviceId } },
+              audio: hasMic ? true : false,
+            });
+          } catch {}
+        }
+      }
+      return new MediaStream();
+    }
   };
 
   const startCall = (remoteId: string) => {
     if (!peerRef.current) return;
-    setInCall(true);
-    getIndexedStream()
-      .then((stream) => {
+    (async () => {
+      try {
+        const stream = await getBestLocalStream();
         setLocalStream(stream);
         const mc = peerRef.current!.call(remoteId, stream);
+        if (!mc) throw new Error("Failed to create MediaConnection");
+        mediaCallRef.current = mc;
         mc.on("stream", (remote) => setRemoteStream(remote));
-        mc.on("close", endCall);
-        mc.on("error", endCall);
-      })
-      .catch(() => {
-        const mc = peerRef.current!.call(remoteId, undefined as any);
-        mc.on("stream", (remote) => setRemoteStream(remote));
-        mc.on("close", endCall);
-        mc.on("error", endCall);
-      });
+        mc.on("close", () => {
+          if (mediaCallRef.current === mc) mediaCallRef.current = null;
+          endCall(false);
+        });
+        mc.on("error", () => {
+          if (mediaCallRef.current === mc) mediaCallRef.current = null;
+          endCall(false);
+        });
+        setInCall(true);
+      } catch (e) {
+        toast.error("Could not start call.");
+        console.error(e);
+      }
+    })();
   };
+
+  function attachDataHandlers(conn: DataConnection) {
+    dataConnRef.current = conn;
+    conn.on("close", () => {
+      if (dataConnRef.current === conn) dataConnRef.current = null;
+    });
+    conn.on("error", () => {
+      if (dataConnRef.current === conn) dataConnRef.current = null;
+    });
+    conn.on("data", (raw) => {
+      const data = typeof raw === "object" ? (raw as any) : null;
+      if (!data?.type) return;
+      if (data.type === "call-request") {
+        const { from, name } = data as CallRequest;
+        toast(`${name} ${from} is calling`, {
+          duration: 45000,
+          cancel: { label: "Decline", onClick: () => conn.close() },
+          action: {
+            label: "Answer",
+            onClick: () => {
+              conn.send({
+                type: "call-accept",
+                from: id,
+                name: id,
+              });
+            },
+          },
+        });
+      }
+      if (data.type === "call-accept") {
+        startCall((data as CallAccept).from);
+        conn.send({
+          type: "call-accepted",
+          from: id,
+          name: id,
+        });
+      }
+      if (data.type === "call-closed") {
+        toast("Call ended by remote.");
+        endCall(false);
+      }
+    });
+  }
 
   useEffect(() => {
     if (!id || peerRef.current) return;
@@ -120,58 +198,41 @@ export const PeerContextProvider = ({
   useEffect(() => {
     if (!ready || !peerRef.current) return;
     const onDataConn = (conn: DataConnection) => {
-      conn.on("data", (data) => {
-        if (typeof data === "object" && (data as any).type === "call-request") {
-          const { from, name } = data as CallRequest;
-          toast(`${name} ${from} is calling`, {
-            duration: 45000,
-            cancel: { label: "Decline", onClick: () => conn.close() },
-            action: {
-              label: "Answer",
-              onClick: () => {
-                conn.send({
-                  type: "call-accept",
-                  from: id,
-                  name: id,
-                });
-              },
-            },
-          });
-        }
-        if (typeof data === "object" && (data as any).type === "call-accept") {
-          startCall((data as CallAccept).from);
-          conn.send({
-            type: "call-accepted",
-            from: id,
-            name: id,
-          });
-        }
-      });
+      attachDataHandlers(conn);
     };
     peerRef.current.on("connection", onDataConn);
     return () => {
       peerRef.current?.off("connection", onDataConn);
     };
-  }, [ready]);
+  }, [ready, id]);
 
   useEffect(() => {
     if (!ready || !peerRef.current) return;
     const onMediaCall = (call: MediaConnection) => {
-      setInCall(true);
-      getIndexedStream()
-        .then((stream) => {
+      (async () => {
+        try {
+          const stream = await getBestLocalStream();
           setLocalStream(stream);
+          mediaCallRef.current = call;
           call.answer(stream);
           call.on("stream", (remote) => setRemoteStream(remote));
-          call.on("close", endCall);
-          call.on("error", endCall);
-        })
-        .catch(() => {
-          call.answer(undefined as any);
-          call.on("stream", (remote) => setRemoteStream(remote));
-          call.on("close", endCall);
-          call.on("error", endCall);
-        });
+          call.on("close", () => {
+            if (mediaCallRef.current === call) mediaCallRef.current = null;
+            endCall(false);
+          });
+          call.on("error", () => {
+            if (mediaCallRef.current === call) mediaCallRef.current = null;
+            endCall(false);
+          });
+          setInCall(true);
+        } catch (e) {
+          toast.error("Could not answer call.");
+          console.error(e);
+          try {
+            call.close();
+          } catch {}
+        }
+      })();
     };
     peerRef.current.on("call", onMediaCall);
     return () => {

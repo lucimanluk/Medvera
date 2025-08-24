@@ -3,24 +3,49 @@
 import Appointment from "../_components/appointment";
 import { Button } from "~/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
-import PopoverFilter from "../finddoctor/_components/popoverFilter";
 import { Input } from "~/components/ui/input";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { api } from "~/trpc/react";
 import { usePeerContext } from "~/context/peerContext";
 import { Loader2 } from "lucide-react";
 import type { User } from "~/types/user";
-import { specializationsFilter } from "~/data/specializations";
 
 export default function Appointments() {
   const peer = usePeerContext();
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState("All specialisations");
   const [search, setSearch] = useState("");
   const { data, isLoading, error } = api.appointment.getAppointments.useQuery();
   const appts = data?.data ?? [];
   const user = data?.user;
+
+  const filteredSearch = useMemo(() => {
+    const term = search.toLowerCase().trim();
+    if (!term) return appts;
+    return appts.filter((appointment) => {
+      const nameToCheck =
+        user?.doctor === false
+          ? `${appointment.doctor.doctorProfile?.firstName} ${appointment.doctor.doctorProfile?.lastName}`
+          : `${appointment.patient.patientProfile?.firstName} ${appointment.patient.patientProfile?.lastName}`;
+      const nameToMatch = nameToCheck.toLowerCase().includes(term);
+      return nameToMatch;
+    });
+  }, [appts, search, user?.doctor]);
+
+  const isOngoing = (appointmentStart: Date, duration: number) => {
+    const now = new Date();
+    const appointmentEnd = new Date(
+      appointmentStart.getTime() + duration * 60000,
+    );
+    return now <= appointmentEnd;
+  };
+
+  const isPast = (appointmentStart: Date, duration: number) => {
+    const now = new Date();
+    const appointmentEnd = new Date(
+      appointmentStart.getTime() + duration * 60000,
+    );
+    return now > appointmentEnd;
+  };
 
   if (isLoading) {
     return (
@@ -79,36 +104,41 @@ export default function Appointments() {
             }
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-          />
-          {user?.doctor === false ? (
-            <PopoverFilter
-              open={open}
-              setOpen={setOpen}
-              value={value}
-              setValue={setValue}
-              data={specializationsFilter}
-            />
-          ) : null}
+          />        
         </div>
         <TabsContent value="upcoming">
-          {appts.map((appointment, index) => (
-            <Appointment
-              key={index}
-              appointment={appointment}
-              user={user as User}
-              type={"upcoming"}
-            />
-          ))}
+          {filteredSearch
+            .filter((appointment) =>
+              isOngoing(
+                new Date(appointment.appointmentDate),
+                appointment.appointmentDuration,
+              ),
+            )
+            .map((appointment, index) => (
+              <Appointment
+                key={index}
+                appointment={appointment}
+                user={user as User}
+                type={"upcoming"}
+              />
+            ))}
         </TabsContent>
         <TabsContent value="past">
-          {appts.map((appointment, index) => (
-            <Appointment
-              key={index}
-              appointment={appointment}
-              user={user as User}
-              type={"past"}
-            />
-          ))}
+          {filteredSearch
+            .filter((appointment) =>
+              isPast(
+                new Date(appointment.appointmentDate),
+                appointment.appointmentDuration,
+              ),
+            )
+            .map((appointment, index) => (
+              <Appointment
+                key={index}
+                appointment={appointment}
+                user={user as User}
+                type={"past"}
+              />
+            ))}
         </TabsContent>
       </Tabs>
     </div>

@@ -106,10 +106,6 @@ export default function Prescriptions() {
       return (
         prescription.medicationName.toLowerCase().includes(term) ||
         prescription.dosage.toLowerCase().includes(term) ||
-        prescription.dosage
-          .toLowerCase()
-          .concat(` ${prescription.medicationName}`)
-          .includes(term) ||
         nameMatch ||
         prescription.endingDate.toDateString().toLowerCase().includes(term) ||
         prescription.startingDate.toDateString().toLowerCase().includes(term)
@@ -304,9 +300,7 @@ export default function Prescriptions() {
                           onKeyDown={(e) => e.preventDefault()}
                           value={startingDate?.toISOString().slice(0, 10) ?? ""}
                           onChange={(e) => {
-                            setStartingDate(
-                             new Date (e.target.value),
-                            );
+                            setStartingDate(new Date(e.target.value));
                           }}
                           required
                         />

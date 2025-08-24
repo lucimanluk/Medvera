@@ -24,10 +24,10 @@ export default function CallOverlay() {
 
   useEffect(() => {
     if (localStream && videoRef.current) {
-      videoRef.current.srcObject = localStream;
+      (videoRef.current as HTMLVideoElement).srcObject = localStream;
     }
     if (remoteStream && videoRefRemote.current) {
-      videoRefRemote.current.srcObject = remoteStream;
+      (videoRefRemote.current as HTMLVideoElement).srcObject = remoteStream;
     }
   }, [localStream, remoteStream]);
 
