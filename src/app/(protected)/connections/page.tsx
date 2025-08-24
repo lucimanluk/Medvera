@@ -5,10 +5,7 @@ import * as React from "react";
 import ConnectionCard from "./_components/connectionCard";
 import { Loader2 } from "lucide-react";
 import { Input } from "~/components/ui/input";
-import PopoverFilter from "../finddoctor/_components/popoverFilter";
-import { frameworks } from "~/types/framework";
 import { api } from "~/trpc/react";
-import { specializationsFilter } from "~/data/specializations";
 
 export default function Connections() {
   const { data, isLoading, error } = api.connection.getConnections.useQuery();
@@ -52,15 +49,7 @@ export default function Connections() {
         </TabsList>
         <div className="flex flex-row items-center gap-2">
           <Input placeholder="Search for a connection..." className="" />
-          {data?.user?.doctor === false ? (
-            <PopoverFilter
-              open={open}
-              setOpen={setOpen}
-              value={value}
-              setValue={setValue}
-              data={specializationsFilter}
-            />
-          ) : null}
+        
         </div>
         <TabsContent value="connections">
           {data?.data.map((item, index) =>

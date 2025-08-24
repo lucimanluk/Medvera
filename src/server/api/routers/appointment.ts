@@ -1,5 +1,4 @@
 import { z } from "zod";
-import PatientProfile from "~/app/(protected)/profile/_components/patientProfile";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
@@ -44,6 +43,7 @@ getDashboardAppointments: publicProcedure.query(async ({ ctx }) => {
             }
           },
         },
+        orderBy: {appointmentDate: 'asc'}
       });
   
       return {data, user};
