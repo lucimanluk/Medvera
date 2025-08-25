@@ -61,12 +61,19 @@ export default function InputRow({
                         e.preventDefault();
                       }
                     }
-                  : inputType1 === "phone"
+                  : inputType1 === "phone" || inputType1 === "cnp"
                     ? (e) => {
                         if (
-                          (e.key >= "0" && e.key <= "9") ||
+                          (e.key >= "0" &&
+                            e.key <= "9" &&
+                            ((inputType1 === "phone" &&
+                              e.currentTarget.value.length < 10) ||
+                              (inputType1 === "cnp" &&
+                                e.currentTarget.value.length < 13))) ||
                           e.key == "Backspace" ||
-                          e.currentTarget.value.length < 10
+                          e.key == "Tab" ||
+                          e.ctrlKey ||
+                          e.metaKey
                         ) {
                           return;
                         } else {
@@ -128,11 +135,17 @@ export default function InputRow({
                         e.preventDefault();
                       }
                     }
-                  : inputType2 === "phone"
+                  : inputType2 === "phone" || inputType2 === "cnp"
                     ? (e) => {
                         if (
-                          (e.key >= "0" && e.key <= "9") ||
+                          (e.key >= "0" &&
+                            e.key <= "9" &&
+                            ((inputType2 === "phone" &&
+                              e.currentTarget.value.length < 10) ||
+                              (inputType2 === "cnp" &&
+                                e.currentTarget.value.length < 13))) ||
                           e.key == "Backspace" ||
+                          e.key == "Tab" ||
                           e.ctrlKey ||
                           e.metaKey
                         ) {

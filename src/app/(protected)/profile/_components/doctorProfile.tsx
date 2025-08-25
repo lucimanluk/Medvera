@@ -402,6 +402,7 @@ export default function DoctorProfile({ data }: { data: any }) {
                 label_name2={"CNP"}
                 value1={series}
                 setValue1={setSeries}
+                inputType2="cnp"
                 value2={cnp}
                 setValue2={setCnp}
                 type={["input", "input"]}
