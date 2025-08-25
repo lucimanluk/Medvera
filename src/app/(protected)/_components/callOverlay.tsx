@@ -97,9 +97,13 @@ export default function CallOverlay() {
             variant="outline"
             className="h-14 w-14 rounded-full border-0 bg-red-600 hover:bg-red-700"
             onClick={() => {
+              /*if (localStream) {
+                localStream.getTracks().forEach((track) => track.stop());
+              }
+              if (videoRef.current) videoRef.current.srcObject = null;
+              if (videoRefRemote.current)
+                videoRefRemote.current.srcObject = null;*/
               endCall();
-              videoRef.current = null;
-              videoRefRemote.current = null;
             }}
           >
             <Phone className="text-white" />
@@ -107,14 +111,15 @@ export default function CallOverlay() {
         </div>
       )}
 
-      {!isMinimized && (
-        <video
-          ref={videoRef}
-          autoPlay
-          playsInline
-          className="absolute right-4 bottom-4 h-32 w-32 rounded border-[3px]"
-        />
-      )}
+      <video
+        ref={videoRef}
+        autoPlay
+        playsInline
+        className={cn(
+          "absolute right-4 bottom-4 h-32 w-32 rounded border-[3px]",
+          isMinimized && "hidden",
+        )}
+      />
     </div>
   );
 }

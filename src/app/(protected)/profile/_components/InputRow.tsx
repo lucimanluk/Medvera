@@ -65,7 +65,8 @@ export default function InputRow({
                     ? (e) => {
                         if (
                           (e.key >= "0" && e.key <= "9") ||
-                          e.key == "Backspace"
+                          e.key == "Backspace" ||
+                          e.currentTarget.value.length < 10
                         ) {
                           return;
                         } else {
@@ -132,7 +133,8 @@ export default function InputRow({
                         if (
                           (e.key >= "0" && e.key <= "9") ||
                           e.key == "Backspace" ||
-                          (e.ctrlKey || e.metaKey)
+                          e.ctrlKey ||
+                          e.metaKey
                         ) {
                           return;
                         } else {

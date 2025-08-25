@@ -55,6 +55,8 @@ export const PeerContextProvider = ({
   const peerRef = useRef<Peer | null>(null);
   const dataConnRef = useRef<DataConnection | null>(null);
   const mediaCallRef = useRef<MediaConnection | null>(null);
+  const localStreamRef = useRef<MediaStream | null>(null);
+  const remoteStreamRef = useRef<MediaStream | null>(null);
   const [ready, setReady] = useState(false);
   const [inCall, setInCall] = useState(false);
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
@@ -70,15 +72,27 @@ export const PeerContextProvider = ({
         } as CallClosed);
       } catch {}
     }
+
+    try {
+      if (localStreamRef.current) {
+        localStreamRef.current.getTracks().forEach((track) => track.stop());
+      }
+      if (remoteStreamRef.current) {
+        remoteStreamRef.current.getTracks().forEach((track) => track.stop());
+      }
+    } catch {}
+
     try {
       mediaCallRef.current?.close();
     } catch {}
     try {
       dataConnRef.current?.close();
     } catch {}
+
     mediaCallRef.current = null;
     dataConnRef.current = null;
-    localStream?.getTracks().forEach((t) => t.stop());
+    localStreamRef.current = null;
+    remoteStreamRef.current = null;
     setLocalStream(null);
     setRemoteStream(null);
     setInCall(false);
@@ -118,11 +132,15 @@ export const PeerContextProvider = ({
     (async () => {
       try {
         const stream = await getBestLocalStream();
+        localStreamRef.current = stream;
         setLocalStream(stream);
         const mc = peerRef.current!.call(remoteId, stream);
         if (!mc) throw new Error("Failed to create MediaConnection");
         mediaCallRef.current = mc;
-        mc.on("stream", (remote) => setRemoteStream(remote));
+        mc.on("stream", (remote) => {
+          remoteStreamRef.current = remote;
+          setRemoteStream(remote);
+        });
         mc.on("close", () => {
           if (mediaCallRef.current === mc) mediaCallRef.current = null;
           endCall(false);
@@ -152,7 +170,7 @@ export const PeerContextProvider = ({
       if (!data?.type) return;
       if (data.type === "call-request") {
         const { from, name } = data as CallRequest;
-        toast(`${name} ${from} is calling`, {
+        toast(`${name} is calling`, {
           duration: 45000,
           cancel: { label: "Decline", onClick: () => conn.close() },
           action: {
@@ -176,7 +194,6 @@ export const PeerContextProvider = ({
         });
       }
       if (data.type === "call-closed") {
-        toast("Call ended by remote.");
         endCall(false);
       }
     });
@@ -212,10 +229,14 @@ export const PeerContextProvider = ({
       (async () => {
         try {
           const stream = await getBestLocalStream();
+          localStreamRef.current = stream;
           setLocalStream(stream);
           mediaCallRef.current = call;
           call.answer(stream);
-          call.on("stream", (remote) => setRemoteStream(remote));
+          call.on("stream", (remote) => {
+            remoteStreamRef.current = remote;
+            setRemoteStream(remote);
+          });
           call.on("close", () => {
             if (mediaCallRef.current === call) mediaCallRef.current = null;
             endCall(false);
@@ -239,6 +260,24 @@ export const PeerContextProvider = ({
       peerRef.current?.off("call", onMediaCall);
     };
   }, [ready]);
+
+  useEffect(() => {
+    if (!ready) return;
+
+    const onLeave = () => {
+      try {
+        if (dataConnRef.current?.open) {
+          dataConnRef.current.send({ type: "call-closed", from: id, name: id });
+        }
+      } catch {}
+      endCall(false);
+    };
+
+    window.addEventListener("beforeunload", onLeave);
+    return () => {
+      window.removeEventListener("beforeunload", onLeave);
+    };
+  }, [ready, id]);
 
   if (!ready) return null;
 

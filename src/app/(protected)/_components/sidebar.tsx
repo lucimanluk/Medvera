@@ -28,10 +28,12 @@ import { usePathname } from "next/navigation";
 import { signOut } from "~/lib/auth-client";
 import { useRouter } from "next/navigation";
 import type { User as UserType } from "~/types/user";
+import { usePeerContext } from "~/context/peerContext";
 
 export default function Sidebar({ user }: { user: UserType }) {
   const pathname = usePathname();
   const router = useRouter();
+  const { inCall } = usePeerContext();
   const links = [
     { title: "Dashboard", icon: Home },
     { title: "Find Doctor", icon: UserSearch },
@@ -76,7 +78,11 @@ export default function Sidebar({ user }: { user: UserType }) {
       </div>
       <AlertDialog>
         <AlertDialogTrigger asChild>
-          <Button variant="outline" className="flex flex-row justify-start">
+          <Button
+            variant="outline"
+            className="flex flex-row justify-start"
+            disabled={inCall}
+          >
             <LogOut />
             <span>Sign out</span>
           </Button>
@@ -93,7 +99,7 @@ export default function Sidebar({ user }: { user: UserType }) {
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
-             className="bg-[#2F80ED]"
+              className="bg-[#2F80ED]"
               onClick={async () =>
                 await signOut({
                   fetchOptions: {
