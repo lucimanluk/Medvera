@@ -1,9 +1,9 @@
 import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 export const doctorsRouter = createTRPCRouter({
-  getDoctors: publicProcedure.query(async ({ ctx }) => {
+  getDoctors: protectedProcedure.query(async ({ ctx }) => {
     const user = ctx.session?.user;
     const data = await ctx.db.user.findMany({
       where: {
@@ -21,7 +21,7 @@ export const doctorsRouter = createTRPCRouter({
     });
     return { data, user };
   }),
-  getPage: publicProcedure
+  getPage: protectedProcedure
     .input(z.object({ doctor: z.string() }))
     .query(async ({ ctx, input }) => {
       const clause = input.doctor;
@@ -37,7 +37,7 @@ export const doctorsRouter = createTRPCRouter({
       });
       return data;
     }),
-  getProfile: publicProcedure.query(async ({ ctx }) => {
+  getProfile: protectedProcedure.query(async ({ ctx }) => {
     const userId = ctx.session?.user.id;
     if (userId)
       return await ctx.db.user.findUnique({

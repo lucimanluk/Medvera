@@ -1,9 +1,9 @@
 import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 export const prescriptionRouter = createTRPCRouter({
-  getDashboardPrescriptions: publicProcedure.query(async ({ ctx }) => {
+  getDashboardPrescriptions: protectedProcedure.query(async ({ ctx }) => {
     const user = ctx.session?.user;
 
     const whereClause = user?.doctor
@@ -21,7 +21,7 @@ export const prescriptionRouter = createTRPCRouter({
 
     return { data, user };
   }),
-  getPrescriptions: publicProcedure.query(async ({ ctx }) => {
+  getPrescriptions: protectedProcedure.query(async ({ ctx }) => {
     const user = ctx.session?.user;
 
     const whereClause = user?.doctor
@@ -45,7 +45,7 @@ export const prescriptionRouter = createTRPCRouter({
     });
     return { data, user };
   }),
-  createPrescription: publicProcedure
+  createPrescription: protectedProcedure
     .input(
       z.object({
         patientId: z.string(),

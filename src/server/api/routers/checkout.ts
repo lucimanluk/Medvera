@@ -1,4 +1,4 @@
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { z } from "zod";
 import Stripe from "stripe";
 
@@ -7,7 +7,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 });
 
 export const checkoutRouter = createTRPCRouter({
-  createSession: publicProcedure
+  createSession: protectedProcedure
     .input(
       z.object({
         doctorId: z.string(),

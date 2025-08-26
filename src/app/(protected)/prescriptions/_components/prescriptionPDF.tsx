@@ -65,6 +65,11 @@ export function PrescriptionPDF({ data }: { data: PDFData }) {
 
         <View style={styles.body}>
           <Text>Patient name: {data.patientName}</Text>
+          <Text>
+            Patient address: {data.patient.patientProfile?.county},{" "}
+            {data.patient.patientProfile?.city},{" "}
+            {data.patient.patientProfile?.address}
+          </Text>
           <Text>Medication: {data.medicationName}</Text>
           <Text style={styles.mr12}>Dosage: {data.dosage}</Text>
           <Text style={styles.mr12}>Frequency: {data.frequency}</Text>

@@ -16,7 +16,7 @@ export default function HowItWorksSection() {
           </div>
           <h3 className="text-xl font-bold">Create an account</h3>
           <p className="text-muted-foreground">
-            Sign up and complete your medical profile with your health history.
+            Sign up and complete your medical profile with your health data.
           </p>
         </div>
         <div className="grid gap-4 text-center">

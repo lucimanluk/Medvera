@@ -1,10 +1,10 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { Prisma } from "@prisma/client";
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 export const connectionRouter = createTRPCRouter({
-  acceptConnection: publicProcedure
+  acceptConnection: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -33,7 +33,7 @@ export const connectionRouter = createTRPCRouter({
         throw e;
       }
     }),
-  declineConnection: publicProcedure
+  declineConnection: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -59,7 +59,7 @@ export const connectionRouter = createTRPCRouter({
         throw e;
       }
     }),
-  createConnection: publicProcedure
+  createConnection: protectedProcedure
     .input(
       z.object({
         doctorId: z.string(),
@@ -76,7 +76,7 @@ export const connectionRouter = createTRPCRouter({
       });
     }),
 
-  cancelConnection: publicProcedure
+  cancelConnection: protectedProcedure
     .input(
       z.object({
         doctorId: z.string(),
@@ -106,7 +106,7 @@ export const connectionRouter = createTRPCRouter({
         throw e;
       }
     }),
-  getConnections: publicProcedure.query(async ({ ctx }) => {
+  getConnections: protectedProcedure.query(async ({ ctx }) => {
     const user = ctx.session?.user;
 
     const whereClause = user?.doctor
@@ -130,7 +130,7 @@ export const connectionRouter = createTRPCRouter({
     });
     return { data, user };
   }),
-  getPrescriptionConnections: publicProcedure.query(async ({ ctx }) => {
+  getPrescriptionConnections: protectedProcedure.query(async ({ ctx }) => {
     const user = ctx.session?.user;
 
     const baseClause1 = user?.doctor

@@ -1,9 +1,9 @@
 import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 export const appointmentRouter = createTRPCRouter({
-getDashboardAppointments: publicProcedure.query(async ({ ctx }) => {
+getDashboardAppointments: protectedProcedure.query(async ({ ctx }) => {
     const user = ctx.session?.user;
 
     const whereClause = user?.doctor
@@ -22,7 +22,7 @@ getDashboardAppointments: publicProcedure.query(async ({ ctx }) => {
 
     return {data, user};
   }),
-  getAppointments: publicProcedure.query(async ({ ctx }) => {
+  getAppointments: protectedProcedure.query(async ({ ctx }) => {
       const user = ctx.session?.user;
   
       const whereClause = user?.doctor
@@ -48,7 +48,7 @@ getDashboardAppointments: publicProcedure.query(async ({ ctx }) => {
   
       return {data, user};
     }),
-  createAppointment: publicProcedure.input(z.object({
+  createAppointment: protectedProcedure.input(z.object({
     id: z.string(),
     appointmentDate: z.date(),
     appointmentPrice: z.number(),

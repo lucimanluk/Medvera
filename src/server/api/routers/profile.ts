@@ -1,7 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc";
 
 export const profileRouter = createTRPCRouter({
   createPatientProfile: publicProcedure
@@ -23,7 +23,7 @@ export const profileRouter = createTRPCRouter({
         },
       });
     }),
-  updatePatientProfile: publicProcedure
+  updatePatientProfile: protectedProcedure
     .input(
       z.object({
         firstName: z.string().optional(),
@@ -112,7 +112,7 @@ export const profileRouter = createTRPCRouter({
         },
       });
     }),
-  updateDoctorProfile: publicProcedure
+  updateDoctorProfile: protectedProcedure
     .input(
       z.object({
         firstName: z.string().optional(),

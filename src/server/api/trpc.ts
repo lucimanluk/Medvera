@@ -10,7 +10,7 @@ import { initTRPC } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 import { auth } from "~/lib/auth";
-
+import { TRPCError } from "@trpc/server";
 import { db } from "~/server/db";
 
 /**
@@ -99,6 +99,13 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
   return result;
 });
 
+const enforceUser = t.middleware(({ ctx, next }) => {
+  if (!ctx.session?.user) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+  return next({ ctx });
+});
+
 /**
  * Public (unauthenticated) procedure
  *
@@ -107,3 +114,6 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
  * are logged in.
  */
 export const publicProcedure = t.procedure.use(timingMiddleware);
+export const protectedProcedure = t.procedure
+  .use(timingMiddleware)
+  .use(enforceUser);
