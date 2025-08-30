@@ -443,8 +443,8 @@ export default function PatientProfile({ data }: { data: any }) {
                 editing={editing}
               />
               <InputRow
-                label_name1={"Weight"}
-                label_name2={"Height"}
+                label_name1={"Weight (in kg)"}
+                label_name2={"Height (in cm)"}
                 inputType1="number"
                 inputType2="number"
                 type={["input", "input"]}

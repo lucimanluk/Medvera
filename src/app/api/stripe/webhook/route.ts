@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
             patientId: patientId,
             appointmentDate: new Date(appointmentDateISO),
             appointmentPrice: appointmentPrice ? parseInt(appointmentPrice) : null,
-            appointmentDuration: appointmentDuration ? parseInt(appointmentDuration) : null,
+            appointmentDuration:  parseInt(appointmentDuration!),
           },
         });
       }

@@ -125,11 +125,11 @@ export default function PatientDialog({
           </div>
           <div className="thin-scrollbar flex flex-col overflow-y-auto">
             <Label className="font-bold">Weight</Label>
-            <span>{connection.patient.patientProfile?.weight ?? "---"}</span>
+            <span>{connection.patient.patientProfile?.weight ?? "---"} kg</span>
           </div>
           <div className="thin-scrollbar flex flex-col overflow-y-auto">
             <Label className="font-bold">Height</Label>
-            <span>{connection.patient.patientProfile?.height ?? "---"}</span>
+            <span>{connection.patient.patientProfile?.height ?? "---"} c m</span>
           </div>
         </div>
       </div>

@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Home,
   UserSearch,
   Calendar,
   UserPlus,
@@ -35,9 +34,8 @@ export default function Sidebar({ user }: { user: UserType }) {
   const router = useRouter();
   const { inCall } = usePeerContext();
   const links = [
-    { title: "Dashboard", icon: Home },
-    { title: "Find Doctor", icon: UserSearch },
     { title: "Appointments", icon: Calendar },
+    { title: "Find Doctor", icon: UserSearch },
     { title: "Prescriptions", icon: Pill },
     { title: "Connections", icon: UserPlus },
     { title: "Profile", icon: User },
