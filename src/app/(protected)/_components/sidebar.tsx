@@ -28,10 +28,12 @@ import { signOut } from "~/lib/auth-client";
 import { useRouter } from "next/navigation";
 import type { User as UserType } from "~/types/user";
 import { usePeerContext } from "~/context/peerContext";
+import { api } from "~/trpc/react";
 
 export default function Sidebar({ user }: { user: UserType }) {
   const pathname = usePathname();
   const router = useRouter();
+  const utils = api.useUtils();
   const { inCall } = usePeerContext();
   const links = [
     { title: "Appointments", icon: Calendar },
@@ -102,6 +104,7 @@ export default function Sidebar({ user }: { user: UserType }) {
                 await signOut({
                   fetchOptions: {
                     onSuccess: () => {
+                      utils.invalidate();
                       router.push("/");
                     },
                   },

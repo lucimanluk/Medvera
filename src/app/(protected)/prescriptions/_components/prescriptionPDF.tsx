@@ -80,11 +80,11 @@ export function PrescriptionPDF({ data }: { data: PDFData }) {
           </Text>
           <Text>
             Diagnostics:
-            {data.diagnostic}
+            {" "}{data.diagnostic}
           </Text>
           <Text>
             Instructions:
-            {data.instructions}
+            {" "}{data.instructions}
           </Text>
         </View>
 

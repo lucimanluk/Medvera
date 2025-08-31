@@ -1,5 +1,4 @@
 "use client";
-import { useState, useEffect } from "react";
 import { api } from "~/trpc/react";
 import { Loader2 } from "lucide-react";
 import DoctorProfile from "./_components/doctorProfile";
@@ -7,7 +6,12 @@ import DoctorProfile from "./_components/doctorProfile";
 import PatientProfile from "./_components/patientProfile";
 
 export default function Profile() {
-  const { data, isLoading, error } = api.user.get3.useQuery();
+ const { data, isLoading, error } = api.user.get3.useQuery(undefined, {
+  staleTime: Infinity,
+  refetchOnWindowFocus: false,
+  refetchOnReconnect: false,
+  refetchOnMount: true,
+});
   if (isLoading) {
     return (
       <div className="flex h-screen w-full flex-row items-center justify-center">

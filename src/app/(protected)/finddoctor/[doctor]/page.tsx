@@ -156,7 +156,7 @@ export default function Doctor() {
     return (
       <div className="flex h-screen w-full flex-col items-center justify-center gap-2">
         <span>ERROR: COULDN'T FIND DOCTOR</span>
-        <Link href="/dashboard">
+        <Link href="/finddoctor">
           <Button variant="outline">Go back</Button>
         </Link>
       </div>
