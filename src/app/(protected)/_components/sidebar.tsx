@@ -28,12 +28,12 @@ import { signOut } from "~/lib/auth-client";
 import { useRouter } from "next/navigation";
 import type { User as UserType } from "~/types/user";
 import { usePeerContext } from "~/context/peerContext";
-import { api } from "~/trpc/react";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function Sidebar({ user }: { user: UserType }) {
   const pathname = usePathname();
   const router = useRouter();
-  const utils = api.useUtils();
+  const queryClient = useQueryClient();
   const { inCall } = usePeerContext();
   const links = [
     { title: "Appointments", icon: Calendar },
@@ -103,8 +103,8 @@ export default function Sidebar({ user }: { user: UserType }) {
               onClick={async () =>
                 await signOut({
                   fetchOptions: {
-                    onSuccess: async () => {
-                      await utils.invalidate(undefined, { refetchType: "none" });
+                    onSuccess: () => {
+                      queryClient.clear();
                       router.push("/");
                     },
                   },

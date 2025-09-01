@@ -7,7 +7,6 @@ import PatientProfile from "./_components/patientProfile";
 
 export default function Profile() {
  const { data, isLoading, error } = api.user.get3.useQuery(undefined, {
-  staleTime: Infinity,
   refetchOnWindowFocus: false,
   refetchOnReconnect: false,
   refetchOnMount: true,
