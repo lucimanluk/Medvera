@@ -1,6 +1,10 @@
-import {  z } from "zod";
+import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  publicProcedure,
+  protectedProcedure,
+} from "~/server/api/trpc";
 
 export const userRouter = createTRPCRouter({
   get: publicProcedure
@@ -15,31 +19,32 @@ export const userRouter = createTRPCRouter({
       where: { email: ctx.session?.user.email },
     });
   }),
-  get3: publicProcedure.query(async ({ctx}) => {
-
+  get3: protectedProcedure.query(async ({ ctx }) => {
     const id = ctx.session?.user.id;
+    if (!id) return null;
 
-    return await ctx.db.user.findUnique({
-      where: {
-        id: id,
-      },
-      include: {
-        doctorProfile: true,
-        patientProfile: true,
-      }
-    }) 
+    const user = await ctx.db.user.findUnique({
+      where: { id },
+      include: { doctorProfile: true, patientProfile: true },
+    });
+
+    return user ?? null;
   }),
-  setDoctor: publicProcedure.input(z.object({
-    email: z.string(),
-    doctor: z.boolean(),
-  })).mutation(async ({ctx, input}) => {
-    return await ctx.db.user.update({
-      where: {
-         email: input.email,
-      },
-      data: {
-        doctor: input.doctor,
-      }
-    })
-  })
+  setDoctor: publicProcedure
+    .input(
+      z.object({
+        email: z.string(),
+        doctor: z.boolean(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db.user.update({
+        where: {
+          email: input.email,
+        },
+        data: {
+          doctor: input.doctor,
+        },
+      });
+    }),
 });

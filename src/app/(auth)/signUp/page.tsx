@@ -191,7 +191,7 @@ export default function SignUp() {
                           });
                         }
                         toast.success("Account created!");
-                        router.push(`/profile`);
+                        router.push(`/appointments`);
                       },
                     },
                   });

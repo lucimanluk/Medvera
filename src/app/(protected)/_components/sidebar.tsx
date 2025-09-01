@@ -103,8 +103,8 @@ export default function Sidebar({ user }: { user: UserType }) {
               onClick={async () =>
                 await signOut({
                   fetchOptions: {
-                    onSuccess: () => {
-                      utils.invalidate();
+                    onSuccess: async () => {
+                      await utils.invalidate(undefined, { refetchType: "none" });
                       router.push("/");
                     },
                   },
