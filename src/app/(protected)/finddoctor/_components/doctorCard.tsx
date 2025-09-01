@@ -205,9 +205,6 @@ export default function DoctorCard({
         <div className="flex flex-row items-center gap-2">
           <p>Cabinet phone number: {doctor.doctorProfile?.cabinetPhone}</p>
         </div>
-        <div className="flex flex-row items-center gap-2">
-          <p>Cabinet location: {doctor.doctorProfile?.cabinetCity}</p>
-        </div>
       </CardContent>
     </Card>
   );
