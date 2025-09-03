@@ -303,7 +303,7 @@ export default function ConnectionCard({
         <span>
           {user.doctor ? (
             <>
-              <span>Family doctor phone number: </span>
+              <span>Doctor phone number: </span>
               {connection.patient.patientProfile?.familyDoctorPhone}
             </>
           ) : (
